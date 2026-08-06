@@ -8,7 +8,8 @@ import {
   Clock, 
   HelpCircle, 
   ChevronDown, 
-  CheckCircle2
+  CheckCircle2,
+  Instagram
 } from 'lucide-react';
 import { StoreSettings } from '../types';
 
@@ -222,6 +223,21 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ settings }) => {
                   <div>
                     <strong className="text-white font-black uppercase text-[11px]">HORARIO DE ATENCIÓN:</strong>
                     <p>Lunes a Sábado: 8:00 AM - 8:00 PM</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 pt-2 border-t border-white/10">
+                  <Instagram className="w-4 h-4 text-pink-500 flex-shrink-0 stroke-[2.5]" />
+                  <div>
+                    <strong className="text-white font-black uppercase text-[11px]">INSTAGRAM OFICIAL:</strong>
+                    <a
+                      href="https://www.instagram.com/offside_sports22?igsh=MXZib2J3cjV2bnl1YQ=="
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block text-[#ccff00] font-mono font-bold hover:underline"
+                    >
+                      @offside_sports22 ↗
+                    </a>
                   </div>
                 </div>
               </div>

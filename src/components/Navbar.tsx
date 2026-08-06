@@ -9,7 +9,8 @@ import {
   X, 
   Shirt, 
   DollarSign, 
-  SlidersHorizontal 
+  SlidersHorizontal,
+  Instagram
 } from 'lucide-react';
 import { formatPrice } from '../utils/storage';
 
@@ -64,7 +65,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="hidden sm:inline text-white/70">Envíos a todo Costa Rica por Correos de CR y Mensajería | WhatsApp: {phoneDisplay}</span>
             <span className="sm:hidden text-white/70">Envíos a todo Costa Rica ({phoneDisplay})</span>
           </div>
-          <div className="flex items-center gap-4 text-[11px]">
+          <div className="flex items-center gap-2 sm:gap-3 text-[11px]">
+            <a
+              href="https://www.instagram.com/offside_sports22?igsh=MXZib2J3cjV2bnl1YQ=="
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-extrabold px-2.5 py-1 rounded-md shadow-md hover:scale-105 transition-all cursor-pointer"
+              title="Síguenos en Instagram @offside_sports22"
+            >
+              <Instagram className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline font-black text-[10px] tracking-wider">INSTAGRAM</span>
+            </a>
             <button
               onClick={() => setCurrency(currency === 'CRC' ? 'USD' : 'CRC')}
               className="hover:text-[#ccff00] flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded-md border border-white/10 transition cursor-pointer font-extrabold"
@@ -240,6 +251,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               {currency === 'CRC' ? '₡ COLONES (CRC)' : '$ DÓLARES (USD)'}
             </button>
           </div>
+          <a
+            href="https://www.instagram.com/offside_sports22?igsh=MXZib2J3cjV2bnl1YQ=="
+            target="_blank"
+            rel="noreferrer"
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2.5 rounded-lg text-xs font-black uppercase tracking-wider shadow-lg"
+          >
+            <Instagram className="w-4 h-4" />
+            <span>Síguenos en Instagram @offside_sports22</span>
+          </a>
           <button
             onClick={() => { onOpenAdmin(); setMobileMenuOpen(false); }}
             className="w-full mt-2 flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-lg text-xs font-black uppercase tracking-wider border border-white/20"

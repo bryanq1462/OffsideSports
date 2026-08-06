@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shirt, ShieldCheck, Truck, RotateCcw, Heart } from 'lucide-react';
+import { Shirt, ShieldCheck, Truck, RotateCcw, Heart, Instagram } from 'lucide-react';
 import { StoreSettings } from '../types';
 
 interface FooterProps {
@@ -119,20 +119,42 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, setti
           </ul>
         </div>
 
-        {/* Admin Access & Legal */}
-        <div className="md:col-span-4 space-y-3">
-          <h4 className="font-black italic uppercase text-white text-sm tracking-wider">PANEL ADMINISTRATIVO</h4>
-          <p className="text-xs text-white/70 font-semibold">Accede al panel privado para añadir nuevas camisetas al catálogo o actualizar el estado de los despachos.</p>
-          <button
-            onClick={onOpenAdmin}
-            className="bg-white/5 hover:bg-[#ccff00] text-white hover:text-black border border-white/20 hover:border-[#ccff00] px-5 py-3 text-xs font-black uppercase tracking-widest skew-x-[-10deg] transition-all cursor-pointer flex items-center gap-2"
-          >
-            <div className="skew-x-[10deg] flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
-              <span>PANEL DE ADMINISTRACIÓN</span>
+          {/* Social & Admin Access */}
+          <div className="md:col-span-4 space-y-4">
+            <h4 className="font-black italic uppercase text-white text-sm tracking-wider">COMUNIDAD & REDES SOCIALES</h4>
+            <a
+              href="https://www.instagram.com/offside_sports22?igsh=MXZib2J3cjV2bnl1YQ=="
+              target="_blank"
+              rel="noreferrer"
+              className="group bg-gradient-to-r from-purple-900/60 via-pink-900/60 to-orange-900/60 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500 border border-pink-500/30 p-4 rounded-2xl transition-all cursor-pointer flex items-center justify-between shadow-xl"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 text-white rounded-xl shadow-md">
+                  <Instagram className="w-5 h-5 stroke-[2.5]" />
+                </div>
+                <div>
+                  <p className="font-black text-white text-xs uppercase tracking-wider group-hover:text-white">SÍGUENOS EN INSTAGRAM</p>
+                  <p className="text-[11px] text-pink-300 font-mono font-bold">@offside_sports22</p>
+                </div>
+              </div>
+              <span className="text-[10px] font-black uppercase bg-white text-black px-2.5 py-1 rounded-lg group-hover:bg-[#ccff00]">
+                VER PERFIL
+              </span>
+            </a>
+
+            <div className="pt-2">
+              <p className="text-[11px] text-white/50 font-semibold mb-2">Acceso a gestión privada de inventario y pedidos:</p>
+              <button
+                onClick={onOpenAdmin}
+                className="bg-white/5 hover:bg-[#ccff00] text-white hover:text-black border border-white/20 hover:border-[#ccff00] px-4 py-2.5 text-xs font-black uppercase tracking-widest skew-x-[-10deg] transition-all cursor-pointer flex items-center gap-2"
+              >
+                <div className="skew-x-[10deg] flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
+                  <span>PANEL ADMINISTRATIVO</span>
+                </div>
+              </button>
             </div>
-          </button>
-        </div>
+          </div>
 
       </div>
 
