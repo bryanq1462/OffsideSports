@@ -1,12 +1,15 @@
 import React from 'react';
 import { Shirt, ShieldCheck, Truck, RotateCcw, Heart } from 'lucide-react';
+import { StoreSettings } from '../types';
 
 interface FooterProps {
   setActiveTab: (tab: string) => void;
   onOpenAdmin: () => void;
+  settings?: StoreSettings;
 }
 
-export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin }) => {
+export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, settings }) => {
+  const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
   return (
     <footer className="bg-[#0a0a0a] text-white/70 border-t border-white/10 text-xs">
       
@@ -80,7 +83,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin }) => 
           <div className="pt-2">
             <p className="text-[10px] font-black uppercase text-[#ccff00] tracking-widest mb-2">MEDIOS DE PAGO ACEPTADOS:</p>
             <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase text-white/90">
-              <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm text-[#ccff00]">SINPE Móvil (+506 8559 5192)</span>
+              <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm text-[#ccff00]">SINPE Móvil ({phoneDisplay})</span>
               <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm">Visa</span>
               <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm">Mastercard</span>
               <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm">PayPal</span>

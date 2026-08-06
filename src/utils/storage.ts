@@ -1,4 +1,4 @@
-import { Jersey, CartItem, Order, Review } from '../types';
+import { Jersey, CartItem, Order, Review, StoreSettings } from '../types';
 import { INITIAL_JERSEYS, INITIAL_REVIEWS } from '../data/mockData';
 
 const KEYS = {
@@ -7,6 +7,14 @@ const KEYS = {
   ORDERS: 'offside_orders_cr_v3',
   REVIEWS: 'offside_reviews_cr_v2',
   CURRENCY: 'offside_currency_cr_v2',
+  SETTINGS: 'offside_settings_cr_v1',
+};
+
+export const DEFAULT_SETTINGS: StoreSettings = {
+  contactPhone: '+506 8559 5192',
+  contactEmail: 'contacto@offsidesports.cr',
+  customizationPriceUSD: 10,
+  shippingFeeUSD: 5,
 };
 
 // Rate conversion: 1 USD = 520 CRC (Colones Costa Rica)
@@ -125,5 +133,27 @@ export function saveCurrency(currency: 'CRC' | 'USD'): void {
     localStorage.setItem(KEYS.CURRENCY, currency);
   } catch (e) {
     console.error('Error saving currency', e);
+  }
+}
+
+// STORE SETTINGS PERSISTENCE
+export function getStoredSettings(): StoreSettings {
+  try {
+    const raw = localStorage.getItem(KEYS.SETTINGS);
+    if (!raw) {
+      localStorage.setItem(KEYS.SETTINGS, JSON.stringify(DEFAULT_SETTINGS));
+      return DEFAULT_SETTINGS;
+    }
+    return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+  } catch (e) {
+    return DEFAULT_SETTINGS;
+  }
+}
+
+export function saveSettings(settings: StoreSettings): void {
+  try {
+    localStorage.setItem(KEYS.SETTINGS, JSON.stringify(settings));
+  } catch (e) {
+    console.error('Error saving settings', e);
   }
 }

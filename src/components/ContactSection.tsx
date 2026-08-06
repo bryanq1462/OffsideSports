@@ -10,10 +10,19 @@ import {
   ChevronDown, 
   CheckCircle2
 } from 'lucide-react';
+import { StoreSettings } from '../types';
 
-export const ContactSection: React.FC = () => {
+interface ContactSectionProps {
+  settings?: StoreSettings;
+}
+
+export const ContactSection: React.FC<ContactSectionProps> = ({ settings }) => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+
+  const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
+  const emailDisplay = settings?.contactEmail || 'contacto@offsidesports.cr';
+  const cleanPhone = phoneDisplay.replace(/[^0-9]/g, '');
 
   // Accordion state for FAQs
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -25,7 +34,7 @@ export const ContactSection: React.FC = () => {
     },
     {
       q: '¿Cómo funciona la personalización con Nombre y Número?',
-      a: 'Utilizamos tipografías e impresiones oficiales de cada liga y club. Al seleccionar cualquier camiseta puedes activar la opción de personalizado, colocar tu nombre/apodo y número deseado (+$10 USD / ₡5.200 CRC).'
+      a: `Utilizamos tipografías e impresiones oficiales de cada liga y club. Al seleccionar cualquier camiseta puedes activar la opción de personalizado, colocar tu nombre/apodo y número deseado (+$${settings?.customizationPriceUSD || 10} USD).`
     },
     {
       q: '¿Cuánto tiempo tarda en llegar mi pedido?',
@@ -33,7 +42,7 @@ export const ContactSection: React.FC = () => {
     },
     {
       q: '¿Qué medios de pago aceptan en Costa Rica?',
-      a: 'Aceptamos SINPE Móvil (+506 8559 5192), Tarjetas de Crédito y Débito (Visa, Mastercard, Amex), PayPal y Pago Contra Entrega en efectivo al recibir tu paquete.'
+      a: `Aceptamos SINPE Móvil (${phoneDisplay}), Tarjetas de Crédito y Débito (Visa, Mastercard, Amex), PayPal y Pago Contra Entrega en efectivo al recibir tu paquete.`
     }
   ];
 
@@ -83,7 +92,7 @@ export const ContactSection: React.FC = () => {
           </div>
 
           <a
-            href={`https://wa.me/50685595192?text=${whatsappMessage}`}
+            href={`https://wa.me/${cleanPhone || '50685595192'}?text=${whatsappMessage}`}
             target="_blank"
             rel="noreferrer"
             className="z-10 bg-[#ccff00] hover:bg-white text-black font-black px-8 py-4 uppercase text-xs sm:text-sm tracking-widest skew-x-[-10deg] transition-all cursor-pointer shadow-xl flex items-center gap-3 flex-shrink-0"
@@ -196,7 +205,15 @@ export const ContactSection: React.FC = () => {
                   <Phone className="w-4 h-4 text-[#ccff00] flex-shrink-0 stroke-[2.5]" />
                   <div>
                     <strong className="text-white font-black uppercase text-[11px]">WHATSAPP & ATENCIÓN:</strong>
-                    <p>+506 8559 5192</p>
+                    <p>{phoneDisplay}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Mail className="w-4 h-4 text-[#ccff00] flex-shrink-0 stroke-[2.5]" />
+                  <div>
+                    <strong className="text-white font-black uppercase text-[11px]">CORREO DE CONTACTO / NOTIFICACIONES:</strong>
+                    <p>{emailDisplay}</p>
                   </div>
                 </div>
 

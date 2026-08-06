@@ -12,7 +12,7 @@ import {
   ChevronLeft
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { CartItem, CustomerInfo, PaymentMethod, Order } from '../types';
+import { CartItem, CustomerInfo, PaymentMethod, Order, StoreSettings } from '../types';
 import { formatPrice } from '../utils/storage';
 
 interface CheckoutModalProps {
@@ -21,6 +21,7 @@ interface CheckoutModalProps {
   cart: CartItem[];
   discountUSD: number;
   currency: 'CRC' | 'USD';
+  settings?: StoreSettings;
   onOrderCompleted: (newOrder: Order) => void;
 }
 
@@ -30,9 +31,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   cart,
   discountUSD,
   currency,
+  settings,
   onOrderCompleted
 }) => {
   if (!isOpen) return null;
+
+  const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
+  const stampFeeUSD = settings?.customizationPriceUSD ?? 10;
+  const shippingFeeUSD = settings?.shippingFeeUSD ?? 5;
 
   const [step, setStep] = useState<'shipping' | 'payment' | 'processing' | 'success'>('shipping');
 
@@ -58,12 +64,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   // Totals
   const calculateItemPriceUSD = (item: CartItem) => {
-    const stampExtra = item.customStamping?.enabled ? 10 : 0;
+    const stampExtra = item.customStamping?.enabled ? stampFeeUSD : 0;
     return (item.jersey.price + stampExtra) * item.quantity;
   };
 
   const subtotalUSD = cart.reduce((sum, item) => sum + calculateItemPriceUSD(item), 0);
-  const shippingUSD = subtotalUSD > 0 ? 5 : 0;
+  const shippingUSD = subtotalUSD > 0 ? shippingFeeUSD : 0;
   const totalUSD = subtotalUSD - discountUSD + shippingUSD;
 
   const handleShippingSubmit = (e: React.FormEvent) => {
@@ -390,14 +396,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             {/* SINPE Móvil Details */}
             {paymentMethod === 'sinpe_movil' && (
               <div className="p-4 bg-[#121212] border border-white/10 text-center space-y-3">
-                <p className="text-xs font-black uppercase text-[#ccff00]">TRANSFERENCIA SINPE MÓVIL AL +506 8559 5192</p>
+                <p className="text-xs font-black uppercase text-[#ccff00]">TRANSFERENCIA SINPE MÓVIL AL {phoneDisplay}</p>
                 <p className="text-[11px] text-white/80 font-semibold">
-                  Realiza la transferencia por SINPE Móvil al número <strong className="text-white font-extrabold">+506 8559 5192</strong> (OFFSIDE Sports). Ingresa tu teléfono para la verificación:
+                  Realiza la transferencia por SINPE Móvil al número <strong className="text-white font-extrabold">{phoneDisplay}</strong> (OFFSIDE Sports). Ingresa tu teléfono para la verificación:
                 </p>
                 <input
                   type="tel"
                   required
-                  placeholder="+506 8559 5192"
+                  placeholder={phoneDisplay}
                   value={sinpePhone}
                   onChange={(e) => setSinpePhone(e.target.value)}
                   className="w-full max-w-xs mx-auto bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-center font-mono font-black text-[#ccff00] focus:border-[#ccff00]"

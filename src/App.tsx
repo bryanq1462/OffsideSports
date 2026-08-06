@@ -6,7 +6,8 @@ import {
   Review, 
   FilterState, 
   Size, 
-  CustomStamping 
+  CustomStamping,
+  StoreSettings
 } from './types';
 import { 
   getStoredJerseys, 
@@ -19,6 +20,8 @@ import {
   saveReviews, 
   getStoredCurrency, 
   saveCurrency,
+  getStoredSettings,
+  saveSettings,
   formatPrice 
 } from './utils/storage';
 import { Navbar } from './components/Navbar';
@@ -42,6 +45,7 @@ export default function App() {
   const [orders, setOrders] = useState<Order[]>(() => getStoredOrders());
   const [reviews, setReviews] = useState<Review[]>(() => getStoredReviews());
   const [currency, setCurrencyState] = useState<'CRC' | 'USD'>(() => getStoredCurrency());
+  const [settings, setSettingsState] = useState<StoreSettings>(() => getStoredSettings());
 
   // UI View States
   const [activeTab, setActiveTab] = useState<string>('catalog');
@@ -67,6 +71,11 @@ export default function App() {
   const handleSetCurrency = (curr: 'CRC' | 'USD') => {
     setCurrencyState(curr);
     saveCurrency(curr);
+  };
+
+  const handleUpdateSettings = (newSettings: StoreSettings) => {
+    setSettingsState(newSettings);
+    saveSettings(newSettings);
   };
 
   const handleUpdateJerseys = (newJerseys: Jersey[]) => {
@@ -216,16 +225,18 @@ export default function App() {
         msg += ` | Parche: ${customStamping.patch}`;
       }
     }
-    msg += `\n💰 *Precio:* ${formatPrice(jersey.price + (customStamping?.enabled ? 10 : 0), currency)}`;
+    const totalPrice = jersey.price + (customStamping?.enabled ? settings.customizationPriceUSD : 0);
+    msg += `\n💰 *Precio:* ${formatPrice(totalPrice, currency)}`;
     msg += `\n¿Tienen disponibilidad para envío inmediato en Costa Rica?`;
 
-    window.open(`https://wa.me/50685595192?text=${encodeURIComponent(msg)}`, '_blank');
+    const cleanPhone = settings.contactPhone.replace(/[^0-9]/g, '');
+    window.open(`https://wa.me/${cleanPhone || '50685595192'}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
   // Cart Totals
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   const cartTotalUSD = cart.reduce((sum, item) => {
-    const stampExtra = item.customStamping?.enabled ? 10 : 0;
+    const stampExtra = item.customStamping?.enabled ? settings.customizationPriceUSD : 0;
     return sum + (item.jersey.price + stampExtra) * item.quantity;
   }, 0);
 
@@ -249,6 +260,7 @@ export default function App() {
         currency={currency}
         setCurrency={handleSetCurrency}
         onOpenAdmin={() => setIsAdminOpen(true)}
+        settings={settings}
       />
 
       {/* Main Container */}
@@ -346,7 +358,7 @@ export default function App() {
 
           {/* Contact & WhatsApp Section */}
           {activeTab === 'contact' && (
-            <ContactSection />
+            <ContactSection settings={settings} />
           )}
 
         </section>
@@ -355,17 +367,19 @@ export default function App() {
 
       {/* Footer */}
       <Footer
+        settings={settings}
         setActiveTab={setActiveTab}
         onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
       {/* Persistent Floating WhatsApp Action Button */}
-      <WhatsAppFloatingButton />
+      <WhatsAppFloatingButton settings={settings} />
 
       {/* Jersey Detail & Customizer Modal */}
       <JerseyDetailModal
         jersey={selectedJerseyDetail}
         currency={currency}
+        settings={settings}
         onClose={() => setSelectedJerseyDetail(null)}
         onAddToCart={handleAddToCartWithCustom}
         onBuyWhatsApp={handleBuyWhatsApp}
@@ -377,6 +391,7 @@ export default function App() {
         onClose={() => setIsCartOpen(false)}
         cart={cart}
         currency={currency}
+        settings={settings}
         onUpdateQuantity={handleUpdateCartQuantity}
         onRemoveItem={handleRemoveCartItem}
         onProceedToCheckout={(discountUSD) => {
@@ -396,7 +411,8 @@ export default function App() {
           text += `\n\nTotal estimado: *${formatPrice(cartTotalUSD, currency)}*`;
           text += `\n¿Tienen servicio de envío o contra entrega en Costa Rica?`;
 
-          window.open(`https://wa.me/50685595192?text=${encodeURIComponent(text)}`, '_blank');
+          const cleanPhone = settings.contactPhone.replace(/[^0-9]/g, '');
+          window.open(`https://wa.me/${cleanPhone || '50685595192'}?text=${encodeURIComponent(text)}`, '_blank');
         }}
       />
 
@@ -407,6 +423,7 @@ export default function App() {
         cart={cart}
         discountUSD={appliedDiscountUSD}
         currency={currency}
+        settings={settings}
         onOrderCompleted={handleOrderCompleted}
       />
 
@@ -416,8 +433,10 @@ export default function App() {
           jerseys={jerseys}
           orders={orders}
           currency={currency}
+          settings={settings}
           onUpdateJerseys={handleUpdateJerseys}
           onUpdateOrders={handleUpdateOrders}
+          onUpdateSettings={handleUpdateSettings}
           onClose={() => setIsAdminOpen(false)}
         />
       )}

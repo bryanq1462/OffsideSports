@@ -12,12 +12,13 @@ import {
   Flame,
   Info
 } from 'lucide-react';
-import { Jersey, Size, CustomStamping } from '../types';
+import { Jersey, Size, CustomStamping, StoreSettings } from '../types';
 import { formatPrice } from '../utils/storage';
 
 interface JerseyDetailModalProps {
   jersey: Jersey | null;
-  currency: 'USD' | 'COP';
+  currency: 'CRC' | 'USD';
+  settings?: StoreSettings;
   onClose: () => void;
   onAddToCart: (jersey: Jersey, size: Size, quantity: number, customStamping?: CustomStamping) => void;
   onBuyWhatsApp: (jersey: Jersey, size: Size, customStamping?: CustomStamping) => void;
@@ -26,6 +27,7 @@ interface JerseyDetailModalProps {
 export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
   jersey,
   currency,
+  settings,
   onClose,
   onAddToCart,
   onBuyWhatsApp
@@ -45,7 +47,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [added, setAdded] = useState(false);
 
-  const STAMP_PRICE_USD = 10;
+  const STAMP_PRICE_USD = settings?.customizationPriceUSD ?? 10;
   const totalPriceUSD = (jersey.price + (stampEnabled ? STAMP_PRICE_USD : 0)) * quantity;
 
   const handleAddToCart = () => {

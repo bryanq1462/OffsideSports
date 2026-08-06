@@ -9,7 +9,7 @@ import {
   Check, 
   MessageCircle 
 } from 'lucide-react';
-import { CartItem } from '../types';
+import { CartItem, StoreSettings } from '../types';
 import { formatPrice } from '../utils/storage';
 
 interface CartDrawerProps {
@@ -17,6 +17,7 @@ interface CartDrawerProps {
   onClose: () => void;
   cart: CartItem[];
   currency: 'CRC' | 'USD';
+  settings?: StoreSettings;
   onUpdateQuantity: (cartItemId: string, newQty: number) => void;
   onRemoveItem: (cartItemId: string) => void;
   onProceedToCheckout: (appliedDiscount: number) => void;
@@ -28,6 +29,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onClose,
   cart,
   currency,
+  settings,
   onUpdateQuantity,
   onRemoveItem,
   onProceedToCheckout,
@@ -39,17 +41,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [couponApplied, setCouponApplied] = useState<{ code: string; percent: number } | null>(null);
   const [couponError, setCouponError] = useState('');
 
+  const stampFeeUSD = settings?.customizationPriceUSD ?? 10;
+  const shippingFeeUSD = settings?.shippingFeeUSD ?? 5;
+
   // Calculate Subtotal (base price + stamp)
   const calculateItemPriceUSD = (item: CartItem) => {
-    const stampExtra = item.customStamping?.enabled ? 10 : 0;
+    const stampExtra = item.customStamping?.enabled ? stampFeeUSD : 0;
     return (item.jersey.price + stampExtra) * item.quantity;
   };
 
   const subtotalUSD = cart.reduce((sum, item) => sum + calculateItemPriceUSD(item), 0);
   const discountPercent = couponApplied ? couponApplied.percent : 0;
   const discountUSD = subtotalUSD * (discountPercent / 100);
-  // No free shipping as requested
-  const shippingUSD = subtotalUSD > 0 ? 5 : 0;
+  const shippingUSD = subtotalUSD > 0 ? shippingFeeUSD : 0;
   const totalUSD = subtotalUSD - discountUSD + shippingUSD;
 
   const handleApplyCoupon = (e: React.FormEvent) => {

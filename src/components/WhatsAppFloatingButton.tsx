@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { MessageCircle, X, Send } from 'lucide-react';
+import { StoreSettings } from '../types';
 
-export const WhatsAppFloatingButton: React.FC = () => {
+interface WhatsAppFloatingButtonProps {
+  settings?: StoreSettings;
+}
+
+export const WhatsAppFloatingButton: React.FC<WhatsAppFloatingButtonProps> = ({ settings }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [userMsg, setUserMsg] = useState('');
 
@@ -9,7 +14,8 @@ export const WhatsAppFloatingButton: React.FC = () => {
 
   const handleSendWA = () => {
     const textToSend = userMsg.trim() || defaultMsg;
-    const url = `https://wa.me/50685595192?text=${encodeURIComponent(textToSend)}`;
+    const cleanPhone = (settings?.contactPhone || '+506 8559 5192').replace(/[^0-9]/g, '');
+    const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(textToSend)}`;
     window.open(url, '_blank');
     setIsOpen(false);
   };

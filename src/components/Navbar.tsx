@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { formatPrice } from '../utils/storage';
 
+import { StoreSettings } from '../types';
+
 interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -24,6 +26,7 @@ interface NavbarProps {
   currency: 'CRC' | 'USD';
   setCurrency: (currency: 'CRC' | 'USD') => void;
   onOpenAdmin: () => void;
+  settings?: StoreSettings;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -36,9 +39,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   setSearchQuery,
   currency,
   setCurrency,
-  onOpenAdmin
+  onOpenAdmin,
+  settings
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
 
   const navItems = [
     { id: 'catalog', label: 'Catálogo', icon: Shirt },
@@ -56,8 +61,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="bg-[#ccff00] text-black text-[10px] font-black uppercase px-2 py-0.5 rounded-sm">
               COSTA RICA
             </span>
-            <span className="hidden sm:inline text-white/70">Envíos a todo Costa Rica por Correos de CR y Mensajería | WhatsApp: +506 8559 5192</span>
-            <span className="sm:hidden text-white/70">Envíos a todo Costa Rica (+506 8559 5192)</span>
+            <span className="hidden sm:inline text-white/70">Envíos a todo Costa Rica por Correos de CR y Mensajería | WhatsApp: {phoneDisplay}</span>
+            <span className="sm:hidden text-white/70">Envíos a todo Costa Rica ({phoneDisplay})</span>
           </div>
           <div className="flex items-center gap-4 text-[11px]">
             <button

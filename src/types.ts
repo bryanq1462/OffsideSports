@@ -1,3 +1,10 @@
+export interface StoreSettings {
+  contactPhone: string;
+  contactEmail: string;
+  customizationPriceUSD: number;
+  shippingFeeUSD: number;
+}
+
 export type League = 
   | 'LaLiga'
   | 'Premier League'
