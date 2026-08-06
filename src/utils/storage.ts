@@ -13,8 +13,14 @@ const KEYS = {
 export const DEFAULT_SETTINGS: StoreSettings = {
   contactPhone: '+506 8559 5192',
   contactEmail: 'contacto@offsidesports.cr',
+  customizationPriceCRC: 5200,
   customizationPriceUSD: 10,
+  shippingFeeCRC: 2600,
   shippingFeeUSD: 5,
+  bankAccountHolder: 'OFFSIDE Sports Costa Rica S.A.',
+  bankAccountIBAN: 'CR05015202001026384920',
+  bankName: 'BAC Credomatic Costa Rica',
+  sinpePhone: '+506 8559 5192',
 };
 
 // Rate conversion: 1 USD = 520 CRC (Colones Costa Rica)
@@ -30,6 +36,10 @@ export function formatPrice(amountUSD: number, currency: 'CRC' | 'USD'): string 
     currency: 'USD',
     maximumFractionDigits: 2
   }).format(amountUSD);
+}
+
+export function formatCRC(amountCRC: number): string {
+  return `₡${Math.round(amountCRC).toLocaleString('es-CR')}`;
 }
 
 // JERSEYS CRUD

@@ -9,7 +9,9 @@ import {
   ArrowRight, 
   Lock, 
   MessageCircle, 
-  ChevronLeft
+  ChevronLeft,
+  Building2,
+  Landmark
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { CartItem, CustomerInfo, PaymentMethod, Order, StoreSettings } from '../types';
@@ -37,6 +39,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   if (!isOpen) return null;
 
   const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
+  const sinpeNumber = settings?.sinpePhone || settings?.contactPhone || '+506 8559 5192';
+  const bankAccountHolder = settings?.bankAccountHolder || 'OFFSIDE Sports Costa Rica S.A.';
+  const bankAccountIBAN = settings?.bankAccountIBAN || 'CR05015202001026384920';
+  const bankName = settings?.bankName || 'BAC Credomatic Costa Rica';
+
   const stampFeeUSD = settings?.customizationPriceUSD ?? 10;
   const shippingFeeUSD = settings?.shippingFeeUSD ?? 5;
 
@@ -278,66 +285,81 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
 
             <div className="space-y-2">
-              <label className="block text-xs font-black uppercase italic text-white">ELIGE TU PASARELA DE PAGO:</label>
+              <label className="block text-xs font-black uppercase italic text-white">ELIGE TU PASARELA O MÉTODO DE PAGO:</label>
               
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                 <button
                   type="button"
                   onClick={() => setPaymentMethod('card')}
-                  className={`p-3 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
+                  className={`p-2.5 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
                     paymentMethod === 'card'
                       ? 'bg-[#ccff00] text-black border-[#ccff00] font-black'
                       : 'bg-black border-white/10 text-white/60 hover:text-white'
                   }`}
                 >
                   <div className="skew-x-[10deg] flex flex-col items-center">
-                    <CreditCard className="w-5 h-5 stroke-[2.5]" />
-                    <span className="text-[10px] uppercase font-black tracking-wider mt-1">TARJETA CRÉ/DÉB</span>
+                    <CreditCard className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-[9px] uppercase font-black tracking-wider mt-1">TARJETA</span>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setPaymentMethod('sinpe_movil')}
-                  className={`p-3 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
+                  className={`p-2.5 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
                     paymentMethod === 'sinpe_movil'
                       ? 'bg-[#ccff00] text-black border-[#ccff00] font-black'
                       : 'bg-black border-white/10 text-white/60 hover:text-white'
                   }`}
                 >
                   <div className="skew-x-[10deg] flex flex-col items-center">
-                    <Smartphone className="w-5 h-5 stroke-[2.5]" />
-                    <span className="text-[10px] uppercase font-black tracking-wider mt-1">SINPE MÓVIL</span>
+                    <Smartphone className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-[9px] uppercase font-black tracking-wider mt-1">SINPE MÓVIL</span>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('bank_transfer')}
+                  className={`p-2.5 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
+                    paymentMethod === 'bank_transfer'
+                      ? 'bg-[#ccff00] text-black border-[#ccff00] font-black'
+                      : 'bg-black border-white/10 text-white/60 hover:text-white'
+                  }`}
+                >
+                  <div className="skew-x-[10deg] flex flex-col items-center">
+                    <Building2 className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-[9px] uppercase font-black tracking-wider mt-1">BANCO IBAN</span>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setPaymentMethod('paypal')}
-                  className={`p-3 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
+                  className={`p-2.5 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
                     paymentMethod === 'paypal'
                       ? 'bg-[#ccff00] text-black border-[#ccff00] font-black'
                       : 'bg-black border-white/10 text-white/60 hover:text-white'
                   }`}
                 >
                   <div className="skew-x-[10deg] flex flex-col items-center">
-                    <span className="font-black italic text-xs">PAYPAL</span>
-                    <span className="text-[10px] uppercase font-black tracking-wider mt-1">GLOBAL</span>
+                    <span className="font-black italic text-[11px]">PAYPAL</span>
+                    <span className="text-[9px] uppercase font-black tracking-wider mt-0.5">GLOBAL</span>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setPaymentMethod('cash')}
-                  className={`p-3 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
+                  className={`p-2.5 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] col-span-2 sm:col-span-1 ${
                     paymentMethod === 'cash'
                       ? 'bg-[#ccff00] text-black border-[#ccff00] font-black'
                       : 'bg-black border-white/10 text-white/60 hover:text-white'
                   }`}
                 >
                   <div className="skew-x-[10deg] flex flex-col items-center">
-                    <Banknote className="w-5 h-5 stroke-[2.5]" />
-                    <span className="text-[10px] uppercase font-black tracking-wider mt-1">CONTRA ENTREGA</span>
+                    <Banknote className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-[9px] uppercase font-black tracking-wider mt-1">CONTRA ENTREGA</span>
                   </div>
                 </button>
               </div>
@@ -345,7 +367,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             {/* Credit Card Details */}
             {paymentMethod === 'card' && (
-              <div className="p-4 bg-[#121212] border border-white/10 space-y-3">
+              <div className="p-4 bg-[#121212] border border-white/10 space-y-3 rounded-xl">
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-black uppercase text-white">TARJETA VISA / MASTERCARD / AMEX</span>
                   <div className="flex gap-1 text-[10px] font-mono text-[#ccff00]">🔒 ENCRIPTACIÓN SSL 256-BIT</div>
@@ -395,32 +417,88 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             {/* SINPE Móvil Details */}
             {paymentMethod === 'sinpe_movil' && (
-              <div className="p-4 bg-[#121212] border border-white/10 text-center space-y-3">
-                <p className="text-xs font-black uppercase text-[#ccff00]">TRANSFERENCIA SINPE MÓVIL AL {phoneDisplay}</p>
-                <p className="text-[11px] text-white/80 font-semibold">
-                  Realiza la transferencia por SINPE Móvil al número <strong className="text-white font-extrabold">{phoneDisplay}</strong> (OFFSIDE Sports). Ingresa tu teléfono para la verificación:
+              <div className="p-4 bg-[#121212] border border-[#ccff00]/40 rounded-xl space-y-3 text-center">
+                <div className="inline-flex items-center gap-1.5 bg-[#ccff00]/10 border border-[#ccff00]/30 px-3 py-1 text-[11px] font-black uppercase text-[#ccff00]">
+                  <Smartphone className="w-3.5 h-3.5" />
+                  <span>PAGO RÁPIDO POR SINPE MÓVIL</span>
+                </div>
+                <p className="text-xs text-white/90 font-semibold">
+                  Realiza la transferencia SINPE Móvil al número <strong className="text-[#ccff00] font-mono text-sm">{sinpeNumber}</strong>
                 </p>
-                <input
-                  type="tel"
-                  required
-                  placeholder={phoneDisplay}
-                  value={sinpePhone}
-                  onChange={(e) => setSinpePhone(e.target.value)}
-                  className="w-full max-w-xs mx-auto bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-center font-mono font-black text-[#ccff00] focus:border-[#ccff00]"
-                />
+
+                <div className="bg-black p-3 border border-white/10 rounded-xl text-left text-xs space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/60 font-bold">TITULAR DE LA CUENTA:</span>
+                    <strong className="text-white font-bold">{bankAccountHolder}</strong>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/60 font-bold">MONTO TOTAL A PAGAR:</span>
+                    <strong className="text-[#ccff00] font-mono font-black text-sm">{formatPrice(totalUSD, currency)}</strong>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] text-white/70 font-black uppercase tracking-wider mb-1">
+                    INGRESA TU NÚMERO DE TELÉFONO O REFERENCIA DE COMPROBANTE:
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ej: 8888 8888 / Ref #10293"
+                    value={sinpePhone}
+                    onChange={(e) => setSinpePhone(e.target.value)}
+                    className="w-full max-w-xs mx-auto bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-center font-mono font-black text-[#ccff00] focus:border-[#ccff00]"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Bank Transfer Details */}
+            {paymentMethod === 'bank_transfer' && (
+              <div className="p-4 bg-[#121212] border border-[#ccff00]/40 rounded-xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="inline-flex items-center gap-1.5 bg-[#ccff00]/10 border border-[#ccff00]/30 px-3 py-1 text-[11px] font-black uppercase text-[#ccff00]">
+                    <Building2 className="w-3.5 h-3.5" />
+                    <span>DATOS PARA TRANSFERENCIA BANCARIA / DEPÓSITO IBAN</span>
+                  </div>
+                  <span className="text-[10px] text-white/60 font-mono font-bold">COSTA RICA</span>
+                </div>
+
+                <div className="bg-black p-3.5 border border-white/15 rounded-xl space-y-2 text-xs">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-1.5">
+                    <span className="text-white/60 uppercase font-black text-[10px]">BANCO DESTINO:</span>
+                    <strong className="text-white font-bold">{bankName}</strong>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-white/10 pb-1.5">
+                    <span className="text-white/60 uppercase font-black text-[10px]">TITULAR DE CUENTA:</span>
+                    <strong className="text-white font-bold">{bankAccountHolder}</strong>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-white/10 pb-1.5">
+                    <span className="text-white/60 uppercase font-black text-[10px]">CUENTA IBAN:</span>
+                    <strong className="text-[#ccff00] font-mono font-black text-xs select-all">{bankAccountIBAN}</strong>
+                  </div>
+                  <div className="flex justify-between items-center pt-0.5">
+                    <span className="text-white/60 uppercase font-black text-[10px]">MONTO TOTAL PRODUCTO + ENVÍO:</span>
+                    <strong className="text-[#ccff00] font-mono font-black text-sm">{formatPrice(totalUSD, currency)}</strong>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-white/70 italic text-center">
+                  Al confirmar, tu orden quedará registrada y nuestro equipo procederá con la preparación de tu paquete.
+                </p>
               </div>
             )}
 
             {/* PayPal info */}
             {paymentMethod === 'paypal' && (
-              <div className="p-4 bg-[#121212] border border-white/10 text-center text-xs text-white/80 font-semibold">
+              <div className="p-4 bg-[#121212] border border-white/10 rounded-xl text-center text-xs text-white/80 font-semibold">
                 <p>Serás redirigido de forma segura al portal oficial de PayPal para autorizar los {formatPrice(totalUSD, currency)}.</p>
               </div>
             )}
 
             {/* Cash on Delivery info */}
             {paymentMethod === 'cash' && (
-              <div className="p-4 bg-[#121212] border border-white/10 text-center text-xs text-white/80 space-y-1">
+              <div className="p-4 bg-[#121212] border border-white/10 rounded-xl text-center text-xs text-white/80 space-y-1">
                 <p className="font-black text-[#ccff00] uppercase">PAGAS EN EFECTIVO AL RECIBIR EN TU PUERTA</p>
                 <p className="text-[11px] text-white/60 font-semibold">Ten listo el dinero exacto para el repartidor al momento de la entrega.</p>
               </div>

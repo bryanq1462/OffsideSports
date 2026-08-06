@@ -17,7 +17,9 @@ import {
   Phone,
   Tag,
   Sparkles,
-  Save
+  Save,
+  Landmark,
+  Building2
 } from 'lucide-react';
 import { Jersey, Order, OrderStatus, League, JerseyType, Size, StoreSettings } from '../types';
 import { formatPrice } from '../utils/storage';
@@ -501,68 +503,222 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
               <form onSubmit={handleSaveSettingsSubmit} className="space-y-6 text-xs font-semibold">
                 
-                {/* Prices Section */}
-                <div className="space-y-4 bg-[#121212] p-5 border border-white/10">
-                  <h4 className="text-sm font-black italic uppercase text-[#ccff00] flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 stroke-[2.5]" />
-                    <span>GESTIÓN DE PRECIOS GLOBALES</span>
-                  </h4>
+                {/* Prices Section - CRC & USD */}
+                <div className="space-y-4 bg-[#121212] p-5 border border-white/10 rounded-2xl">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-black italic uppercase text-[#ccff00] flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 stroke-[2.5]" />
+                      <span>CONFIGURACIÓN DE MONTOS Y TARIFAS (COLONES ₡ & USD)</span>
+                    </h4>
+                    <span className="text-[10px] bg-[#ccff00]/10 text-[#ccff00] px-2 py-0.5 border border-[#ccff00]/30 font-black uppercase">
+                      1 USD = ₡520 CRC
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {/* Estampado / Personalización */}
+                    <div className="space-y-2 bg-black/60 p-3.5 border border-white/10 rounded-xl">
+                      <label className="block font-black uppercase text-white tracking-wider text-xs">
+                        PRECIO DE ESTAMPADO / PERSONALIZACIÓN:
+                      </label>
+                      <div className="space-y-2">
+                        <div>
+                          <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN COLONES (₡ CRC):</span>
+                          <div className="relative">
+                            <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">₡</span>
+                            <input
+                              type="number"
+                              step="100"
+                              min="0"
+                              required
+                              value={localSettings.customizationPriceCRC ?? Math.round((localSettings.customizationPriceUSD || 10) * 520)}
+                              onChange={(e) => {
+                                const crc = Number(e.target.value);
+                                setLocalSettings({
+                                  ...localSettings,
+                                  customizationPriceCRC: crc,
+                                  customizationPriceUSD: Number((crc / 520).toFixed(2))
+                                });
+                              }}
+                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white font-mono font-black text-sm focus:border-[#ccff00]"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN DÓLARES ($ USD):</span>
+                          <div className="relative">
+                            <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">$</span>
+                            <input
+                              type="number"
+                              step="0.5"
+                              min="0"
+                              required
+                              value={localSettings.customizationPriceUSD}
+                              onChange={(e) => {
+                                const usd = Number(e.target.value);
+                                setLocalSettings({
+                                  ...localSettings,
+                                  customizationPriceUSD: usd,
+                                  customizationPriceCRC: Math.round(usd * 520)
+                                });
+                              }}
+                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white/80 font-mono font-bold text-sm focus:border-[#ccff00]"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Envío Estándar */}
+                    <div className="space-y-2 bg-black/60 p-3.5 border border-white/10 rounded-xl">
+                      <label className="block font-black uppercase text-white tracking-wider text-xs">
+                        TARIFA DE ENVÍO ESTÁNDAR (CORREOS DE CR / MENSAJERÍA):
+                      </label>
+                      <div className="space-y-2">
+                        <div>
+                          <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN COLONES (₡ CRC):</span>
+                          <div className="relative">
+                            <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">₡</span>
+                            <input
+                              type="number"
+                              step="100"
+                              min="0"
+                              required
+                              value={localSettings.shippingFeeCRC ?? Math.round((localSettings.shippingFeeUSD || 5) * 520)}
+                              onChange={(e) => {
+                                const crc = Number(e.target.value);
+                                setLocalSettings({
+                                  ...localSettings,
+                                  shippingFeeCRC: crc,
+                                  shippingFeeUSD: Number((crc / 520).toFixed(2))
+                                });
+                              }}
+                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white font-mono font-black text-sm focus:border-[#ccff00]"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN DÓLARES ($ USD):</span>
+                          <div className="relative">
+                            <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">$</span>
+                            <input
+                              type="number"
+                              step="0.5"
+                              min="0"
+                              required
+                              value={localSettings.shippingFeeUSD}
+                              onChange={(e) => {
+                                const usd = Number(e.target.value);
+                                setLocalSettings({
+                                  ...localSettings,
+                                  shippingFeeUSD: usd,
+                                  shippingFeeCRC: Math.round(usd * 520)
+                                });
+                              }}
+                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white/80 font-mono font-bold text-sm focus:border-[#ccff00]"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bank Account Receiver Section */}
+                <div className="space-y-4 bg-[#121212] p-5 border border-[#ccff00]/30 rounded-2xl">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-black italic uppercase text-[#ccff00] flex items-center gap-2">
+                      <Landmark className="w-4 h-4 stroke-[2.5]" />
+                      <span>CUENTA BANCARIA & RECEPCIÓN DE FONDOS DE CLIENTES</span>
+                    </h4>
+                    <span className="text-[10px] bg-[#ccff00] text-black px-2 py-0.5 font-black uppercase">
+                      CUENTA DE INGRESO
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-white/70 font-medium">
+                    Configura la cuenta bancaria donde los clientes depositarán o realizarán transferencias IBAN y SINPE Móvil al comprar.
+                  </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="block font-black uppercase text-white tracking-wider">
-                        PRECIO DE PERSONALIZACIÓN / ESTAMPADO ($ USD):
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <label className="block font-black uppercase text-white tracking-wider flex items-center gap-2">
+                        <Building2 className="w-3.5 h-3.5 text-[#ccff00]" />
+                        <span>TITULAR DE LA CUENTA / NOMBRE DE EMPRESA:</span>
                       </label>
-                      <div className="relative">
-                        <input
-                          type="number"
-                          step="0.5"
-                          min="0"
-                          required
-                          value={localSettings.customizationPriceUSD}
-                          onChange={(e) => setLocalSettings({ ...localSettings, customizationPriceUSD: Number(e.target.value) })}
-                          className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-black text-sm focus:border-[#ccff00]"
-                        />
-                      </div>
-                      <p className="text-[11px] text-[#ccff00] font-mono font-bold">
-                        Equivalente: {formatPrice(localSettings.customizationPriceUSD, 'CRC')}
+                      <input
+                        type="text"
+                        required
+                        value={localSettings.bankAccountHolder || ''}
+                        onChange={(e) => setLocalSettings({ ...localSettings, bankAccountHolder: e.target.value })}
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold focus:border-[#ccff00]"
+                        placeholder="Ej: OFFSIDE Sports Costa Rica S.A. (3-101-882910)"
+                      />
+                      <p className="text-[10px] text-white/50">
+                        Nombre que le aparecerá al cliente al confirmar su transferencia o depósito.
                       </p>
                     </div>
 
                     <div className="space-y-1.5">
                       <label className="block font-black uppercase text-white tracking-wider">
-                        TARIFA DE ENVÍO ESTÁNDAR ($ USD):
+                        BANCO DESTINO DE RECEPCIÓN:
                       </label>
-                      <div className="relative">
-                        <input
-                          type="number"
-                          step="0.5"
-                          min="0"
-                          required
-                          value={localSettings.shippingFeeUSD}
-                          onChange={(e) => setLocalSettings({ ...localSettings, shippingFeeUSD: Number(e.target.value) })}
-                          className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-black text-sm focus:border-[#ccff00]"
-                        />
-                      </div>
-                      <p className="text-[11px] text-[#ccff00] font-mono font-bold">
-                        Equivalente: {formatPrice(localSettings.shippingFeeUSD, 'CRC')}
+                      <input
+                        type="text"
+                        required
+                        value={localSettings.bankName || ''}
+                        onChange={(e) => setLocalSettings({ ...localSettings, bankName: e.target.value })}
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold focus:border-[#ccff00]"
+                        placeholder="Ej: BAC Credomatic Costa Rica / Banco Nacional"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block font-black uppercase text-white tracking-wider">
+                        TELÉFONO REGISTRADO PARA SINPE MÓVIL:
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={localSettings.sinpePhone || localSettings.contactPhone || ''}
+                        onChange={(e) => setLocalSettings({ ...localSettings, sinpePhone: e.target.value, contactPhone: e.target.value })}
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-[#ccff00] font-mono font-black focus:border-[#ccff00]"
+                        placeholder="+506 8559 5192"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <label className="block font-black uppercase text-white tracking-wider">
+                        NÚMERO DE CUENTA IBAN (22 DÍGITOS):
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={localSettings.bankAccountIBAN || ''}
+                        onChange={(e) => setLocalSettings({ ...localSettings, bankAccountIBAN: e.target.value })}
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-[#ccff00] font-mono font-black focus:border-[#ccff00]"
+                        placeholder="CR05015202001026384920"
+                      />
+                      <p className="text-[10px] text-white/50">
+                        Cuenta IBAN oficial de Costa Rica a la cual los clientes realizarán las transferencias bancarias.
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Contact & Messages Section */}
-                <div className="space-y-4 bg-[#121212] p-5 border border-white/10">
+                <div className="space-y-4 bg-[#121212] p-5 border border-white/10 rounded-2xl">
                   <h4 className="text-sm font-black italic uppercase text-[#ccff00] flex items-center gap-2">
                     <Mail className="w-4 h-4 stroke-[2.5]" />
-                    <span>CANALES DE MENSAJES & ATENCIÓN DIRECTA</span>
+                    <span>CANALES DE MENSAJES & NOTIFICACIONES</span>
                   </h4>
 
                   <div className="space-y-4">
                     <div className="space-y-1.5">
                       <label className="block font-black uppercase text-white tracking-wider flex items-center gap-2">
                         <Mail className="w-3.5 h-3.5 text-[#ccff00]" />
-                        <span>CORREO PARA RECIBIR MENSAJES DIRECTOS:</span>
+                        <span>CORREO PARA RECIBIR CONSULTAS Y NOTIFICACIONES DE COMPRA:</span>
                       </label>
                       <input
                         type="email"
@@ -572,15 +728,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold focus:border-[#ccff00]"
                         placeholder="contacto@offsidesports.cr"
                       />
-                      <p className="text-[11px] text-white/50">
-                        Dirección de correo a la que llegarán las consultas enviadas desde el formulario de contacto.
-                      </p>
                     </div>
 
                     <div className="space-y-1.5">
                       <label className="block font-black uppercase text-white tracking-wider flex items-center gap-2">
                         <Phone className="w-3.5 h-3.5 text-[#ccff00]" />
-                        <span>TELÉFONO DE ATENCIÓN & WHATSAPP / SINPE:</span>
+                        <span>TELÉFONO PRINCIPAL ATENCIÓN WHATSAPP:</span>
                       </label>
                       <input
                         type="text"
@@ -590,9 +743,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold font-mono focus:border-[#ccff00]"
                         placeholder="+506 8559 5192"
                       />
-                      <p className="text-[11px] text-white/50">
-                        Número de WhatsApp usado en los botones flotantes, encabezado, pie de página y para cobros mediante SINPE Móvil.
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -838,36 +988,49 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <div className="space-y-3 bg-[#121212] p-4 border border-white/10 rounded-2xl">
                 <h4 className="text-xs font-black uppercase text-[#ccff00] tracking-wider flex items-center gap-2">
                   <DollarSign className="w-3.5 h-3.5 text-[#ccff00]" />
-                  <span>PRECIOS & INVENTARIO</span>
+                  <span>PRECIOS EN COLONES (₡ CRC) / DÓLARES ($ USD) & INVENTARIO</span>
                 </h4>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-white font-black uppercase tracking-wider mb-1">PRECIO DE VENTA ($ USD):</label>
-                    <input
-                      type="number"
-                      required
-                      min="1"
-                      value={editingJersey.price || 60}
-                      onChange={(e) => setEditingJersey({ ...editingJersey, price: Number(e.target.value) })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-[#ccff00] font-black text-sm focus:border-[#ccff00]"
-                    />
+                    <label className="block text-white font-black uppercase tracking-wider mb-1">PRECIO EN COLONES (₡ CRC):</label>
+                    <div className="relative">
+                      <span className="absolute left-2.5 top-2.5 text-[#ccff00] font-black">₡</span>
+                      <input
+                        type="number"
+                        step="500"
+                        min="0"
+                        required
+                        value={Math.round((editingJersey.price || 60) * 520)}
+                        onChange={(e) => {
+                          const crc = Number(e.target.value);
+                          setEditingJersey({ ...editingJersey, price: Number((crc / 520).toFixed(2)) });
+                        }}
+                        className="w-full bg-black border border-white/20 rounded-xl pl-6 pr-2.5 py-2.5 text-[#ccff00] font-mono font-black text-sm focus:border-[#ccff00]"
+                      />
+                    </div>
                     <p className="text-[10px] text-white/50 mt-1">
-                      En Colones: {formatPrice(editingJersey.price || 60, 'CRC')}
+                      Equivalente: ${editingJersey.price || 60} USD
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-white font-black uppercase tracking-wider mb-1">PRECIO ANTERIOR ($ USD):</label>
-                    <input
-                      type="number"
-                      min="0"
-                      placeholder="75"
-                      value={editingJersey.originalPrice || 75}
-                      onChange={(e) => setEditingJersey({ ...editingJersey, originalPrice: Number(e.target.value) })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white/70 font-bold focus:border-[#ccff00]"
-                    />
-                    <p className="text-[10px] text-white/50 mt-1">Muestra descuento tachado</p>
+                    <label className="block text-white font-black uppercase tracking-wider mb-1">PRECIO EN DÓLARES ($ USD):</label>
+                    <div className="relative">
+                      <span className="absolute left-2.5 top-2.5 text-[#ccff00] font-black">$</span>
+                      <input
+                        type="number"
+                        step="1"
+                        min="1"
+                        required
+                        value={editingJersey.price || 60}
+                        onChange={(e) => setEditingJersey({ ...editingJersey, price: Number(e.target.value) })}
+                        className="w-full bg-black border border-white/20 rounded-xl pl-6 pr-2.5 py-2.5 text-white font-mono font-bold focus:border-[#ccff00]"
+                      />
+                    </div>
+                    <p className="text-[10px] text-white/50 mt-1">
+                      En Colones: {formatPrice(editingJersey.price || 60, 'CRC')}
+                    </p>
                   </div>
 
                   <div>
@@ -880,6 +1043,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       onChange={(e) => setEditingJersey({ ...editingJersey, stock: Number(e.target.value) })}
                       className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
                     />
+                    <p className="text-[10px] text-white/50 mt-1">Unidades físicas en bodega</p>
                   </div>
                 </div>
               </div>

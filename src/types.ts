@@ -1,8 +1,14 @@
 export interface StoreSettings {
   contactPhone: string;
   contactEmail: string;
+  customizationPriceCRC: number;
   customizationPriceUSD: number;
+  shippingFeeCRC: number;
   shippingFeeUSD: number;
+  bankAccountHolder: string;
+  bankAccountIBAN: string;
+  bankName: string;
+  sinpePhone: string;
 }
 
 export type League = 
@@ -57,7 +63,7 @@ export interface CartItem {
   customStamping?: CustomStamping;
 }
 
-export type PaymentMethod = 'card' | 'sinpe_movil' | 'paypal' | 'cash';
+export type PaymentMethod = 'card' | 'sinpe_movil' | 'bank_transfer' | 'paypal' | 'cash';
 
 export type OrderStatus = 'Pendiente' | 'En Proceso' | 'Enviado' | 'Entregado' | 'Cancelado';
 
