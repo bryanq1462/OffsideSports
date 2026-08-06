@@ -1,0 +1,6 @@
+{
+  "name": "OFFSIDE sports",
+  "description": "Tienda en línea de camisetas de fútbol con carrito de compras, pasarela de pagos, buscador avanzado por liga y equipo, panel de administración, zona de contacto con WhatsApp y reseñas de clientes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
