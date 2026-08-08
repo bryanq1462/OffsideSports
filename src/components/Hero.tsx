@@ -1,16 +1,19 @@
 import React from 'react';
 import { Trophy, Flame, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { StoreSettings } from '../types';
 
 interface HeroProps {
   onSelectLeague: (league: string) => void;
   selectedLeague: string;
   onExploreClick: () => void;
+  settings?: StoreSettings;
 }
 
 export const Hero: React.FC<HeroProps> = ({
   onSelectLeague,
   selectedLeague,
-  onExploreClick
+  onExploreClick,
+  settings
 }) => {
   const leagueBadges: { id: string; name: string; icon: string }[] = [
     { id: 'all', name: 'Todas', icon: '🏆' },
@@ -47,7 +50,7 @@ export const Hero: React.FC<HeroProps> = ({
             {/* Top Tag */}
             <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-black tracking-[0.2em] uppercase">
               <span className="w-2 h-2 rounded-full bg-[#ccff00] animate-ping" />
-              <span className="text-[#ccff00]">NEW ARRIVAL / TEMPORADA 24-25</span>
+              <span className="text-[#ccff00]">{settings?.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25'}</span>
             </div>
 
             {/* Main Bold Headline */}

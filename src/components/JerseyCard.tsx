@@ -33,6 +33,11 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
     >
       {/* Badges Overlay */}
       <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 flex flex-col gap-1 items-start pointer-events-none">
+        {jersey.discountPercent && jersey.discountPercent > 0 ? (
+          <span className="bg-rose-600 text-white font-black text-[8px] sm:text-[10px] uppercase px-1.5 sm:px-2.5 py-0.5 rounded-sm shadow-md animate-pulse flex items-center gap-1">
+            🔥 -{jersey.discountPercent}% OFF
+          </span>
+        ) : null}
         {jersey.type === 'Retro' && (
           <span className="bg-amber-400 text-black font-black text-[8px] sm:text-[10px] uppercase px-1.5 sm:px-2.5 py-0.5 rounded-sm shadow">
             CLÁSICO RETRO
@@ -113,12 +118,15 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
 
           {/* Price */}
           <div className="flex items-baseline gap-1.5 pt-0.5">
-            <span className="text-base sm:text-2xl font-black text-white tracking-tight">
+            <span className="text-base sm:text-2xl font-black text-[#ccff00] tracking-tight">
               {formatPrice(jersey.price, currency)}
             </span>
-            {jersey.originalPrice && (
+            {(jersey.originalPrice || (jersey.discountPercent && jersey.discountPercent > 0)) && (
               <span className="text-[10px] sm:text-xs text-white/40 line-through font-bold">
-                {formatPrice(jersey.originalPrice, currency)}
+                {formatPrice(
+                  jersey.originalPrice || Math.round((jersey.price / (1 - (jersey.discountPercent || 0) / 100)) * 10) / 10,
+                  currency
+                )}
               </span>
             )}
           </div>

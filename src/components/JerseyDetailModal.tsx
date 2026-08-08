@@ -196,11 +196,23 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
             {/* Price display */}
             <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex items-baseline justify-between">
               <div>
-                <span className="text-2xl font-black text-emerald-400">
-                  {formatPrice(totalPriceUSD, currency)}
-                </span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-black text-emerald-400">
+                    {formatPrice(totalPriceUSD, currency)}
+                  </span>
+                  {(jersey.originalPrice || (jersey.discountPercent && jersey.discountPercent > 0)) && (
+                    <span className="text-xs text-white/40 line-through font-bold">
+                      {formatPrice((jersey.originalPrice || Math.round((jersey.price / (1 - (jersey.discountPercent || 0) / 100)) * 10) / 10) * quantity, currency)}
+                    </span>
+                  )}
+                  {jersey.discountPercent && jersey.discountPercent > 0 ? (
+                    <span className="bg-rose-600 text-white font-black text-[10px] uppercase px-2 py-0.5 rounded">
+                      -{jersey.discountPercent}% OFF
+                    </span>
+                  ) : null}
+                </div>
                 {stampEnabled && (
-                  <p className="text-[11px] text-[#ccff00] font-bold">
+                  <p className="text-[11px] text-[#ccff00] font-bold mt-1">
                     🎁 Personalización de nombre y número incluida sin costo adicional
                   </p>
                 )}

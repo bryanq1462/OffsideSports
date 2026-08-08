@@ -9,7 +9,7 @@ import {
   Check, 
   MessageCircle 
 } from 'lucide-react';
-import { CartItem, StoreSettings } from '../types';
+import { CartItem, StoreSettings, DiscountCode } from '../types';
 import { formatPrice } from '../utils/storage';
 
 interface CartDrawerProps {
@@ -18,6 +18,7 @@ interface CartDrawerProps {
   cart: CartItem[];
   currency: 'CRC' | 'USD';
   settings?: StoreSettings;
+  discountCodes?: DiscountCode[];
   onUpdateQuantity: (cartItemId: string, newQty: number) => void;
   onRemoveItem: (cartItemId: string) => void;
   onProceedToCheckout: (appliedDiscount: number) => void;
@@ -30,6 +31,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   cart,
   currency,
   settings,
+  discountCodes = [],
   onUpdateQuantity,
   onRemoveItem,
   onProceedToCheckout,
@@ -60,14 +62,26 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     e.preventDefault();
     setCouponError('');
     const code = couponCode.trim().toUpperCase();
-    if (code === 'OFFSIDE10') {
+    if (!code) return;
+
+    // Search in dynamic discount codes first
+    const match = discountCodes.find(d => d.code.toUpperCase() === code && d.active);
+    if (match) {
+      setCouponApplied({ code: match.code, percent: match.percentage });
+      setCouponError('');
+    } else if (code === 'OFFSIDE10') {
       setCouponApplied({ code, percent: 10 });
     } else if (code === 'GOLAZO' || code === 'CR7') {
       setCouponApplied({ code, percent: 15 });
     } else if (code === 'BIENVENIDO') {
       setCouponApplied({ code, percent: 20 });
     } else {
-      setCouponError('Cupón no válido. Prueba OFFSIDE10, GOLAZO o BIENVENIDO');
+      const activeCodesList = discountCodes.filter(d => d.active).map(d => d.code).join(', ');
+      setCouponError(
+        activeCodesList
+          ? `Cupón no válido. Cupones activos: ${activeCodesList}`
+          : 'Cupón no válido. Por favor verifica el código ingresado.'
+      );
     }
   };
 

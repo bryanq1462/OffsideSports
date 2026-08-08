@@ -7,7 +7,8 @@ import {
   FilterState, 
   Size, 
   CustomStamping,
-  StoreSettings
+  StoreSettings,
+  DiscountCode
 } from './types';
 import { 
   getStoredJerseys, 
@@ -22,6 +23,8 @@ import {
   saveCurrency,
   getStoredSettings,
   saveSettings,
+  getStoredDiscountCodes,
+  saveDiscountCodes,
   formatPrice 
 } from './utils/storage';
 import { Instagram, MessageCircle } from 'lucide-react';
@@ -48,6 +51,7 @@ export default function App() {
   const [reviews, setReviews] = useState<Review[]>(() => getStoredReviews());
   const [currency, setCurrencyState] = useState<'CRC' | 'USD'>(() => getStoredCurrency());
   const [settings, setSettingsState] = useState<StoreSettings>(() => getStoredSettings());
+  const [discountCodes, setDiscountCodesState] = useState<DiscountCode[]>(() => getStoredDiscountCodes());
 
   // UI View States
   const [activeTab, setActiveTab] = useState<string>('catalog');
@@ -80,6 +84,11 @@ export default function App() {
   const handleUpdateSettings = (newSettings: StoreSettings) => {
     setSettingsState(newSettings);
     saveSettings(newSettings);
+  };
+
+  const handleUpdateDiscountCodes = (newCodes: DiscountCode[]) => {
+    setDiscountCodesState(newCodes);
+    saveDiscountCodes(newCodes);
   };
 
   const handleUpdateJerseys = (newJerseys: Jersey[]) => {
@@ -282,6 +291,7 @@ export default function App() {
         {activeTab === 'catalog' && (
           <Hero
             selectedLeague={filters.selectedLeague}
+            settings={settings}
             onSelectLeague={(leagueId) => {
               setFilters(prev => ({ ...prev, selectedLeague: leagueId, selectedTeam: 'all' }));
               setActiveTab('catalog');
@@ -414,6 +424,7 @@ export default function App() {
         cart={cart}
         currency={currency}
         settings={settings}
+        discountCodes={discountCodes}
         onUpdateQuantity={handleUpdateCartQuantity}
         onRemoveItem={handleRemoveCartItem}
         onProceedToCheckout={(discountUSD) => {
@@ -456,9 +467,11 @@ export default function App() {
           orders={orders}
           currency={currency}
           settings={settings}
+          discountCodes={discountCodes}
           onUpdateJerseys={handleUpdateJerseys}
           onUpdateOrders={handleUpdateOrders}
           onUpdateSettings={handleUpdateSettings}
+          onUpdateDiscountCodes={handleUpdateDiscountCodes}
           onClose={() => setIsAdminOpen(false)}
         />
       )}

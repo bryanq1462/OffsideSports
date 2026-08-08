@@ -9,6 +9,14 @@ export interface StoreSettings {
   bankAccountIBAN: string;
   bankName: string;
   sinpePhone: string;
+  heroTagline?: string;
+}
+
+export interface DiscountCode {
+  id: string;
+  code: string;
+  percentage: number;
+  active: boolean;
 }
 
 export type SportCategory = 'Fútbol' | 'Basketball' | 'Béisbol' | 'Fórmula 1' | 'Fútbol Americano';
@@ -56,6 +64,7 @@ export interface Jersey {
   sportCategory?: SportCategory;
   price: number; // in USD or converted COP
   originalPrice?: number;
+  discountPercent?: number;
   yearSeason: string;
   type: JerseyType;
   version?: JerseyVersion;

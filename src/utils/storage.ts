@@ -1,4 +1,4 @@
-import { Jersey, CartItem, Order, Review, StoreSettings } from '../types';
+import { Jersey, CartItem, Order, Review, StoreSettings, DiscountCode } from '../types';
 import { INITIAL_JERSEYS, INITIAL_REVIEWS } from '../data/mockData';
 
 const KEYS = {
@@ -8,6 +8,7 @@ const KEYS = {
   REVIEWS: 'offside_reviews_cr_v2',
   CURRENCY: 'offside_currency_cr_v2',
   SETTINGS: 'offside_settings_cr_v2',
+  DISCOUNT_CODES: 'offside_discount_codes_cr_v1',
 };
 
 export const DEFAULT_SETTINGS: StoreSettings = {
@@ -21,7 +22,15 @@ export const DEFAULT_SETTINGS: StoreSettings = {
   bankAccountIBAN: 'CR05015202001026384920',
   bankName: 'BAC Credomatic Costa Rica',
   sinpePhone: '+506 8559 5192',
+  heroTagline: 'NEW ARRIVAL / TEMPORADA 24-25',
 };
+
+export const DEFAULT_DISCOUNT_CODES: DiscountCode[] = [
+  { id: 'dc-1', code: 'OFFSIDE10', percentage: 10, active: true },
+  { id: 'dc-2', code: 'GOLAZO', percentage: 15, active: true },
+  { id: 'dc-3', code: 'BIENVENIDO', percentage: 20, active: true },
+  { id: 'dc-4', code: 'CR7', percentage: 15, active: true },
+];
 
 // Rate conversion: 1 USD = 520 CRC (Colones Costa Rica)
 export const CRC_RATE = 520;
@@ -165,5 +174,27 @@ export function saveSettings(settings: StoreSettings): void {
     localStorage.setItem(KEYS.SETTINGS, JSON.stringify(settings));
   } catch (e) {
     console.error('Error saving settings', e);
+  }
+}
+
+// DISCOUNT CODES PERSISTENCE
+export function getStoredDiscountCodes(): DiscountCode[] {
+  try {
+    const raw = localStorage.getItem(KEYS.DISCOUNT_CODES);
+    if (!raw) {
+      localStorage.setItem(KEYS.DISCOUNT_CODES, JSON.stringify(DEFAULT_DISCOUNT_CODES));
+      return DEFAULT_DISCOUNT_CODES;
+    }
+    return JSON.parse(raw);
+  } catch (e) {
+    return DEFAULT_DISCOUNT_CODES;
+  }
+}
+
+export function saveDiscountCodes(codes: DiscountCode[]): void {
+  try {
+    localStorage.setItem(KEYS.DISCOUNT_CODES, JSON.stringify(codes));
+  } catch (e) {
+    console.error('Error saving discount codes', e);
   }
 }

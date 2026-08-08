@@ -19,9 +19,10 @@ import {
   Sparkles,
   Save,
   Landmark,
-  Building2
+  Building2,
+  AlertTriangle
 } from 'lucide-react';
-import { Jersey, Order, OrderStatus, League, JerseyType, JerseyVersion, GenderCategory, Size, StoreSettings, SportCategory } from '../types';
+import { Jersey, Order, OrderStatus, League, JerseyType, JerseyVersion, GenderCategory, Size, StoreSettings, SportCategory, DiscountCode } from '../types';
 import { formatPrice } from '../utils/storage';
 import { INITIAL_LEAGUES, LEAGUE_FLAGS, SPORTS_LIST } from '../data/mockData';
 
@@ -30,9 +31,11 @@ interface AdminPanelProps {
   orders: Order[];
   currency: 'CRC' | 'USD';
   settings: StoreSettings;
+  discountCodes: DiscountCode[];
   onUpdateJerseys: (updated: Jersey[]) => void;
   onUpdateOrders: (updated: Order[]) => void;
   onUpdateSettings: (updated: StoreSettings) => void;
+  onUpdateDiscountCodes: (updated: DiscountCode[]) => void;
   onClose: () => void;
 }
 
@@ -41,9 +44,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   orders,
   currency,
   settings,
+  discountCodes,
   onUpdateJerseys,
   onUpdateOrders,
   onUpdateSettings,
+  onUpdateDiscountCodes,
   onClose
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -51,7 +56,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [adminPassword, setAdminPassword] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const [activeTab, setActiveTab] = useState<'inventory' | 'settings' | 'orders' | 'stats'>('inventory');
+  const [activeTab, setActiveTab] = useState<'inventory' | 'settings' | 'orders' | 'stats' | 'coupons'>('inventory');
+
+  // Coupon Creation & Editing State
+  const [newCouponCode, setNewCouponCode] = useState('');
+  const [newCouponPercent, setNewCouponPercent] = useState<number>(10);
+  const [couponSuccessMsg, setCouponSuccessMsg] = useState(false);
+  const [couponErrorMsg, setCouponErrorMsg] = useState('');
+  const [editingCouponId, setEditingCouponId] = useState<string | null>(null);
+  const [editCouponCode, setEditCouponCode] = useState('');
+  const [editCouponPercent, setEditCouponPercent] = useState<number>(10);
+
+  // Custom Deletion Confirmation Modal State
+  const [deleteTarget, setDeleteTarget] = useState<{
+    type: 'jersey' | 'coupon';
+    id: string;
+    title: string;
+  } | null>(null);
 
   // Settings State
   const [localSettings, setLocalSettings] = useState<StoreSettings>(settings);
@@ -98,6 +119,76 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setTimeout(() => setSettingsSavedMessage(false), 3000);
   };
 
+  // Coupon Handlers
+  const handleCreateCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCouponErrorMsg('');
+    const cleanCode = newCouponCode.trim().toUpperCase();
+    if (!cleanCode) return;
+    const exists = discountCodes.some(d => d.code.toUpperCase() === cleanCode);
+    if (exists) {
+      setCouponErrorMsg('¡Ese código de descuento ya existe!');
+      return;
+    }
+    const newCodeItem: DiscountCode = {
+      id: `dc-${Date.now()}`,
+      code: cleanCode,
+      percentage: Number(newCouponPercent),
+      active: true
+    };
+    onUpdateDiscountCodes([...discountCodes, newCodeItem]);
+    setNewCouponCode('');
+    setNewCouponPercent(10);
+    setCouponSuccessMsg(true);
+    setTimeout(() => setCouponSuccessMsg(false), 3000);
+  };
+
+  const handleToggleCouponActive = (id: string) => {
+    const updated = discountCodes.map(d => d.id === id ? { ...d, active: !d.active } : d);
+    onUpdateDiscountCodes(updated);
+  };
+
+  const handleDeleteCoupon = (id: string) => {
+    const coupon = discountCodes.find(d => d.id === id);
+    if (coupon) {
+      setDeleteTarget({
+        type: 'coupon',
+        id: coupon.id,
+        title: `Cupón ${coupon.code}`
+      });
+    }
+  };
+
+  const handleStartEditCoupon = (coupon: DiscountCode) => {
+    setEditingCouponId(coupon.id);
+    setEditCouponCode(coupon.code);
+    setEditCouponPercent(coupon.percentage);
+    setCouponErrorMsg('');
+  };
+
+  const handleSaveEditCoupon = (id: string) => {
+    setCouponErrorMsg('');
+    const cleanCode = editCouponCode.trim().toUpperCase();
+    if (!cleanCode) return;
+    const existsOther = discountCodes.some(d => d.id !== id && d.code.toUpperCase() === cleanCode);
+    if (existsOther) {
+      setCouponErrorMsg('¡Ya existe otro cupón con ese mismo código!');
+      return;
+    }
+    const updated = discountCodes.map(d => d.id === id ? {
+      ...d,
+      code: cleanCode,
+      percentage: Number(editCouponPercent) || 10
+    } : d);
+    onUpdateDiscountCodes(updated);
+    setEditingCouponId(null);
+  };
+
+  const handleCancelEditCoupon = () => {
+    setEditingCouponId(null);
+    setCouponErrorMsg('');
+  };
+
   // Image Upload Handler (reads local file from disk and converts to Base64)
   const handleImageFileUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -130,14 +221,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     e.preventDefault();
     if (!editingJersey || !editingJersey.name || !editingJersey.team) return;
 
+    const priceNum = typeof editingJersey.price === 'number' && !isNaN(editingJersey.price) ? editingJersey.price : (Number(editingJersey.price) || 60);
+    const stockNum = typeof editingJersey.stock === 'number' && !isNaN(editingJersey.stock) ? editingJersey.stock : (Number(editingJersey.stock) ?? 20);
+
     if (editingJersey.id) {
       // Edit existing
       const updated = jerseys.map(j => j.id === editingJersey.id ? ({
         ...j,
         ...editingJersey,
-        price: Number(editingJersey.price) || j.price,
-        originalPrice: Number(editingJersey.originalPrice) || (editingJersey.price ? Math.round(Number(editingJersey.price) * 1.2) : j.originalPrice),
-        stock: Number(editingJersey.stock) ?? j.stock
+        price: priceNum,
+        originalPrice: Number(editingJersey.originalPrice) || (priceNum ? Math.round(priceNum * 1.2) : j.originalPrice),
+        stock: stockNum
       } as Jersey) : j);
       onUpdateJerseys(updated);
     } else {
@@ -146,9 +240,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         id: `off-custom-${Date.now()}`,
         name: editingJersey.name || 'Nueva Camiseta',
         team: editingJersey.team || 'Equipo',
-        league: (editingJersey.league as League) || 'LaLiga',
-        price: Number(editingJersey.price) || 60,
-        originalPrice: Number(editingJersey.originalPrice) || 75,
+        league: (editingJersey.league as League) || 'Liga Promerica (CR)',
+        version: editingJersey.version || 'Versión Jugador (Player Issue)',
+        genderCategory: editingJersey.genderCategory || 'Unisex (Adulto)',
+        price: priceNum,
+        originalPrice: Math.round(priceNum * 1.2),
         yearSeason: editingJersey.yearSeason || '2025/2026',
         type: (editingJersey.type as JerseyType) || 'Local',
         image: editingJersey.image || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=800',
@@ -159,7 +255,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         fabricInfo: editingJersey.fabricInfo || '100% Poliéster Reciclado Dri-FIT ADV',
         rating: 5.0,
         reviewsCount: 1,
-        stock: Number(editingJersey.stock) ?? 20,
+        stock: stockNum,
         badgeTags: editingJersey.badgeTags || ['Nuevo Lanzamiento']
       };
       onUpdateJerseys([newJersey, ...jerseys]);
@@ -171,9 +267,24 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   // Delete Jersey
   const handleDeleteJersey = (id: string) => {
-    if (confirm('¿Estás seguro de eliminar esta camiseta del inventario?')) {
-      onUpdateJerseys(jerseys.filter(j => j.id !== id));
+    const jersey = jerseys.find(j => j.id === id);
+    if (jersey) {
+      setDeleteTarget({
+        type: 'jersey',
+        id: jersey.id,
+        title: jersey.name
+      });
     }
+  };
+
+  const confirmDeleteAction = () => {
+    if (!deleteTarget) return;
+    if (deleteTarget.type === 'jersey') {
+      onUpdateJerseys(jerseys.filter(j => j.id !== deleteTarget.id));
+    } else if (deleteTarget.type === 'coupon') {
+      onUpdateDiscountCodes(discountCodes.filter(d => d.id !== deleteTarget.id));
+    }
+    setDeleteTarget(null);
   };
 
   // Change Order Status
@@ -292,47 +403,47 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         </div>
 
         {/* Admin Navigation Tabs */}
-        <div className="px-6 py-3 bg-[#121212] border-b border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs font-black uppercase tracking-wider">
-          <div className="flex gap-2">
+        <div className="px-3 sm:px-6 py-2.5 sm:py-3 bg-[#121212] border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs font-black uppercase tracking-wider">
+          <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1.5 md:pb-0 scrollbar-thin scrollbar-thumb-[#ccff00]/40 touch-pan-x">
             <button
               onClick={() => setActiveTab('inventory')}
-              className={`px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
+              className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'inventory'
                   ? 'bg-[#ccff00] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
-              <div className="skew-x-[10deg] flex items-center gap-2">
+              <div className="skew-x-[10deg] flex items-center gap-1.5 sm:gap-2">
                 <Package className="w-4 h-4 stroke-[2.5]" />
-                <span>INVENTARIO ({jerseys.length})</span>
+                <span className="whitespace-nowrap">INVENTARIO ({jerseys.length})</span>
               </div>
             </button>
 
             <button
               onClick={() => setActiveTab('settings')}
-              className={`px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
+              className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'settings'
                   ? 'bg-[#ccff00] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
-              <div className="skew-x-[10deg] flex items-center gap-2">
+              <div className="skew-x-[10deg] flex items-center gap-1.5 sm:gap-2">
                 <SettingsIcon className="w-4 h-4 stroke-[2.5]" />
-                <span>PRECIOS & CONFIGURACIÓN</span>
+                <span className="whitespace-nowrap">PRECIOS & CONFIGURACIÓN</span>
               </div>
             </button>
 
             <button
               onClick={() => setActiveTab('orders')}
-              className={`px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
+              className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'orders'
                   ? 'bg-[#ccff00] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
-              <div className="skew-x-[10deg] flex items-center gap-2">
+              <div className="skew-x-[10deg] flex items-center gap-1.5 sm:gap-2">
                 <ShoppingBag className="w-4 h-4 stroke-[2.5]" />
-                <span>PEDIDOS ({orders.length})</span>
+                <span className="whitespace-nowrap">PEDIDOS ({orders.length})</span>
                 {pendingOrders > 0 && (
                   <span className="bg-black text-[#ccff00] border border-[#ccff00] text-[10px] px-1.5 py-0.2 font-black">
                     {pendingOrders}
@@ -342,16 +453,30 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </button>
 
             <button
+              onClick={() => setActiveTab('coupons')}
+              className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
+                activeTab === 'coupons'
+                  ? 'bg-[#ccff00] text-black font-black'
+                  : 'bg-black text-white/70 hover:bg-white/10'
+              }`}
+            >
+              <div className="skew-x-[10deg] flex items-center gap-1.5 sm:gap-2">
+                <Tag className="w-4 h-4 stroke-[2.5]" />
+                <span className="whitespace-nowrap">CUPONES ({discountCodes.length})</span>
+              </div>
+            </button>
+
+            <button
               onClick={() => setActiveTab('stats')}
-              className={`px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
+              className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'stats'
                   ? 'bg-[#ccff00] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
-              <div className="skew-x-[10deg] flex items-center gap-2">
+              <div className="skew-x-[10deg] flex items-center gap-1.5 sm:gap-2">
                 <DollarSign className="w-4 h-4 stroke-[2.5]" />
-                <span>ESTADÍSTICAS</span>
+                <span className="whitespace-nowrap">ESTADÍSTICAS</span>
               </div>
             </button>
           </div>
@@ -373,18 +498,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 });
                 setIsNewModalOpen(true);
               }}
-              className="bg-[#ccff00] hover:bg-white text-black px-5 py-2 flex items-center gap-2 font-black cursor-pointer shadow-xl skew-x-[-10deg]"
+              className="shrink-0 bg-[#ccff00] hover:bg-white text-black px-4 py-2 flex items-center justify-center gap-2 font-black cursor-pointer shadow-xl skew-x-[-10deg] text-xs"
             >
               <div className="skew-x-[10deg] flex items-center gap-2">
                 <Plus className="w-4 h-4 stroke-[2.5]" />
-                <span>AGREGAR NUEVA CAMISETA</span>
+                <span className="whitespace-nowrap">NUEVA CAMISETA</span>
               </div>
             </button>
           )}
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
           
           {/* TAB 1: INVENTORY MANAGEMENT */}
           {activeTab === 'inventory' && (
@@ -747,6 +872,31 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
                 </div>
 
+                {/* Banner & Hero Tagline Section */}
+                <div className="space-y-4 bg-[#121212] p-5 border border-white/10 rounded-2xl">
+                  <h4 className="text-sm font-black italic uppercase text-[#ccff00] flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 stroke-[2.5]" />
+                    <span>TEXTO Y ETIQUETA DESTACADA DEL BANNER PRINCIPAL (HERO)</span>
+                  </h4>
+
+                  <div className="space-y-2">
+                    <label className="block font-black uppercase text-white tracking-wider">
+                      TEXTO / ETIQUETA DE INICIO (EJ: NEW ARRIVAL / TEMPORADA 24-25):
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={localSettings.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25'}
+                      onChange={(e) => setLocalSettings({ ...localSettings, heroTagline: e.target.value })}
+                      className="w-full bg-black border border-white/20 rounded-xl p-3 text-[#ccff00] font-black focus:border-[#ccff00]"
+                      placeholder="NEW ARRIVAL / TEMPORADA 24-25"
+                    />
+                    <p className="text-[10px] text-white/50">
+                      Este texto aparece destacado en la insignia animada superior del banner principal de la tienda.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="pt-2 flex justify-end">
                   <button
                     type="submit"
@@ -760,6 +910,221 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
 
               </form>
+            </div>
+          )}
+
+          {/* TAB: DISCOUNT CODES */}
+          {activeTab === 'coupons' && (
+            <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 bg-black border border-white/10 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-2xl">
+              <div className="border-b border-white/10 pb-4 space-y-1">
+                <div className="inline-flex items-center gap-2 bg-[#ccff00]/10 border border-[#ccff00]/30 px-3 py-1 text-[11px] font-black uppercase text-[#ccff00] tracking-wider">
+                  <Tag className="w-3.5 h-3.5" />
+                  <span>GESTIÓN DE CUPONES DE DESCUENTO</span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-black italic uppercase text-white">CÓDIGOS DE DESCUENTO PARA EL CARRITO</h3>
+                <p className="text-xs text-white/60 font-medium">
+                  Crea, edita y administra cupones promocionales que los clientes podrán aplicar durante el proceso de compra.
+                </p>
+              </div>
+
+              {couponSuccessMsg && (
+                <div className="bg-[#ccff00] text-black p-3.5 font-black uppercase text-xs flex items-center justify-between shadow-xl animate-bounce rounded-xl">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-5 h-5 stroke-[3]" />
+                    <span>¡CÓDIGO DE DESCUENTO GUARDADO Y ACTIVADO CON ÉXITO!</span>
+                  </div>
+                </div>
+              )}
+
+              {couponErrorMsg && (
+                <div className="bg-rose-500 text-white p-3.5 font-black uppercase text-xs flex items-center justify-between shadow-xl rounded-xl">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5 stroke-[3]" />
+                    <span>{couponErrorMsg}</span>
+                  </div>
+                  <button onClick={() => setCouponErrorMsg('')} className="p-1 hover:bg-black/20 rounded cursor-pointer">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
+              {/* Create New Coupon Form */}
+              <form onSubmit={handleCreateCoupon} className="bg-[#121212] p-4 sm:p-5 border border-white/10 rounded-2xl space-y-4">
+                <h4 className="text-xs sm:text-sm font-black italic uppercase text-[#ccff00] flex items-center gap-2">
+                  <Plus className="w-4 h-4 stroke-[2.5]" />
+                  <span>CREAR NUEVO CÓDIGO DE DESCUENTO</span>
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 items-end">
+                  <div>
+                    <label className="block text-[11px] font-black uppercase text-white mb-1">CÓDIGO DEL CUPÓN:</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Ej: OFFSIDE20, VERANO25, CR7"
+                      value={newCouponCode}
+                      onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-xs text-white font-mono font-black uppercase focus:border-[#ccff00]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-black uppercase text-white mb-1">PORCENTAJE DE DESCUENTO (%):</label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="1"
+                        max="100"
+                        required
+                        value={newCouponPercent}
+                        onChange={(e) => setNewCouponPercent(Number(e.target.value))}
+                        className="w-full bg-black border border-white/20 rounded-xl p-2.5 pr-8 text-xs text-[#ccff00] font-mono font-black focus:border-[#ccff00]"
+                      />
+                      <span className="absolute right-3 top-2.5 text-xs text-[#ccff00] font-black">%</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <button
+                      type="submit"
+                      className="w-full bg-[#ccff00] hover:bg-white text-black font-black uppercase p-2.5 text-xs tracking-wider cursor-pointer skew-x-[-10deg] transition shadow-lg flex items-center justify-center gap-2"
+                    >
+                      <div className="skew-x-[10deg] flex items-center gap-1.5">
+                        <Plus className="w-4 h-4 stroke-[2.5]" />
+                        <span>CREAR CUPÓN</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </form>
+
+              {/* Coupon List Table */}
+              <div className="bg-black border border-white/10 rounded-2xl overflow-hidden">
+                <div className="p-3.5 sm:p-4 bg-[#121212] border-b border-white/10 flex items-center justify-between">
+                  <h4 className="text-xs font-black uppercase text-white tracking-wider">CUPONES REGISTRADOS ({discountCodes.length})</h4>
+                  <span className="text-[10px] text-[#ccff00] font-mono font-bold">Aplica al subtotal</span>
+                </div>
+
+                {discountCodes.length === 0 ? (
+                  <div className="p-8 text-center text-white/40 text-xs italic">
+                    No hay códigos de descuento registrados. ¡Crea el primero arriba!
+                  </div>
+                ) : (
+                  <div className="divide-y divide-white/10">
+                    {discountCodes.map((coupon) => {
+                      const isEditingThis = editingCouponId === coupon.id;
+
+                      if (isEditingThis) {
+                        return (
+                          <div key={coupon.id} className="p-4 bg-[#121212] border-l-4 border-[#ccff00] space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-black text-[#ccff00] uppercase tracking-wider flex items-center gap-1.5">
+                                <Edit className="w-3.5 h-3.5" />
+                                <span>EDITANDO CUPÓN</span>
+                              </span>
+                              <span className="text-[10px] text-white/40 font-mono">ID: {coupon.id}</span>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-[10px] font-black uppercase text-white/80 mb-1">CÓDIGO DEL CUPÓN:</label>
+                                <input
+                                  type="text"
+                                  required
+                                  value={editCouponCode}
+                                  onChange={(e) => setEditCouponCode(e.target.value.toUpperCase())}
+                                  className="w-full bg-black border border-white/30 rounded-lg p-2 text-xs text-white font-mono font-black uppercase focus:border-[#ccff00]"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="block text-[10px] font-black uppercase text-white/80 mb-1">PORCENTAJE DE DESCUENTO (%):</label>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  max="100"
+                                  required
+                                  value={editCouponPercent}
+                                  onChange={(e) => setEditCouponPercent(Number(e.target.value))}
+                                  className="w-full bg-black border border-white/30 rounded-lg p-2 text-xs text-[#ccff00] font-mono font-black focus:border-[#ccff00]"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-end gap-2 pt-1">
+                              <button
+                                type="button"
+                                onClick={handleCancelEditCoupon}
+                                className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white font-black text-[10px] uppercase rounded transition cursor-pointer flex items-center gap-1"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                                <span>CANCELAR</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSaveEditCoupon(coupon.id)}
+                                className="px-4 py-1.5 bg-[#ccff00] hover:bg-white text-black font-black text-[10px] uppercase rounded transition cursor-pointer flex items-center gap-1 shadow-md"
+                              >
+                                <Save className="w-3.5 h-3.5 stroke-[2.5]" />
+                                <span>GUARDAR</span>
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div key={coupon.id} className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-white/5 transition gap-3 sm:gap-4">
+                          <div className="flex items-start sm:items-center gap-3">
+                            <div className="shrink-0 p-1.5 bg-[#ccff00]/10 border border-[#ccff00]/30 text-[#ccff00] font-mono font-black text-xs sm:text-sm px-2.5 py-1 skew-x-[-10deg]">
+                              <span className="skew-x-[10deg] inline-block">{coupon.code}</span>
+                            </div>
+                            <div>
+                              <p className="text-xs sm:text-sm font-black text-white">{coupon.percentage}% DE DESCUENTO</p>
+                              <p className="text-[10px] text-white/50 font-mono">
+                                Estado: {coupon.active ? '🟢 Activo en carrito' : '🔴 Inactivo (Pausado)'}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-white/10">
+                            <button
+                              type="button"
+                              onClick={() => handleStartEditCoupon(coupon)}
+                              className="px-2.5 py-1.5 bg-amber-400/20 hover:bg-amber-400 text-amber-300 hover:text-black border border-amber-400/40 text-[10px] font-black uppercase transition cursor-pointer flex items-center gap-1 rounded"
+                              title="Editar Cupón"
+                            >
+                              <Edit className="w-3.5 h-3.5 stroke-[2.5]" />
+                              <span>EDITAR</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleToggleCouponActive(coupon.id)}
+                              className={`px-2.5 py-1.5 text-[10px] font-black uppercase transition cursor-pointer rounded ${
+                                coupon.active
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500 hover:text-black'
+                                  : 'bg-white/10 text-white/60 border border-white/20 hover:bg-white/20'
+                              }`}
+                            >
+                              {coupon.active ? 'DESACTIVAR' : 'ACTIVAR'}
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteCoupon(coupon.id)}
+                              className="p-1.5 bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/30 transition cursor-pointer rounded"
+                              title="Eliminar Cupón"
+                            >
+                              <Trash2 className="w-3.5 h-3.5 stroke-[2.5]" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -1054,16 +1419,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         step="any"
                         min="0"
                         required
-                        value={Math.round((editingJersey.price || 60) * 520)}
+                        value={
+                          editingJersey.price === '' || editingJersey.price === undefined || editingJersey.price === null || isNaN(Number(editingJersey.price))
+                            ? ''
+                            : Math.round(Number(editingJersey.price) * 520)
+                        }
                         onChange={(e) => {
-                          const crc = Number(e.target.value);
-                          setEditingJersey({ ...editingJersey, price: Number((crc / 520).toFixed(2)) });
+                          const val = e.target.value;
+                          if (val === '') {
+                            setEditingJersey({ ...editingJersey, price: '' as unknown as number });
+                          } else {
+                            const crc = Number(val);
+                            setEditingJersey({ ...editingJersey, price: Number((crc / 520).toFixed(2)) });
+                          }
                         }}
                         className="w-full bg-black border border-white/20 rounded-xl pl-6 pr-2.5 py-2.5 text-[#ccff00] font-mono font-black text-sm focus:border-[#ccff00]"
                       />
                     </div>
                     <p className="text-[10px] text-white/50 mt-1">
-                      Equivalente: ${editingJersey.price || 60} USD
+                      Equivalente: ${editingJersey.price !== '' && editingJersey.price !== undefined ? editingJersey.price : 0} USD
                     </p>
                   </div>
 
@@ -1074,15 +1448,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       <input
                         type="number"
                         step="any"
-                        min="1"
+                        min="0"
                         required
-                        value={editingJersey.price || 60}
-                        onChange={(e) => setEditingJersey({ ...editingJersey, price: Number(e.target.value) })}
+                        value={
+                          editingJersey.price === '' || editingJersey.price === undefined || editingJersey.price === null
+                            ? ''
+                            : editingJersey.price
+                        }
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setEditingJersey({
+                            ...editingJersey,
+                            price: val === '' ? ('' as unknown as number) : Number(val)
+                          });
+                        }}
                         className="w-full bg-black border border-white/20 rounded-xl pl-6 pr-2.5 py-2.5 text-white font-mono font-bold focus:border-[#ccff00]"
                       />
                     </div>
                     <p className="text-[10px] text-white/50 mt-1">
-                      En Colones: {formatPrice(editingJersey.price || 60, 'CRC')}
+                      En Colones: {editingJersey.price !== '' && editingJersey.price !== undefined && !isNaN(Number(editingJersey.price)) ? formatPrice(Number(editingJersey.price), 'CRC') : '₡0'}
                     </p>
                   </div>
 
@@ -1092,11 +1476,73 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       type="number"
                       required
                       min="0"
-                      value={editingJersey.stock ?? 20}
-                      onChange={(e) => setEditingJersey({ ...editingJersey, stock: Number(e.target.value) })}
+                      value={
+                        editingJersey.stock === '' || editingJersey.stock === undefined || editingJersey.stock === null
+                          ? ''
+                          : editingJersey.stock
+                      }
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setEditingJersey({
+                          ...editingJersey,
+                          stock: val === '' ? ('' as unknown as number) : Number(val)
+                        });
+                      }}
                       className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
                     />
                     <p className="text-[10px] text-white/50 mt-1">Unidades físicas en bodega</p>
+                  </div>
+                </div>
+
+                {/* Individual Product Discount & Badge Tags */}
+                <div className="pt-2 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[#ccff00] font-black uppercase tracking-wider mb-1">
+                      DESCUENTO INDIVIDUAL EN ESTE PRODUCTO (%):
+                    </label>
+                    <select
+                      value={editingJersey.discountPercent ?? 0}
+                      onChange={(e) => {
+                        const pct = Number(e.target.value);
+                        setEditingJersey({
+                          ...editingJersey,
+                          discountPercent: pct
+                        });
+                      }}
+                      className="w-full bg-black border border-[#ccff00]/40 rounded-xl p-2.5 text-[#ccff00] font-black focus:border-[#ccff00]"
+                    >
+                      <option value={0}>Sin Descuento Individual (0% OFF)</option>
+                      <option value={5}>🔥 5% de Descuento</option>
+                      <option value={10}>🔥 10% de Descuento</option>
+                      <option value={15}>🔥 15% de Descuento</option>
+                      <option value={20}>🔥 20% de Descuento</option>
+                      <option value={25}>🔥 25% de Descuento</option>
+                      <option value={30}>🔥 30% de Descuento</option>
+                      <option value={40}>🔥 40% de Descuento</option>
+                      <option value={50}>🔥 50% de Descuento (MITAD DE PRECIO)</option>
+                    </select>
+                    <p className="text-[10px] text-white/50 mt-1">
+                      {editingJersey.discountPercent && editingJersey.discountPercent > 0
+                        ? `Muestra insignia 🔥 -${editingJersey.discountPercent}% OFF y precio anterior tachado`
+                        : 'Aplica un porcentaje de rebaja exclusivo a esta camiseta'}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-white font-black uppercase tracking-wider mb-1">
+                      ETIQUETA DESTACADA (BADGE):
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej: NEW ARRIVAL, MÁS VENDIDO, EDICIÓN LIMITADA"
+                      value={(editingJersey.badgeTags || []).join(', ')}
+                      onChange={(e) => {
+                        const tags = e.target.value.split(',').map(t => t.trim()).filter(Boolean);
+                        setEditingJersey({ ...editingJersey, badgeTags: tags });
+                      }}
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                    />
+                    <p className="text-[10px] text-white/50 mt-1">Etiqueta personalizada para destacar la camiseta</p>
                   </div>
                 </div>
               </div>
@@ -1417,6 +1863,45 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             >
               CERRAR
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* CUSTOM IN-APP DELETE CONFIRMATION MODAL */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="bg-[#121212] border-2 border-rose-500/50 rounded-2xl max-w-sm sm:max-w-md w-full p-6 shadow-2xl space-y-4 text-center">
+            <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/30">
+              <Trash2 className="w-6 h-6 stroke-[2.5]" />
+            </div>
+
+            <div className="space-y-1.5">
+              <h3 className="text-xl font-black italic uppercase text-white">
+                ¿ELIMINAR {deleteTarget.type === 'jersey' ? 'CAMISETA' : 'CUPÓN'}?
+              </h3>
+              <p className="text-xs text-white/70 font-medium leading-relaxed">
+                ¿Estás seguro de que deseas eliminar permanentemente{' '}
+                <span className="text-[#ccff00] font-bold">"{deleteTarget.title}"</span>? Esta acción no se podrá deshacer.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                className="flex-1 bg-white/10 hover:bg-white/20 text-white font-black text-xs uppercase py-3 rounded-xl transition cursor-pointer"
+              >
+                CANCELAR
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteAction}
+                className="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-black text-xs uppercase py-3 rounded-xl shadow-lg transition cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Trash2 className="w-4 h-4 stroke-[2.5]" />
+                <span>ELIMINAR</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
