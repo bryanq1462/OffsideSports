@@ -3,6 +3,8 @@ import { ShoppingBag, Star, Check, Eye } from 'lucide-react';
 import { Jersey, Size } from '../types';
 import { formatPrice } from '../utils/storage';
 
+import { handleImageError } from '../utils/imageUtils';
+
 interface JerseyCardProps {
   jersey: Jersey;
   currency: 'USD' | 'COP';
@@ -75,6 +77,8 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
           <img
             src={jersey.image}
             alt={jersey.name}
+            referrerPolicy="no-referrer"
+            onError={handleImageError}
             className="h-full w-full object-cover group-hover:scale-108 transition-transform duration-500 rounded-xl"
             loading="lazy"
           />

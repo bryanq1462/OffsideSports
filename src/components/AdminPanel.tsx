@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { Jersey, Order, OrderStatus, League, JerseyType, JerseyVersion, GenderCategory, Size, StoreSettings, SportCategory, DiscountCode } from '../types';
 import { formatPrice } from '../utils/storage';
+import { handleImageError } from '../utils/imageUtils';
 import { INITIAL_LEAGUES, LEAGUE_FLAGS, SPORTS_LIST } from '../data/mockData';
 
 interface AdminPanelProps {
@@ -545,6 +546,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <img
                             src={jersey.image}
                             alt={jersey.name}
+                            referrerPolicy="no-referrer"
+                            onError={handleImageError}
                             className="w-10 h-12 object-cover bg-black border border-white/20"
                           />
                           <div>
@@ -1572,6 +1575,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <img 
                             src={editingJersey.image} 
                             alt="Vista Previa Frente" 
+                            referrerPolicy="no-referrer"
+                            onError={handleImageError}
                             className="w-full h-full object-contain"
                           />
                           <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
@@ -1624,6 +1629,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <img 
                             src={editingJersey.backImage} 
                             alt="Vista Previa Espalda" 
+                            referrerPolicy="no-referrer"
+                            onError={handleImageError}
                             className="w-full h-full object-contain"
                           />
                           <button
@@ -1692,7 +1699,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <div className="flex flex-wrap gap-2 pt-1">
                       {editingJersey.images.map((imgUrl, idx) => (
                         <div key={idx} className="relative w-16 h-20 bg-black border border-white/20 rounded-lg overflow-hidden group">
-                          <img src={imgUrl} alt={`Detalle ${idx + 1}`} className="w-full h-full object-cover" />
+                          <img src={imgUrl} alt={`Detalle ${idx + 1}`} referrerPolicy="no-referrer" onError={handleImageError} className="w-full h-full object-cover" />
                           <button
                             type="button"
                             onClick={() => {

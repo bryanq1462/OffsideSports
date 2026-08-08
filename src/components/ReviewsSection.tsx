@@ -8,6 +8,7 @@ import {
   X
 } from 'lucide-react';
 import { Review, Jersey } from '../types';
+import { handleImageError } from '../utils/imageUtils';
 
 interface ReviewsSectionProps {
   reviews: Review[];
@@ -156,6 +157,8 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
                     <img
                       src={rev.userAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=120'}
                       alt={rev.userName}
+                      referrerPolicy="no-referrer"
+                      onError={handleImageError}
                       className="w-10 h-10 rounded-full object-cover border border-white/20"
                     />
                     <div>

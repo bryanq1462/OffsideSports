@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { Jersey, Size, CustomStamping, StoreSettings } from '../types';
 import { formatPrice } from '../utils/storage';
+import { handleImageError } from '../utils/imageUtils';
 
 interface JerseyDetailModalProps {
   jersey: Jersey | null;
@@ -135,6 +136,8 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                 <img
                   src={jersey.image}
                   alt={jersey.name}
+                  referrerPolicy="no-referrer"
+                  onError={handleImageError}
                   className="h-full object-contain rounded-lg"
                 />
               ) : (
@@ -142,6 +145,8 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                   <img
                     src={jersey.backImage || jersey.image}
                     alt="Jersey Back"
+                    referrerPolicy="no-referrer"
+                    onError={handleImageError}
                     className="h-full object-contain opacity-80"
                   />
                   {/* Live Stamp overlay */}

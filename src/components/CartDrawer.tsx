@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { CartItem, StoreSettings, DiscountCode } from '../types';
 import { formatPrice } from '../utils/storage';
+import { handleImageError } from '../utils/imageUtils';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -150,6 +151,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       <img
                         src={item.jersey.image}
                         alt={item.jersey.name}
+                        referrerPolicy="no-referrer"
+                        onError={handleImageError}
                         className="w-16 h-20 object-cover rounded-lg bg-black border border-white/10 flex-shrink-0"
                       />
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Search, PackageCheck, Clock, Truck, CheckCircle2, AlertCircle, ShoppingBag, MessageCircle, ExternalLink } from 'lucide-react';
 import { Order, OrderStatus, StoreSettings } from '../types';
 import { formatPrice } from '../utils/storage';
+import { handleImageError } from '../utils/imageUtils';
 
 interface CustomerOrderHistoryModalProps {
   isOpen: boolean;
@@ -226,6 +227,8 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
                                 <img
                                   src={item.jersey.image}
                                   alt={item.jersey.name}
+                                  referrerPolicy="no-referrer"
+                                  onError={handleImageError}
                                   className="w-12 h-12 object-cover rounded-lg border border-white/10 bg-white/5"
                                 />
                                 <div>

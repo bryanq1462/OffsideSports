@@ -1,6 +1,7 @@
 import React from 'react';
 import { Trophy, Flame, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 import { StoreSettings } from '../types';
+import { handleImageError } from '../utils/imageUtils';
 
 interface HeroProps {
   onSelectLeague: (league: string) => void;
@@ -114,6 +115,8 @@ export const Hero: React.FC<HeroProps> = ({
                 <img
                   src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=800"
                   alt="Real Madrid 2024/25"
+                  referrerPolicy="no-referrer"
+                  onError={handleImageError}
                   className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-90" />
