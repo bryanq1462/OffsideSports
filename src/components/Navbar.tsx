@@ -66,7 +66,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               COSTA RICA
             </span>
             <span className="hidden sm:inline text-white/70 text-[11px]">Envíos a todo Costa Rica por Correos de CR y Mensajería | WhatsApp: {phoneDisplay}</span>
-            <span className="sm:hidden text-white/70 text-[10px]">Envíos Costa Rica ({phoneDisplay})</span>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-3 text-[10px] sm:text-[11px]">
             <button
