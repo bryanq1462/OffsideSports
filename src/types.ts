@@ -11,17 +11,33 @@ export interface StoreSettings {
   sinpePhone: string;
 }
 
+export type SportCategory = 'Fútbol' | 'Basketball' | 'Béisbol' | 'Fórmula 1' | 'Fútbol Americano';
+
 export type League = 
+  | 'Liga Promerica (CR)'
+  | 'UEFA Champions League'
   | 'LaLiga'
   | 'Premier League'
   | 'Serie A'
   | 'Ligue 1'
   | 'Bundesliga'
+  | 'MLS'
+  | 'Saudi Pro League'
+  | 'Liga Argentina'
+  | 'Brasileirão'
   | 'Liga BetPlay'
   | 'Selecciones'
-  | 'Clásicos Retro';
+  | 'Clásicos Retro'
+  | 'NBA'
+  | 'MLB'
+  | 'F1'
+  | 'NFL';
 
 export type JerseyType = 'Local' | 'Visitante' | 'Tercera' | 'Edición Especial' | 'Retro';
+
+export type JerseyVersion = 'Versión Jugador (Player Issue)' | 'Versión Fan (Aficionado)' | 'Manga Larga' | 'Chaqueta / Rompevientos' | 'Conjunto Completo';
+
+export type GenderCategory = 'Unisex (Adulto)' | 'Femenina (Mujer)' | 'Niños / Infantil';
 
 export type Size = 'S' | 'M' | 'L' | 'XL' | 'XXL';
 
@@ -37,10 +53,13 @@ export interface Jersey {
   name: string;
   team: string;
   league: League;
+  sportCategory?: SportCategory;
   price: number; // in USD or converted COP
   originalPrice?: number;
   yearSeason: string;
   type: JerseyType;
+  version?: JerseyVersion;
+  genderCategory?: GenderCategory;
   image: string;
   backImage?: string;
   images?: string[];
@@ -65,7 +84,16 @@ export interface CartItem {
 
 export type PaymentMethod = 'card' | 'sinpe_movil' | 'bank_transfer' | 'paypal' | 'cash';
 
-export type OrderStatus = 'Pendiente' | 'En Proceso' | 'Enviado' | 'Entregado' | 'Cancelado';
+export type OrderStatus = 
+  | 'Solicitado'
+  | 'Empaquetando'
+  | 'Listo'
+  | 'Proceso de entrega'
+  | 'Entregado'
+  | 'Cancelado'
+  | 'Pendiente'
+  | 'En Proceso'
+  | 'Enviado';
 
 export interface CustomerInfo {
   fullName: string;
@@ -110,6 +138,7 @@ export interface Review {
 
 export interface FilterState {
   searchQuery: string;
+  selectedSport: string; // 'all' or SportCategory
   selectedLeague: string; // 'all' or specific League
   selectedTeam: string; // 'all' or specific team
   selectedType: string; // 'all' or JerseyType

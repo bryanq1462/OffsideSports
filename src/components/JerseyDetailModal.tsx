@@ -47,8 +47,8 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [added, setAdded] = useState(false);
 
-  const STAMP_PRICE_USD = settings?.customizationPriceUSD ?? 10;
-  const totalPriceUSD = (jersey.price + (stampEnabled ? STAMP_PRICE_USD : 0)) * quantity;
+  const STAMP_PRICE_USD = settings?.customizationPriceUSD ?? 0;
+  const totalPriceUSD = jersey.price * quantity;
 
   const handleAddToCart = () => {
     const custom: CustomStamping | undefined = stampEnabled ? {
@@ -200,8 +200,8 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                   {formatPrice(totalPriceUSD, currency)}
                 </span>
                 {stampEnabled && (
-                  <p className="text-[11px] text-amber-400 font-medium">
-                    Incluye +{formatPrice(STAMP_PRICE_USD * quantity, currency)} por estampado personalizado
+                  <p className="text-[11px] text-[#ccff00] font-bold">
+                    🎁 Personalización de nombre y número incluida sin costo adicional
                   </p>
                 )}
               </div>
@@ -258,7 +258,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
             </div>
 
             {/* Custom Stamping Customizer */}
-            <div className="p-4 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-3">
+            <div className="p-4 bg-slate-950/80 border border-[#ccff00]/30 rounded-2xl space-y-3">
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -271,8 +271,8 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                     className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-500 bg-slate-900 border-slate-700"
                   />
                   <span className="text-xs font-black uppercase text-white flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-amber-400" />
-                    2. Personalizar Nombre & Dorsal (+{formatPrice(STAMP_PRICE_USD, currency)})
+                    <Sparkles className="w-4 h-4 text-[#ccff00]" />
+                    2. Personalizar Nombre & Dorsal <span className="text-[#ccff00] font-black">(¡TOTALMENTE GRATIS! 🎁)</span>
                   </span>
                 </label>
               </div>

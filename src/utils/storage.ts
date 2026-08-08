@@ -2,19 +2,19 @@ import { Jersey, CartItem, Order, Review, StoreSettings } from '../types';
 import { INITIAL_JERSEYS, INITIAL_REVIEWS } from '../data/mockData';
 
 const KEYS = {
-  JERSEYS: 'offside_jerseys_cr_v2',
+  JERSEYS: 'offside_jerseys_cr_v3',
   CART: 'offside_cart_cr_v2',
   ORDERS: 'offside_orders_cr_v3',
   REVIEWS: 'offside_reviews_cr_v2',
   CURRENCY: 'offside_currency_cr_v2',
-  SETTINGS: 'offside_settings_cr_v1',
+  SETTINGS: 'offside_settings_cr_v2',
 };
 
 export const DEFAULT_SETTINGS: StoreSettings = {
   contactPhone: '+506 8559 5192',
   contactEmail: 'contacto@offsidesports.cr',
-  customizationPriceCRC: 5200,
-  customizationPriceUSD: 10,
+  customizationPriceCRC: 0,
+  customizationPriceUSD: 0,
   shippingFeeCRC: 2600,
   shippingFeeUSD: 5,
   bankAccountHolder: 'OFFSIDE Sports Costa Rica S.A.',

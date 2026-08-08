@@ -37,6 +37,7 @@ import { ContactSection } from './components/ContactSection';
 import { ReviewsSection } from './components/ReviewsSection';
 import { Footer } from './components/Footer';
 import { WhatsAppFloatingButton } from './components/WhatsAppFloatingButton';
+import { CustomerOrderHistoryModal } from './components/CustomerOrderHistoryModal';
 import { INITIAL_LEAGUES } from './data/mockData';
 
 export default function App() {
@@ -53,12 +54,14 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
   const [selectedJerseyDetail, setSelectedJerseyDetail] = useState<Jersey | null>(null);
   const [appliedDiscountUSD, setAppliedDiscountUSD] = useState(0);
 
   // Search & Filter State
   const [filters, setFilters] = useState<FilterState>({
     searchQuery: '',
+    selectedSport: 'all',
     selectedLeague: 'all',
     selectedTeam: 'all',
     selectedType: 'all',
@@ -123,7 +126,15 @@ export default function App() {
         }
       }
 
-      // 2. League
+      // 2. Sport Category
+      if (filters.selectedSport && filters.selectedSport !== 'all') {
+        const itemSport = j.sportCategory || 'Fútbol';
+        if (itemSport !== filters.selectedSport) {
+          return false;
+        }
+      }
+
+      // 3. League
       if (filters.selectedLeague !== 'all' && j.league !== filters.selectedLeague) {
         return false;
       }
@@ -221,13 +232,13 @@ export default function App() {
   const handleBuyWhatsApp = (jersey: Jersey, size: Size, customStamping?: CustomStamping) => {
     let msg = `Hola OFFSIDE Sports! ⚽ Quisiera pedir la *${jersey.name}* en Talla *${size}*.`;
     if (customStamping?.enabled) {
-      msg += `\n✨ *Estampado:* Nombre: ${customStamping.name} | Dorsal: #${customStamping.number}`;
+      msg += `\n✨ *Estampado (GRATIS 🎁):* Nombre: ${customStamping.name} | Dorsal: #${customStamping.number}`;
       if (customStamping.patch) {
         msg += ` | Parche: ${customStamping.patch}`;
       }
     }
-    const totalPrice = jersey.price + (customStamping?.enabled ? settings.customizationPriceUSD : 0);
-    msg += `\n💰 *Precio:* ${formatPrice(totalPrice, currency)}`;
+    const totalPrice = jersey.price;
+    msg += `\n💰 *Precio:* ${formatPrice(totalPrice, currency)} (¡Personalización Gratuita!)`;
     msg += `\n¿Tienen disponibilidad para envío inmediato en Costa Rica?`;
 
     const cleanPhone = settings.contactPhone.replace(/[^0-9]/g, '');
@@ -237,8 +248,7 @@ export default function App() {
   // Cart Totals
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   const cartTotalUSD = cart.reduce((sum, item) => {
-    const stampExtra = item.customStamping?.enabled ? settings.customizationPriceUSD : 0;
-    return sum + (item.jersey.price + stampExtra) * item.quantity;
+    return sum + item.jersey.price * item.quantity;
   }, 0);
 
   const handleOrderCompleted = (newOrder: Order) => {
@@ -261,6 +271,7 @@ export default function App() {
         currency={currency}
         setCurrency={handleSetCurrency}
         onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenOrderHistory={() => setIsOrderHistoryOpen(true)}
         settings={settings}
       />
 
@@ -333,7 +344,7 @@ export default function App() {
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
                   {filteredJerseys.map((jersey) => (
                     <JerseyCard
                       key={jersey.id}
@@ -371,6 +382,16 @@ export default function App() {
         settings={settings}
         setActiveTab={setActiveTab}
         onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenOrderHistory={() => setIsOrderHistoryOpen(true)}
+      />
+
+      {/* Customer Order History / Tracking Modal */}
+      <CustomerOrderHistoryModal
+        isOpen={isOrderHistoryOpen}
+        onClose={() => setIsOrderHistoryOpen(false)}
+        orders={orders}
+        currency={currency}
+        settings={settings}
       />
 
       {/* Persistent Floating WhatsApp Action Button */}

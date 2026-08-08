@@ -44,7 +44,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const bankAccountIBAN = settings?.bankAccountIBAN || 'CR05015202001026384920';
   const bankName = settings?.bankName || 'BAC Credomatic Costa Rica';
 
-  const stampFeeUSD = settings?.customizationPriceUSD ?? 10;
+  const stampFeeUSD = settings?.customizationPriceUSD ?? 0;
   const shippingFeeUSD = settings?.shippingFeeUSD ?? 5;
 
   const [step, setStep] = useState<'shipping' | 'payment' | 'processing' | 'success'>('shipping');
@@ -134,7 +134,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
       <div 
-        className="relative w-full max-w-3xl bg-[#0a0a0a] border border-white/10 rounded-3xl shadow-2xl overflow-hidden text-white my-auto animate-in zoom-in-95"
+        className="relative w-full max-w-3xl bg-[#0a0a0a] border border-white/10 rounded-3xl shadow-2xl overflow-hidden text-white my-auto animate-in zoom-in-95 max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         
@@ -171,7 +171,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </div>
         )}
 
-        {/* Step 1: Shipping Information */}
+        {/* Scrollable Body */}
+        <div className="overflow-y-auto flex-1">
+          {/* Step 1: Shipping Information */}
         {step === 'shipping' && (
           <form onSubmit={handleShippingSubmit} className="p-6 space-y-4">
             <h3 className="text-sm font-black italic uppercase text-white">DATOS PARA LA ENTREGA DE TU PEDIDO:</h3>
@@ -573,8 +575,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-3">
               <a
-                href={`https://wa.me/573100000000?text=${encodeURIComponent(
-                  `Hola OFFSIDE Sports! Acabo de hacer el pedido ${completedOrder.id} a nombre de ${completedOrder.customer.fullName} por un total de ${formatPrice(completedOrder.total, currency)}. ¿Me pueden dar información del despacho?`
+                href={`https://wa.me/${(settings?.contactPhone || '+506 8559 5192').replace(/[^0-9]/g, '') || '50685595192'}?text=${encodeURIComponent(
+                  `Hola OFFSIDE Sports! ⚽ Acabo de hacer el pedido ${completedOrder.id} a nombre de ${completedOrder.customer.fullName} por un total de ${formatPrice(completedOrder.total, currency)}. Adjunto comprobante de pago para procesar mi envío en Costa Rica.`
                 )}`}
                 target="_blank"
                 rel="noreferrer"
@@ -595,6 +597,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
           </div>
         )}
+        </div>
 
       </div>
     </div>

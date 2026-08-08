@@ -1,7 +1,7 @@
 import React from 'react';
-import { Search, RotateCcw, SlidersHorizontal, Trophy, Shield } from 'lucide-react';
-import { FilterState, League, JerseyType } from '../types';
-import { TEAMS_BY_LEAGUE } from '../data/mockData';
+import { Search, RotateCcw, SlidersHorizontal, Trophy, Shield, Activity } from 'lucide-react';
+import { FilterState, League, JerseyType, SportCategory } from '../types';
+import { TEAMS_BY_LEAGUE, LEAGUE_FLAGS, SPORTS_LIST } from '../data/mockData';
 
 interface SearchFiltersProps {
   filters: FilterState;
@@ -57,6 +57,38 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         </div>
       </div>
 
+      {/* Sports Categories Bar */}
+      <div className="space-y-2 pb-2 border-b border-white/10">
+        <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#ccff00] flex items-center gap-1.5">
+          <Activity className="w-3.5 h-3.5 text-[#ccff00]" />
+          <span>CATEGORÍAS DEPORTIVAS:</span>
+        </label>
+        <div className="flex overflow-x-auto pb-1 gap-2 scrollbar-none -mx-2 px-2 sm:mx-0 sm:px-0">
+          {SPORTS_LIST.map((sport) => {
+            const isSelected = (filters.selectedSport || 'all') === sport.id;
+            return (
+              <button
+                key={sport.id}
+                onClick={() => setFilters(prev => ({
+                  ...prev,
+                  selectedSport: sport.id,
+                  selectedLeague: 'all',
+                  selectedTeam: 'all'
+                }))}
+                className={`flex-shrink-0 flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-black uppercase tracking-wider transition cursor-pointer rounded-lg sm:rounded-none ${
+                  isSelected
+                    ? 'bg-[#ccff00] text-black shadow-lg shadow-[#ccff00]/20 font-black'
+                    : 'bg-black text-white/80 border border-white/20 hover:border-[#ccff00]/50'
+                }`}
+              >
+                <span className="text-sm">{sport.icon}</span>
+                <span className="whitespace-nowrap">{sport.name}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Primary Row: Search Text & Sort By */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         
@@ -70,7 +102,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
               type="text"
               value={filters.searchQuery}
               onChange={(e) => setFilters(prev => ({ ...prev, searchQuery: e.target.value }))}
-              placeholder="Ej: Zidane, Mbappé, Real Madrid, Colombia, Retro 2002..."
+              placeholder="Ej: Zidane, Mbappé, Curry, Ohtani, Verstappen, Brady, Real Madrid..."
               className="w-full bg-black border border-white/20 rounded-xl py-2.5 pl-10 pr-4 text-xs font-bold text-white placeholder-white/40 focus:outline-none focus:border-[#ccff00] transition-colors"
             />
             <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-3" />
@@ -120,7 +152,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
           >
             <option value="all">Todas las Ligas & Torneos</option>
             {leagues.map(lg => (
-              <option key={lg} value={lg}>{lg}</option>
+              <option key={lg} value={lg}>
+                {LEAGUE_FLAGS[lg] ? `${LEAGUE_FLAGS[lg]} ` : '🏆 '}{lg}
+              </option>
             ))}
           </select>
         </div>
@@ -195,9 +229,16 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
       </div>
 
       {/* Active Filter Pills Bar */}
-      {(filters.selectedLeague !== 'all' || filters.selectedTeam !== 'all' || filters.selectedType !== 'all' || filters.selectedSize !== 'all' || filters.searchQuery) && (
+      {(filters.selectedSport && filters.selectedSport !== 'all' || filters.selectedLeague !== 'all' || filters.selectedTeam !== 'all' || filters.selectedType !== 'all' || filters.selectedSize !== 'all' || filters.searchQuery) && (
         <div className="pt-2 flex flex-wrap items-center gap-2 text-xs font-black uppercase">
           <span className="text-white/40 text-[10px] tracking-widest">FILTROS ACTIVOS:</span>
+          
+          {filters.selectedSport && filters.selectedSport !== 'all' && (
+            <span className="bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+              Deporte: {filters.selectedSport}
+              <button onClick={() => setFilters(p => ({ ...p, selectedSport: 'all' }))} className="hover:text-white font-black">✕</button>
+            </span>
+          )}
           
           {filters.selectedLeague !== 'all' && (
             <span className="bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">

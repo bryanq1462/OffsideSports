@@ -10,7 +10,8 @@ import {
   Shirt, 
   DollarSign, 
   SlidersHorizontal,
-  Instagram
+  Instagram,
+  PackageCheck
 } from 'lucide-react';
 import { formatPrice } from '../utils/storage';
 
@@ -27,6 +28,7 @@ interface NavbarProps {
   currency: 'CRC' | 'USD';
   setCurrency: (currency: 'CRC' | 'USD') => void;
   onOpenAdmin: () => void;
+  onOpenOrderHistory: () => void;
   settings?: StoreSettings;
 }
 
@@ -41,6 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   currency,
   setCurrency,
   onOpenAdmin,
+  onOpenOrderHistory,
   settings
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -56,39 +59,47 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-white/10 text-white shadow-2xl">
       {/* Top Banner */}
-      <div className="bg-[#000000] border-b border-white/10 text-white/80 px-4 py-1.5 text-xs font-bold tracking-widest uppercase flex items-center justify-between">
-        <div className="max-w-7xl mx-auto w-full flex justify-between items-center px-2">
-          <div className="flex items-center gap-2">
-            <span className="bg-[#ccff00] text-black text-[10px] font-black uppercase px-2 py-0.5 rounded-sm">
+      <div className="bg-[#000000] border-b border-white/10 text-white/80 px-2 sm:px-4 py-1.5 text-xs font-bold tracking-widest uppercase overflow-x-auto scrollbar-none">
+        <div className="max-w-7xl mx-auto w-full flex justify-between items-center gap-2 min-w-max sm:min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="bg-[#ccff00] text-black text-[9px] sm:text-[10px] font-black uppercase px-1.5 sm:px-2 py-0.5 rounded-sm">
               COSTA RICA
             </span>
-            <span className="hidden sm:inline text-white/70">Envíos a todo Costa Rica por Correos de CR y Mensajería | WhatsApp: {phoneDisplay}</span>
-            <span className="sm:hidden text-white/70">Envíos a todo Costa Rica ({phoneDisplay})</span>
+            <span className="hidden sm:inline text-white/70 text-[11px]">Envíos a todo Costa Rica por Correos de CR y Mensajería | WhatsApp: {phoneDisplay}</span>
+            <span className="sm:hidden text-white/70 text-[10px]">Envíos Costa Rica ({phoneDisplay})</span>
           </div>
-          <div className="flex items-center gap-2 sm:gap-3 text-[11px]">
+          <div className="flex items-center gap-1.5 sm:gap-3 text-[10px] sm:text-[11px]">
+            <button
+              onClick={onOpenOrderHistory}
+              className="flex items-center gap-1 bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black border border-[#ccff00]/40 font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded transition cursor-pointer"
+              title="Consultar tu historial de compras"
+            >
+              <PackageCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span className="font-black text-[9px] sm:text-[10px] tracking-wider">MIS PEDIDOS</span>
+            </button>
             <a
               href="https://www.instagram.com/offside_sports22?igsh=MXZib2J3cjV2bnl1YQ=="
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-extrabold px-2.5 py-1 rounded-md shadow-md hover:scale-105 transition-all cursor-pointer"
+              className="flex items-center gap-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-extrabold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded shadow-md hover:scale-105 transition-all cursor-pointer"
               title="Síguenos en Instagram @offside_sports22"
             >
-              <Instagram className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline font-black text-[10px] tracking-wider">INSTAGRAM</span>
+              <Instagram className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span className="hidden sm:inline font-black text-[9px] sm:text-[10px] tracking-wider">INSTAGRAM</span>
             </a>
             <button
               onClick={() => setCurrency(currency === 'CRC' ? 'USD' : 'CRC')}
-              className="hover:text-[#ccff00] flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded-md border border-white/10 transition cursor-pointer font-extrabold"
+              className="hover:text-[#ccff00] flex items-center gap-1 bg-white/5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded border border-white/10 transition cursor-pointer font-extrabold"
               title="Cambiar Moneda"
             >
               <DollarSign className="w-3 h-3 text-[#ccff00]" />
-              <span>MONEDA:</span> <span className="font-black text-[#ccff00]">{currency}</span>
+              <span className="hidden xs:inline">MONEDA:</span> <span className="font-black text-[#ccff00]">{currency}</span>
             </button>
             <button 
               onClick={onOpenAdmin}
               className="hover:text-[#ccff00] transition flex items-center gap-1 font-black cursor-pointer text-white/80"
             >
-              <ShieldCheck className="w-3.5 h-3.5 text-[#ccff00]" />
+              <ShieldCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#ccff00]" />
               <span className="hidden md:inline">ADMIN</span>
             </button>
           </div>
@@ -260,6 +271,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Instagram className="w-4 h-4" />
             <span>Síguenos en Instagram @offside_sports22</span>
           </a>
+          <button
+            onClick={() => { onOpenOrderHistory(); setMobileMenuOpen(false); }}
+            className="w-full flex items-center justify-center gap-2 bg-[#ccff00]/20 hover:bg-[#ccff00] text-[#ccff00] hover:text-black font-black py-2.5 rounded-lg text-xs uppercase tracking-wider border border-[#ccff00]/40 transition"
+          >
+            <PackageCheck className="w-4 h-4" />
+            Mis Pedidos / Historial de Compras
+          </button>
           <button
             onClick={() => { onOpenAdmin(); setMobileMenuOpen(false); }}
             className="w-full mt-2 flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-lg text-xs font-black uppercase tracking-wider border border-white/20"

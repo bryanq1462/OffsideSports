@@ -41,7 +41,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [couponApplied, setCouponApplied] = useState<{ code: string; percent: number } | null>(null);
   const [couponError, setCouponError] = useState('');
 
-  const stampFeeUSD = settings?.customizationPriceUSD ?? 10;
+  const stampFeeUSD = settings?.customizationPriceUSD ?? 0;
   const shippingFeeUSD = settings?.shippingFeeUSD ?? 5;
 
   // Calculate Subtotal (base price + stamp)
@@ -75,7 +75,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     <div className="fixed inset-0 z-50 overflow-hidden bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <div className="w-screen max-w-md bg-[#0a0a0a] border-l border-white/10 text-white flex flex-col shadow-2xl">
           
           {/* Header */}
@@ -161,7 +161,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         {/* Stamping details badge */}
                         {item.customStamping?.enabled && (
                           <div className="mt-1.5 p-1.5 bg-black border border-[#ccff00]/40 text-[10px] text-[#ccff00] font-mono uppercase tracking-wider">
-                            <span className="font-black">ESTAMPADO:</span> {item.customStamping.name} #{item.customStamping.number}
+                            <span className="font-black">ESTAMPADO GRATIS 🎁:</span> {item.customStamping.name} #{item.customStamping.number}
                             {item.customStamping.patch && (
                               <p className="text-[9px] text-white/80 mt-0.5">+{item.customStamping.patch}</p>
                             )}

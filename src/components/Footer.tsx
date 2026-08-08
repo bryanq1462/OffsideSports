@@ -5,10 +5,11 @@ import { StoreSettings } from '../types';
 interface FooterProps {
   setActiveTab: (tab: string) => void;
   onOpenAdmin: () => void;
+  onOpenOrderHistory?: () => void;
   settings?: StoreSettings;
 }
 
-export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, settings }) => {
+export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpenOrderHistory, settings }) => {
   const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
   return (
     <footer className="bg-[#0a0a0a] text-white/70 border-t border-white/10 text-xs">
@@ -101,6 +102,13 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, setti
                 Catálogo de Camisetas
               </button>
             </li>
+            {onOpenOrderHistory && (
+              <li>
+                <button onClick={onOpenOrderHistory} className="text-[#ccff00] hover:underline transition cursor-pointer font-black flex items-center gap-1">
+                  📦 Historial de Compras / Rastrear Pedido
+                </button>
+              </li>
+            )}
             <li>
               <button onClick={() => setActiveTab('filters')} className="hover:text-[#ccff00] transition cursor-pointer">
                 Buscador por Liga y Equipo

@@ -21,9 +21,9 @@ import {
   Landmark,
   Building2
 } from 'lucide-react';
-import { Jersey, Order, OrderStatus, League, JerseyType, Size, StoreSettings } from '../types';
+import { Jersey, Order, OrderStatus, League, JerseyType, JerseyVersion, GenderCategory, Size, StoreSettings, SportCategory } from '../types';
 import { formatPrice } from '../utils/storage';
-import { INITIAL_LEAGUES } from '../data/mockData';
+import { INITIAL_LEAGUES, LEAGUE_FLAGS, SPORTS_LIST } from '../data/mockData';
 
 interface AdminPanelProps {
   jerseys: Jersey[];
@@ -528,7 +528,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">₡</span>
                             <input
                               type="number"
-                              step="100"
+                              step="any"
                               min="0"
                               required
                               value={localSettings.customizationPriceCRC ?? Math.round((localSettings.customizationPriceUSD || 10) * 520)}
@@ -551,7 +551,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">$</span>
                             <input
                               type="number"
-                              step="0.5"
+                              step="any"
                               min="0"
                               required
                               value={localSettings.customizationPriceUSD}
@@ -582,7 +582,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">₡</span>
                             <input
                               type="number"
-                              step="100"
+                              step="any"
                               min="0"
                               required
                               value={localSettings.shippingFeeCRC ?? Math.round((localSettings.shippingFeeUSD || 5) * 520)}
@@ -605,7 +605,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">$</span>
                             <input
                               type="number"
-                              step="0.5"
+                              step="any"
                               min="0"
                               required
                               value={localSettings.shippingFeeUSD}
@@ -787,11 +787,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     className="bg-black border border-white/20 text-white font-bold rounded-xl py-1.5 px-3 focus:border-[#ccff00]"
                   >
                     <option value="all">Todos los Estados</option>
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="En Proceso">En Proceso</option>
-                    <option value="Enviado">Enviado</option>
-                    <option value="Entregado">Entregado</option>
-                    <option value="Cancelado">Cancelado</option>
+                    <option value="Solicitado">🟡 Solicitado</option>
+                    <option value="Empaquetando">📦 Empaquetando</option>
+                    <option value="Listo">⚡ Listo</option>
+                    <option value="Proceso de entrega">🚚 Proceso de entrega</option>
+                    <option value="Entregado">✅ Entregado</option>
+                    <option value="Cancelado">❌ Cancelado</option>
+                    <option value="Pendiente">Pendiente (Legacy)</option>
+                    <option value="En Proceso">En Proceso (Legacy)</option>
+                    <option value="Enviado">Enviado (Legacy)</option>
                   </select>
                 </div>
               </div>
@@ -805,7 +809,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       <th className="p-3">CLIENTE</th>
                       <th className="p-3">FECHA</th>
                       <th className="p-3">TOTAL</th>
-                      <th className="p-3">ESTADO</th>
+                      <th className="p-3">ESTADO DEL PEDIDO</th>
                       <th className="p-3 text-right">ACCIÓN</th>
                     </tr>
                   </thead>
@@ -825,13 +829,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <select
                             value={order.status}
                             onChange={(e) => handleStatusChange(order.id, e.target.value as OrderStatus)}
-                            className="bg-black border border-white/20 text-xs font-black uppercase rounded-lg px-2 py-1 text-[#ccff00] focus:outline-none"
+                            className="bg-black border border-[#ccff00]/40 text-xs font-black uppercase rounded-lg px-2.5 py-1.5 text-[#ccff00] focus:outline-none cursor-pointer"
                           >
+                            <option value="Solicitado">🟡 Solicitado</option>
+                            <option value="Empaquetando">📦 Empaquetando</option>
+                            <option value="Listo">⚡ Listo</option>
+                            <option value="Proceso de entrega">🚚 Proceso de entrega</option>
+                            <option value="Entregado">✅ Entregado</option>
+                            <option value="Cancelado">❌ Cancelado</option>
                             <option value="Pendiente">Pendiente</option>
                             <option value="En Proceso">En Proceso</option>
                             <option value="Enviado">Enviado</option>
-                            <option value="Entregado">Entregado</option>
-                            <option value="Cancelado">Cancelado</option>
                           </select>
                         </td>
                         <td className="p-3 text-right">
@@ -938,7 +946,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <input
                       type="text"
                       required
-                      placeholder="Ej: Barcelona, Argentina, Real Madrid"
+                      placeholder="Ej: Saprissa, Real Madrid, Selección Costa Rica"
                       value={editingJersey.team || ''}
                       onChange={(e) => setEditingJersey({ ...editingJersey, team: e.target.value })}
                       className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
@@ -946,28 +954,73 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-white font-black uppercase tracking-wider mb-1">LIGA / COMPETICIÓN:</label>
+                    <label className="block text-white font-black uppercase tracking-wider mb-1">DEPORTE / CATEGORÍA:</label>
                     <select
-                      value={editingJersey.league || 'LaLiga'}
-                      onChange={(e) => setEditingJersey({ ...editingJersey, league: e.target.value as League })}
+                      value={editingJersey.sportCategory || 'Fútbol'}
+                      onChange={(e) => setEditingJersey({ ...editingJersey, sportCategory: e.target.value as SportCategory })}
                       className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
                     >
-                      {INITIAL_LEAGUES.map(lg => <option key={lg} value={lg}>{lg}</option>)}
+                      {SPORTS_LIST.filter(s => s.id !== 'all').map(sp => (
+                        <option key={sp.id} value={sp.id}>{sp.icon} {sp.name}</option>
+                      ))}
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-white font-black uppercase tracking-wider mb-1">TIPO DE EDICIÓN:</label>
+                    <label className="block text-white font-black uppercase tracking-wider mb-1">LIGA / COMPETICIÓN / TORNEO:</label>
+                    <select
+                      value={editingJersey.league || 'Liga Promerica (CR)'}
+                      onChange={(e) => setEditingJersey({ ...editingJersey, league: e.target.value as League })}
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                    >
+                      {INITIAL_LEAGUES.map(lg => (
+                        <option key={lg} value={lg}>
+                          {LEAGUE_FLAGS[lg] || '🏆'} {lg}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-white font-black uppercase tracking-wider mb-1">VERSIÓN DE FABRICACIÓN:</label>
+                    <select
+                      value={editingJersey.version || 'Versión Jugador (Player Issue)'}
+                      onChange={(e) => setEditingJersey({ ...editingJersey, version: e.target.value as JerseyVersion })}
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                    >
+                      <option value="Versión Jugador (Player Issue)">⚡ Versión Jugador (Player Issue / Premium)</option>
+                      <option value="Versión Fan (Aficionado)">🧢 Versión Fan (Aficionado / Stadium)</option>
+                      <option value="Manga Larga">🧥 Manga Larga (Long Sleeve)</option>
+                      <option value="Chaqueta / Rompevientos">🌪️ Chaqueta / Rompevientos</option>
+                      <option value="Conjunto Completo">⚽ Conjunto Completo (Camiseta + Short)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-white font-black uppercase tracking-wider mb-1">PÚBLICO / GÉNERO:</label>
+                    <select
+                      value={editingJersey.genderCategory || 'Unisex (Adulto)'}
+                      onChange={(e) => setEditingJersey({ ...editingJersey, genderCategory: e.target.value as GenderCategory })}
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                    >
+                      <option value="Unisex (Adulto)">👥 Unisex / Adulto (Hombre / Mujer)</option>
+                      <option value="Femenina (Mujer)">👚 Corte Femenino (Mujer)</option>
+                      <option value="Niños / Infantil">👶 Niños / Infantil (Kids / Youth)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-white font-black uppercase tracking-wider mb-1">TIPO DE KIT / EDICIÓN:</label>
                     <select
                       value={editingJersey.type || 'Local'}
                       onChange={(e) => setEditingJersey({ ...editingJersey, type: e.target.value as JerseyType })}
                       className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
                     >
-                      <option value="Local">Local (Home)</option>
-                      <option value="Visitante">Visitante (Away)</option>
-                      <option value="Tercera">Tercera (Third Kit)</option>
-                      <option value="Edición Especial">Edición Especial</option>
-                      <option value="Retro">Clásica Retro</option>
+                      <option value="Local">🏠 Local (Home Kit)</option>
+                      <option value="Visitante">✈️ Visitante (Away Kit)</option>
+                      <option value="Tercera">🌟 Tercera (Third Kit)</option>
+                      <option value="Edición Especial">🔥 Edición Especial / Conmemorativa</option>
+                      <option value="Retro">🏛️ Clásica Retro (Legendary Edition)</option>
                     </select>
                   </div>
 
@@ -998,7 +1051,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       <span className="absolute left-2.5 top-2.5 text-[#ccff00] font-black">₡</span>
                       <input
                         type="number"
-                        step="500"
+                        step="any"
                         min="0"
                         required
                         value={Math.round((editingJersey.price || 60) * 520)}
@@ -1020,7 +1073,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       <span className="absolute left-2.5 top-2.5 text-[#ccff00] font-black">$</span>
                       <input
                         type="number"
-                        step="1"
+                        step="any"
                         min="1"
                         required
                         value={editingJersey.price || 60}
@@ -1310,9 +1363,33 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
             <div className="space-y-3 text-xs font-mono">
               <p><strong className="text-white/60">CLIENTE:</strong> {selectedOrder.customer.fullName} ({selectedOrder.customer.phone})</p>
+              <p><strong className="text-white/60">CORREO:</strong> {selectedOrder.customer.email}</p>
               <p><strong className="text-white/60">DIRECCIÓN:</strong> {selectedOrder.customer.address}, {selectedOrder.customer.city}</p>
               <p><strong className="text-white/60">MÉTODO DE PAGO:</strong> {selectedOrder.paymentMethod.toUpperCase()}</p>
               
+              <div className="bg-black p-3 border border-[#ccff00]/40 rounded-xl space-y-1">
+                <label className="block text-white/80 font-black text-[10px] uppercase">CAMBIAR ESTADO DEL PEDIDO:</label>
+                <select
+                  value={selectedOrder.status}
+                  onChange={(e) => {
+                    const newStatus = e.target.value as OrderStatus;
+                    handleStatusChange(selectedOrder.id, newStatus);
+                    setSelectedOrder({ ...selectedOrder, status: newStatus });
+                  }}
+                  className="w-full bg-[#121212] border border-[#ccff00] text-[#ccff00] font-black text-xs p-2 rounded-lg cursor-pointer"
+                >
+                  <option value="Solicitado">🟡 Solicitado (Pendiente de Verificación)</option>
+                  <option value="Empaquetando">📦 Empaquetando (Preparando en Bodega)</option>
+                  <option value="Listo">⚡ Listo (Listo para Despacho)</option>
+                  <option value="Proceso de entrega">🚚 Proceso de entrega (En Ruta Correos CR/Mensajero)</option>
+                  <option value="Entregado">✅ Entregado Exitosamente</option>
+                  <option value="Cancelado">❌ Cancelado</option>
+                  <option value="Pendiente">Pendiente</option>
+                  <option value="En Proceso">En Proceso</option>
+                  <option value="Enviado">Enviado</option>
+                </select>
+              </div>
+
               <div className="border-t border-white/10 pt-2 space-y-2">
                 <p className="font-black text-[#ccff00] uppercase">PRODUCTOS:</p>
                 {selectedOrder.items.map((it, idx) => (

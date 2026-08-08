@@ -71,7 +71,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
             <UserCheck className="w-4 h-4 text-[#ccff00]" />
             <span className="text-[#ccff00]">OPINIONES REALES DE LA COMUNIDAD</span>
           </div>
-          <h2 className="text-4xl sm:text-6xl font-black italic uppercase tracking-tighter text-white">
+          <h2 className="text-3xl sm:text-6xl font-black italic uppercase tracking-tighter text-white">
             RESEÑAS DE <span className="text-[#ccff00]">CLIENTES VERIFICADOS</span>
           </h2>
           <p className="text-white/70 text-sm font-medium">
@@ -89,7 +89,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-xl font-black italic uppercase text-white">EXCELENTE REPUTACIÓN EN TODA COLOMBIA</h3>
+              <h3 className="text-xl font-black italic uppercase text-white">EXCELENTE REPUTACIÓN EN TODA COSTA RICA</h3>
               <p className="text-xs text-white/70 font-semibold">Basado en más de 150+ compras verificadas con entrega inmediata.</p>
               <div className="flex flex-wrap gap-2 pt-2">
                 <span className="bg-[#ccff00]/10 text-[#ccff00] text-[10px] font-black uppercase px-3 py-1 rounded-sm border border-[#ccff00]/30 flex items-center gap-1">

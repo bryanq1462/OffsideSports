@@ -13,13 +13,19 @@ export const Hero: React.FC<HeroProps> = ({
   onExploreClick
 }) => {
   const leagueBadges: { id: string; name: string; icon: string }[] = [
-    { id: 'all', name: 'Todas las Camisetas', icon: '⚽' },
-    { id: 'LaLiga', name: 'LaLiga EA Sports', icon: '🇪🇸' },
-    { id: 'Premier League', name: 'Premier League', icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
-    { id: 'Serie A', name: 'Serie A Enilive', icon: '🇮🇹' },
-    { id: 'Selecciones', name: 'Selecciones Nacionales', icon: '🇨🇴' },
-    { id: 'Liga BetPlay', name: 'Liga BetPlay', icon: '⚽' },
-    { id: 'Clásicos Retro', name: 'Leyendas Retro', icon: '🏆' }
+    { id: 'all', name: 'Todas', icon: '🏆' },
+    { id: 'LaLiga', name: 'LaLiga', icon: '🇪🇸' },
+    { id: 'Premier League', name: 'Premier League', icon: '🏴󠁧󠁢󠁥ⁿ󠁧󠁿' },
+    { id: 'Serie A', name: 'Serie A', icon: '🇮🇹' },
+    { id: 'Bundesliga', name: 'Bundesliga', icon: '🇩🇪' },
+    { id: 'Ligue 1', name: 'Ligue 1', icon: '🇫🇷' },
+    { id: 'MLS', name: 'MLS EE.UU.', icon: '🇺🇸' },
+    { id: 'Saudi Pro League', name: 'Saudi Pro League', icon: '🇸🇦' },
+    { id: 'Liga Argentina', name: 'Liga Argentina', icon: '🇦🇷' },
+    { id: 'Brasileirão', name: 'Brasileirão', icon: '🇧🇷' },
+    { id: 'Liga BetPlay', name: 'Liga BetPlay', icon: '🇨🇴' },
+    { id: 'Selecciones', name: 'Selecciones', icon: '🌍' },
+    { id: 'Clásicos Retro', name: 'Leyendas Retro', icon: '🏛️' }
   ];
 
   return (
@@ -45,36 +51,36 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
 
             {/* Main Bold Headline */}
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black italic uppercase tracking-tighter leading-[0.85] text-white">
+            <h1 className="text-4xl sm:text-7xl lg:text-8xl font-black italic uppercase tracking-tighter leading-[0.9] sm:leading-[0.85] text-white">
               PASIÓN EN <br />
               <span className="text-[#ccff00] underline decoration-[#ccff00]/40 decoration-wavy">CADA PIEL</span>
             </h1>
 
-            <p className="text-white/70 text-sm sm:text-base max-w-xl font-medium leading-relaxed">
+            <p className="text-white/70 text-xs sm:text-base max-w-xl font-medium leading-relaxed">
               Consigue las camisetas oficiales de tus equipos favoritos, selecciones nacionales y ediciones históricas retro. <strong className="text-[#ccff00] font-extrabold">Personaliza con tu nombre y dorsal oficial</strong> de cada liga.
             </p>
 
             {/* Value Props Checklist */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-xs font-black uppercase tracking-wider">
-              <div className="flex items-center gap-2 bg-white/5 border border-white/10 p-3 rounded-xl text-white">
-                <CheckCircle2 className="w-4 h-4 text-[#ccff00] flex-shrink-0" />
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 pt-1 text-[10px] sm:text-xs font-black uppercase tracking-wider">
+              <div className="flex items-center gap-2 bg-white/5 border border-white/10 p-2.5 sm:p-3 rounded-xl text-white">
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ccff00] flex-shrink-0" />
                 <span>Calidad AAAA Premium</span>
               </div>
-              <div className="flex items-center gap-2 bg-white/5 border border-white/10 p-3 rounded-xl text-white">
-                <CheckCircle2 className="w-4 h-4 text-[#ccff00] flex-shrink-0" />
+              <div className="flex items-center gap-2 bg-white/5 border border-white/10 p-2.5 sm:p-3 rounded-xl text-white">
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ccff00] flex-shrink-0" />
                 <span>Estampado Oficial</span>
               </div>
-              <div className="flex items-center gap-2 bg-white/5 border border-white/10 p-3 rounded-xl text-white">
-                <CheckCircle2 className="w-4 h-4 text-[#ccff00] flex-shrink-0" />
+              <div className="col-span-2 sm:col-span-1 flex items-center gap-2 bg-white/5 border border-white/10 p-2.5 sm:p-3 rounded-xl text-white">
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ccff00] flex-shrink-0" />
                 <span>Garantía de Satisfacción</span>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-5 pt-4">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-5 pt-2 sm:pt-4">
               <button
                 onClick={onExploreClick}
-                className="bg-[#ccff00] hover:bg-white text-black font-black px-8 py-4 uppercase text-xs sm:text-sm tracking-widest skew-x-[-10deg] transition-all cursor-pointer shadow-xl flex items-center gap-3 group"
+                className="flex-1 sm:flex-none bg-[#ccff00] hover:bg-white text-black font-black px-6 sm:px-8 py-3.5 sm:py-4 uppercase text-xs sm:text-sm tracking-widest skew-x-[-10deg] transition-all cursor-pointer shadow-xl flex items-center justify-center gap-2 sm:gap-3 group"
               >
                 <div className="skew-x-[10deg] flex items-center gap-2">
                   <span>Explorar Catálogo</span>
@@ -84,7 +90,7 @@ export const Hero: React.FC<HeroProps> = ({
               
               <button
                 onClick={() => onSelectLeague('Clásicos Retro')}
-                className="bg-white/5 hover:bg-white/10 text-white border border-white/20 font-black px-6 py-4 rounded-none text-xs sm:text-sm uppercase tracking-widest transition-all cursor-pointer flex items-center gap-2"
+                className="flex-1 sm:flex-none bg-white/5 hover:bg-white/10 text-white border border-white/20 font-black px-5 sm:px-6 py-3.5 sm:py-4 text-xs sm:text-sm uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <Trophy className="w-4 h-4 text-[#ccff00]" />
                 <span>Colección Retro</span>
@@ -95,13 +101,13 @@ export const Hero: React.FC<HeroProps> = ({
 
           {/* Right Showcase Card */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="relative w-full max-w-md bg-[#121212] border border-white/10 p-6 rounded-3xl shadow-2xl overflow-hidden group">
+            <div className="relative w-full max-w-md bg-[#121212] border border-white/10 p-4 sm:p-6 rounded-3xl shadow-2xl overflow-hidden group">
               <div className="absolute top-4 right-4 bg-[#ccff00] text-black font-black text-[10px] uppercase px-3 py-1 rounded-sm z-10 tracking-widest">
                 EDICIÓN DESTACADA
               </div>
 
               {/* Jersey Image Showcase */}
-              <div className="relative h-72 sm:h-80 w-full overflow-hidden rounded-2xl bg-black flex items-center justify-center border border-white/10">
+              <div className="relative h-64 sm:h-80 w-full overflow-hidden rounded-2xl bg-black flex items-center justify-center border border-white/10">
                 <img
                   src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=800"
                   alt="Real Madrid 2024/25"
@@ -123,10 +129,10 @@ export const Hero: React.FC<HeroProps> = ({
               <div className="mt-4 p-3.5 bg-black rounded-xl border border-white/10 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#ccff00]" />
-                  <span className="text-white/80 font-bold">Estampado de Nombre & Dorsal</span>
+                  <span className="text-white/80 font-bold text-[11px] sm:text-xs">Estampado Nombre & Dorsal</span>
                 </div>
-                <span className="text-[#ccff00] font-black uppercase text-[10px] bg-white/10 px-2.5 py-1 rounded border border-white/20">
-                  +$10 USD
+                <span className="text-[#ccff00] font-black uppercase text-[10px] bg-[#ccff00]/10 border border-[#ccff00]/40 px-2.5 py-1 rounded whitespace-nowrap">
+                  ¡GRATIS! 🎁
                 </span>
               </div>
             </div>
@@ -136,24 +142,24 @@ export const Hero: React.FC<HeroProps> = ({
 
         {/* Quick League Filter Bar */}
         <div className="pt-6 border-t border-white/10">
-          <p className="text-xs uppercase tracking-[0.2em] text-white/50 font-black mb-4 flex items-center gap-2">
+          <p className="text-xs uppercase tracking-[0.2em] text-white/50 font-black mb-3 flex items-center gap-2">
             <span>SELECCIONA POR LIGA O TORNEO:</span>
           </p>
-          <div className="flex flex-wrap gap-2.5">
+          <div className="flex overflow-x-auto pb-2 gap-2 sm:gap-2.5 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
             {leagueBadges.map((badge) => {
               const isSelected = selectedLeague === badge.id;
               return (
                 <button
                   key={badge.id}
                   onClick={() => onSelectLeague(badge.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                  className={`flex-shrink-0 flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 text-xs font-black uppercase tracking-wider transition-all cursor-pointer rounded-lg sm:rounded-none ${
                     isSelected
                       ? 'bg-[#ccff00] text-black shadow-lg shadow-[#ccff00]/20'
                       : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
                   }`}
                 >
                   <span className="text-sm">{badge.icon}</span>
-                  <span>{badge.name}</span>
+                  <span className="whitespace-nowrap">{badge.name}</span>
                 </button>
               );
             })}
