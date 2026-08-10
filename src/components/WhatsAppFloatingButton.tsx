@@ -30,13 +30,13 @@ export const WhatsAppFloatingButton: React.FC<WhatsAppFloatingButtonProps> = ({ 
           {/* Header */}
           <div className="flex items-center justify-between pb-2 border-b border-white/10">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-[#ccff00] text-black font-black flex items-center justify-center skew-x-[-10deg]">
+              <div className="w-8 h-8 bg-[#00e652] text-black font-black flex items-center justify-center skew-x-[-10deg]">
                 <MessageCircle className="w-5 h-5 fill-black stroke-none skew-x-[10deg]" />
               </div>
               <div>
                 <p className="text-xs font-black italic uppercase text-white">ASESORÍA OFFSIDE</p>
-                <p className="text-[10px] text-[#ccff00] font-black uppercase flex items-center gap-1 tracking-wider">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#ccff00] animate-ping" />
+                <p className="text-[10px] text-[#00e652] font-black uppercase flex items-center gap-1 tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00e652] animate-ping" />
                   EN LÍNEA AHORA
                 </p>
               </div>
@@ -51,7 +51,7 @@ export const WhatsAppFloatingButton: React.FC<WhatsAppFloatingButtonProps> = ({ 
 
           {/* Simulated Chat Message */}
           <div className="bg-black p-3 rounded-2xl border border-white/10 text-xs text-white/80 space-y-1">
-            <p className="font-black text-[#ccff00] uppercase">👋 ¡Hola fanático del fútbol!</p>
+            <p className="font-black text-[#00e652] uppercase">👋 ¡Hola fanático del fútbol!</p>
             <p className="font-medium">¿En qué camiseta o estampado personalizado te podemos ayudar hoy?</p>
           </div>
 
@@ -62,11 +62,11 @@ export const WhatsAppFloatingButton: React.FC<WhatsAppFloatingButtonProps> = ({ 
               value={userMsg}
               onChange={(e) => setUserMsg(e.target.value)}
               placeholder="Escribe tu consulta aquí..."
-              className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#ccff00]"
+              className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#00e652]"
             />
             <button
               onClick={handleSendWA}
-              className="w-full py-3 bg-[#ccff00] hover:bg-white text-black font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 shadow-xl cursor-pointer skew-x-[-10deg]"
+              className="w-full py-3 bg-[#00e652] hover:bg-white text-black font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 shadow-xl cursor-pointer skew-x-[-10deg]"
             >
               <div className="skew-x-[10deg] flex items-center gap-2">
                 <Send className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -81,7 +81,7 @@ export const WhatsAppFloatingButton: React.FC<WhatsAppFloatingButtonProps> = ({ 
       {/* Main Floating Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="group relative bg-[#ccff00] hover:bg-white text-black p-4 shadow-2xl hover:shadow-[#ccff00]/40 transition-all cursor-pointer skew-x-[-10deg]"
+        className="group relative bg-[#00e652] hover:bg-white text-black p-4 shadow-2xl hover:shadow-[#00e652]/40 transition-all cursor-pointer skew-x-[-10deg]"
         title="Contactar por WhatsApp"
       >
         <div className="skew-x-[10deg]">
@@ -89,7 +89,7 @@ export const WhatsAppFloatingButton: React.FC<WhatsAppFloatingButtonProps> = ({ 
         </div>
         
         {/* Unread badge */}
-        <span className="absolute -top-1 -right-1 bg-black text-[#ccff00] text-[10px] font-black w-5 h-5 flex items-center justify-center border-2 border-[#ccff00] animate-bounce">
+        <span className="absolute -top-1 -right-1 bg-black text-[#00e652] text-[10px] font-black w-5 h-5 flex items-center justify-center border-2 border-[#00e652] animate-bounce">
           1
         </span>
 

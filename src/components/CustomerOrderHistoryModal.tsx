@@ -106,7 +106,7 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
         <div className="bg-gradient-to-r from-black via-[#1a1a1a] to-black border-b border-white/10 p-5 flex justify-between items-center relative">
           <div>
             <div className="flex items-center gap-2">
-              <PackageCheck className="w-6 h-6 text-[#ccff00]" />
+              <PackageCheck className="w-6 h-6 text-[#00e652]" />
               <h2 className="text-xl font-black italic tracking-tight uppercase text-white">
                 HISTORIAL & RASTREO DE COMPRAS
               </h2>
@@ -128,7 +128,7 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
           
           {/* Search Box */}
           <form onSubmit={handleSearchSubmit} className="space-y-2">
-            <label className="block text-xs font-black uppercase tracking-wider text-[#ccff00]">
+            <label className="block text-xs font-black uppercase tracking-wider text-[#00e652]">
               BUSCAR TUS PEDIDOS (POR TELÉFONO, EMAIL O # DE PEDIDO):
             </label>
             <div className="flex gap-2">
@@ -138,14 +138,14 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Ej: 8559 5192, Juan Pérez, juan@gmail.com o #OFF-101..."
-                  className="w-full bg-black border border-white/20 rounded-xl py-3 pl-10 pr-4 text-xs font-bold text-white placeholder-white/40 focus:outline-none focus:border-[#ccff00] transition"
+                  className="w-full bg-black border border-white/20 rounded-xl py-3 pl-10 pr-4 text-xs font-bold text-white placeholder-white/40 focus:outline-none focus:border-[#00e652] transition"
                   required
                 />
                 <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-3.5" />
               </div>
               <button
                 type="submit"
-                className="bg-[#ccff00] hover:bg-white text-black font-black px-6 py-3 rounded-xl uppercase text-xs tracking-wider transition shadow-md cursor-pointer"
+                className="bg-[#00e652] hover:bg-white text-black font-black px-6 py-3 rounded-xl uppercase text-xs tracking-wider transition shadow-md cursor-pointer"
               >
                 BUSCAR
               </button>
@@ -163,7 +163,7 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
                   RESULTADOS DE BÚSQUEDA ({matchedOrders.length}):
                 </span>
                 {matchedOrders.length > 0 && (
-                  <span className="text-[11px] text-[#ccff00] font-bold">
+                  <span className="text-[11px] text-[#00e652] font-bold">
                     ✓ Todos los pedidos guardados correctamente
                   </span>
                 )}
@@ -193,13 +193,13 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
                   {matchedOrders.map((order) => (
                     <div
                       key={order.id}
-                      className="bg-black border border-white/15 hover:border-[#ccff00]/40 rounded-xl p-4 sm:p-5 space-y-4 transition"
+                      className="bg-black border border-white/15 hover:border-[#00e652]/40 rounded-xl p-4 sm:p-5 space-y-4 transition"
                     >
                       {/* Order Header */}
                       <div className="flex flex-wrap justify-between items-start gap-2 border-b border-white/10 pb-3">
                         <div>
                           <div className="flex items-center gap-3">
-                            <span className="text-sm font-black text-[#ccff00] tracking-wider">
+                            <span className="text-sm font-black text-[#00e652] tracking-wider">
                               {order.id}
                             </span>
                             <span className="text-xs text-white/50 font-medium">
@@ -236,7 +236,7 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
                                     {item.jersey.name}
                                   </p>
                                   <div className="flex flex-wrap gap-2 text-[11px] text-white/60 mt-0.5">
-                                    <span>Talla: <strong className="text-[#ccff00]">{item.size}</strong></span>
+                                    <span>Talla: <strong className="text-[#00e652]">{item.size}</strong></span>
                                     <span>• Cant: {item.quantity}</span>
                                     {item.customStamping?.enabled && (
                                       <span className="text-amber-300 font-bold">
@@ -266,7 +266,7 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
                         </div>
                         <div className="text-right">
                           <span className="text-[10px] font-black text-white/50 uppercase block">TOTAL PAGADO</span>
-                          <span className="text-base font-black text-[#ccff00]">
+                          <span className="text-base font-black text-[#00e652]">
                             {formatPrice(order.total, currency)}
                           </span>
                         </div>
@@ -295,8 +295,8 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
           )}
 
           {/* Persistent Guarantee Note */}
-          <div className="bg-[#ccff00]/10 border border-[#ccff00]/30 rounded-xl p-4 text-xs space-y-1">
-            <h4 className="font-black text-[#ccff00] uppercase tracking-wider flex items-center gap-2">
+          <div className="bg-[#00e652]/10 border border-[#00e652]/30 rounded-xl p-4 text-xs space-y-1">
+            <h4 className="font-black text-[#00e652] uppercase tracking-wider flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
               ¿CÓMO FUNCIONA EL GUARDADO DE DATOS?
             </h4>

@@ -62,7 +62,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="bg-[#000000] border-b border-white/10 text-white/80 px-2 sm:px-4 py-1.5 text-xs font-bold tracking-widest uppercase overflow-x-auto scrollbar-none">
         <div className="max-w-7xl mx-auto w-full flex justify-between items-center gap-2 min-w-max sm:min-w-0">
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <span className="bg-[#ccff00] text-black text-[9px] sm:text-[10px] font-black uppercase px-1.5 sm:px-2 py-0.5 rounded-sm">
+            <span className="bg-[#00e652] text-black text-[9px] sm:text-[10px] font-black uppercase px-1.5 sm:px-2 py-0.5 rounded-sm">
               COSTA RICA
             </span>
             <span className="hidden sm:inline text-white/70 text-[11px]">Envíos a todo Costa Rica por Correos de CR y Mensajería | WhatsApp: {phoneDisplay}</span>
@@ -70,7 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-1.5 sm:gap-3 text-[10px] sm:text-[11px]">
             <button
               onClick={onOpenOrderHistory}
-              className="flex items-center gap-1 bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black border border-[#ccff00]/40 font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded transition cursor-pointer"
+              className="flex items-center gap-1 bg-[#00e652]/10 hover:bg-[#00e652] text-[#00e652] hover:text-black border border-[#00e652]/40 font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded transition cursor-pointer"
               title="Consultar tu historial de compras"
             >
               <PackageCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
@@ -88,17 +88,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             </a>
             <button
               onClick={() => setCurrency(currency === 'CRC' ? 'USD' : 'CRC')}
-              className="hover:text-[#ccff00] flex items-center gap-1 bg-white/5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded border border-white/10 transition cursor-pointer font-extrabold"
+              className="hover:text-[#00e652] flex items-center gap-1 bg-white/5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded border border-white/10 transition cursor-pointer font-extrabold"
               title="Cambiar Moneda"
             >
-              <DollarSign className="w-3 h-3 text-[#ccff00]" />
-              <span className="hidden xs:inline">MONEDA:</span> <span className="font-black text-[#ccff00]">{currency}</span>
+              <DollarSign className="w-3 h-3 text-[#00e652]" />
+              <span className="hidden xs:inline">MONEDA:</span> <span className="font-black text-[#00e652]">{currency}</span>
             </button>
             <button 
               onClick={onOpenAdmin}
-              className="hover:text-[#ccff00] transition flex items-center gap-1 font-black cursor-pointer text-white/80"
+              className="hover:text-[#00e652] transition flex items-center gap-1 font-black cursor-pointer text-white/80"
             >
-              <ShieldCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#ccff00]" />
+              <ShieldCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#00e652]" />
               <span className="hidden md:inline">ADMIN</span>
             </button>
           </div>
@@ -113,14 +113,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-3">
             <button 
               onClick={() => { setActiveTab('catalog'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-              className="flex items-center gap-2 group text-left cursor-pointer"
+              className="flex items-center gap-2.5 group text-left cursor-pointer"
             >
-              <div className="text-3xl sm:text-4xl font-black italic tracking-tighter uppercase text-white">
-                OFFSIDE<span className="text-[#ccff00]">.</span>
+              <div className="bg-[#00e652] text-black p-1.5 rounded-lg font-black skew-x-[-10deg] shadow-[0_0_15px_rgba(0,230,82,0.4)] transition-transform group-hover:scale-105">
+                <Shirt className="w-5 h-5 skew-x-[10deg] stroke-[2.5]" />
               </div>
-              <span className="hidden sm:inline-block text-[9px] font-black uppercase tracking-[0.2em] bg-white/10 text-white/70 px-2 py-0.5 rounded border border-white/10">
-                KITS & RETRO
-              </span>
+              <div>
+                <div className="text-2xl sm:text-3xl font-black italic tracking-tighter uppercase text-white leading-none">
+                  OFF<span className="text-[#00e652]">side</span> <span className="text-white/90 text-lg sm:text-xl font-black">Sports</span>
+                </div>
+                <div className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.25em] text-[#00e652] mt-0.5">
+                  ROPA DEPORTIVA
+                </div>
+              </div>
             </button>
           </div>
 
@@ -136,7 +141,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }
               }}
               placeholder="Buscar camisetas, equipos, ligas o jugadores..."
-              className="w-full bg-white/5 border border-white/20 rounded-full py-2 pl-10 pr-10 text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#ccff00] transition-all font-semibold"
+              className="w-full bg-white/5 border border-white/20 rounded-full py-2 pl-10 pr-10 text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#00e652] transition-all font-semibold"
             />
             <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-2.5" />
             {searchQuery && (
@@ -163,11 +168,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all cursor-pointer ${
                     isActive
-                      ? 'text-[#ccff00] border-b-2 border-[#ccff00]'
-                      : 'text-white/70 hover:text-[#ccff00] hover:bg-white/5'
+                      ? 'text-[#00e652] border-b-2 border-[#00e652]'
+                      : 'text-white/70 hover:text-[#00e652] hover:bg-white/5'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#ccff00]' : 'text-white/40'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#00e652]' : 'text-white/40'}`} />
                   <span>{item.label}</span>
                 </button>
               );
@@ -178,13 +183,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={onOpenCart}
-              className="relative flex items-center gap-3 bg-[#ccff00] hover:bg-white text-black font-black px-5 py-2.5 uppercase tracking-wider skew-x-[-10deg] transition-all shadow-lg cursor-pointer group"
+              className="relative flex items-center gap-3 bg-[#00e652] hover:bg-white text-black font-black px-5 py-2.5 uppercase tracking-wider skew-x-[-10deg] transition-all shadow-lg cursor-pointer group"
             >
               <div className="skew-x-[10deg] flex items-center gap-2">
                 <div className="relative">
                   <ShoppingBag className="w-5 h-5 stroke-[2.5]" />
                   {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-black text-[#ccff00] text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border border-[#ccff00]">
+                    <span className="absolute -top-2 -right-2 bg-black text-[#00e652] text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border border-[#00e652]">
                       {cartCount}
                     </span>
                   )}
@@ -220,7 +225,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }
               }}
               placeholder="Buscar camisetas, equipos o ligas..."
-              className="w-full bg-white/5 border border-white/20 rounded-full py-2 pl-9 pr-9 text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#ccff00]"
+              className="w-full bg-white/5 border border-white/20 rounded-full py-2 pl-9 pr-9 text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#00e652]"
             />
             <Search className="w-3.5 h-3.5 text-white/40 absolute left-3 top-3" />
           </div>
@@ -243,11 +248,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${
                   isActive
-                    ? 'bg-[#ccff00] text-black font-black'
+                    ? 'bg-[#00e652] text-black font-black'
                     : 'text-white/80 hover:bg-white/5'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-[#ccff00]'}`} />
+                <Icon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-[#00e652]'}`} />
                 <span>{item.label}</span>
               </button>
             );
@@ -256,7 +261,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>Cambiar Moneda:</span>
             <button
               onClick={() => setCurrency(currency === 'CRC' ? 'USD' : 'CRC')}
-              className="bg-white/10 text-[#ccff00] px-3 py-1.5 rounded-lg font-black border border-white/20"
+              className="bg-white/10 text-[#00e652] px-3 py-1.5 rounded-lg font-black border border-white/20"
             >
               {currency === 'CRC' ? '₡ COLONES (CRC)' : '$ DÓLARES (USD)'}
             </button>
@@ -272,7 +277,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </a>
           <button
             onClick={() => { onOpenOrderHistory(); setMobileMenuOpen(false); }}
-            className="w-full flex items-center justify-center gap-2 bg-[#ccff00]/20 hover:bg-[#ccff00] text-[#ccff00] hover:text-black font-black py-2.5 rounded-lg text-xs uppercase tracking-wider border border-[#ccff00]/40 transition"
+            className="w-full flex items-center justify-center gap-2 bg-[#00e652]/20 hover:bg-[#00e652] text-[#00e652] hover:text-black font-black py-2.5 rounded-lg text-xs uppercase tracking-wider border border-[#00e652]/40 transition"
           >
             <PackageCheck className="w-4 h-4" />
             Mis Pedidos / Historial de Compras
@@ -281,7 +286,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => { onOpenAdmin(); setMobileMenuOpen(false); }}
             className="w-full mt-2 flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-lg text-xs font-black uppercase tracking-wider border border-white/20"
           >
-            <ShieldCheck className="w-4 h-4 text-[#ccff00]" />
+            <ShieldCheck className="w-4 h-4 text-[#00e652]" />
             Acceder al Panel Administrativo
           </button>
         </div>

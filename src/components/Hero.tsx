@@ -35,12 +35,23 @@ export const Hero: React.FC<HeroProps> = ({
   return (
     <section className="relative bg-[#0a0a0a] text-white overflow-hidden border-b border-white/10 py-12 md:py-20">
       
-      {/* Massive Background Watermark Typography */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none overflow-hidden">
-        <h1 className="text-[20rem] sm:text-[30rem] lg:text-[40rem] font-black italic tracking-tighter uppercase text-white whitespace-nowrap">
-          KITS
+      {/* Massive Background Watermark Typography & Wave Contour Lines */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-[0.05] pointer-events-none select-none overflow-hidden">
+        <h1 className="text-[18rem] sm:text-[28rem] lg:text-[38rem] font-black italic tracking-tighter uppercase text-[#00e652] whitespace-nowrap">
+          OFFSIDE
         </h1>
       </div>
+
+      {/* Brand Flowing Energy Wavy Contour Lines Background */}
+      <svg className="absolute inset-0 w-full h-full opacity-20 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#00e652" strokeWidth="1" fill="none" opacity="0.6">
+          <path d="M-100 100 C 300 400, 600 0, 1200 300 C 1800 600, 1500 100, 2000 400" />
+          <path d="M-100 120 C 300 420, 600 20, 1200 320 C 1800 620, 1500 120, 2000 420" />
+          <path d="M-100 140 C 300 440, 600 40, 1200 340 C 1800 640, 1500 140, 2000 440" />
+          <path d="M-100 160 C 300 460, 600 60, 1200 360 C 1800 660, 1500 160, 2000 460" />
+          <path d="M-100 180 C 300 480, 600 80, 1200 380 C 1800 680, 1500 180, 2000 480" />
+        </g>
+      </svg>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
@@ -50,32 +61,32 @@ export const Hero: React.FC<HeroProps> = ({
             
             {/* Top Tag */}
             <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-black tracking-[0.2em] uppercase">
-              <span className="w-2 h-2 rounded-full bg-[#ccff00] animate-ping" />
-              <span className="text-[#ccff00]">{settings?.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25'}</span>
+              <span className="w-2 h-2 rounded-full bg-[#00e652] animate-ping" />
+              <span className="text-[#00e652]">{settings?.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25'}</span>
             </div>
 
             {/* Main Bold Headline */}
             <h1 className="text-4xl sm:text-7xl lg:text-8xl font-black italic uppercase tracking-tighter leading-[0.9] sm:leading-[0.85] text-white">
               PASIÓN EN <br />
-              <span className="text-[#ccff00] underline decoration-[#ccff00]/40 decoration-wavy">CADA PIEL</span>
+              <span className="text-[#00e652] underline decoration-[#00e652]/40 decoration-wavy">CADA PIEL</span>
             </h1>
 
             <p className="text-white/70 text-xs sm:text-base max-w-xl font-medium leading-relaxed">
-              Consigue las camisetas oficiales de tus equipos favoritos, selecciones nacionales y ediciones históricas retro. <strong className="text-[#ccff00] font-extrabold">Personaliza con tu nombre y dorsal oficial</strong> de cada liga.
+              Consigue las camisetas oficiales de tus equipos favoritos, selecciones nacionales y ediciones históricas retro. <strong className="text-[#00e652] font-extrabold">Personaliza con tu nombre y dorsal oficial</strong> de cada liga.
             </p>
 
             {/* Value Props Checklist */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 pt-1 text-[10px] sm:text-xs font-black uppercase tracking-wider">
               <div className="flex items-center gap-2 bg-white/5 border border-white/10 p-2.5 sm:p-3 rounded-xl text-white">
-                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ccff00] flex-shrink-0" />
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00e652] flex-shrink-0" />
                 <span>Calidad AAAA Premium</span>
               </div>
               <div className="flex items-center gap-2 bg-white/5 border border-white/10 p-2.5 sm:p-3 rounded-xl text-white">
-                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ccff00] flex-shrink-0" />
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00e652] flex-shrink-0" />
                 <span>Estampado Oficial</span>
               </div>
               <div className="col-span-2 sm:col-span-1 flex items-center gap-2 bg-white/5 border border-white/10 p-2.5 sm:p-3 rounded-xl text-white">
-                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ccff00] flex-shrink-0" />
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00e652] flex-shrink-0" />
                 <span>Garantía de Satisfacción</span>
               </div>
             </div>
@@ -84,7 +95,7 @@ export const Hero: React.FC<HeroProps> = ({
             <div className="flex flex-wrap items-center gap-3 sm:gap-5 pt-2 sm:pt-4">
               <button
                 onClick={onExploreClick}
-                className="flex-1 sm:flex-none bg-[#ccff00] hover:bg-white text-black font-black px-6 sm:px-8 py-3.5 sm:py-4 uppercase text-xs sm:text-sm tracking-widest skew-x-[-10deg] transition-all cursor-pointer shadow-xl flex items-center justify-center gap-2 sm:gap-3 group"
+                className="flex-1 sm:flex-none bg-[#00e652] hover:bg-white text-black font-black px-6 sm:px-8 py-3.5 sm:py-4 uppercase text-xs sm:text-sm tracking-widest skew-x-[-10deg] transition-all cursor-pointer shadow-xl flex items-center justify-center gap-2 sm:gap-3 group"
               >
                 <div className="skew-x-[10deg] flex items-center gap-2">
                   <span>Explorar Catálogo</span>
@@ -96,7 +107,7 @@ export const Hero: React.FC<HeroProps> = ({
                 onClick={() => onSelectLeague('Clásicos Retro')}
                 className="flex-1 sm:flex-none bg-white/5 hover:bg-white/10 text-white border border-white/20 font-black px-5 sm:px-6 py-3.5 sm:py-4 text-xs sm:text-sm uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                <Trophy className="w-4 h-4 text-[#ccff00]" />
+                <Trophy className="w-4 h-4 text-[#00e652]" />
                 <span>Colección Retro</span>
               </button>
             </div>
@@ -106,7 +117,7 @@ export const Hero: React.FC<HeroProps> = ({
           {/* Right Showcase Card */}
           <div className="lg:col-span-5 flex justify-center">
             <div className="relative w-full max-w-md bg-[#121212] border border-white/10 p-4 sm:p-6 rounded-3xl shadow-2xl overflow-hidden group">
-              <div className="absolute top-4 right-4 bg-[#ccff00] text-black font-black text-[10px] uppercase px-3 py-1 rounded-sm z-10 tracking-widest">
+              <div className="absolute top-4 right-4 bg-[#00e652] text-black font-black text-[10px] uppercase px-3 py-1 rounded-sm z-10 tracking-widest">
                 EDICIÓN DESTACADA
               </div>
 
@@ -122,7 +133,7 @@ export const Hero: React.FC<HeroProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-90" />
                 
                 <div className="absolute bottom-4 left-4 right-4 text-left">
-                  <p className="text-[#ccff00] text-xs font-black uppercase tracking-widest">LaLiga EA Sports</p>
+                  <p className="text-[#00e652] text-xs font-black uppercase tracking-widest">LaLiga EA Sports</p>
                   <h3 className="text-xl font-black italic uppercase text-white tracking-tight">Real Madrid Local 2024/25</h3>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-amber-400 text-xs">★★★★★</span>
@@ -134,10 +145,10 @@ export const Hero: React.FC<HeroProps> = ({
               {/* Stamp feature teaser */}
               <div className="mt-4 p-3.5 bg-black rounded-xl border border-white/10 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[#ccff00]" />
+                  <Sparkles className="w-4 h-4 text-[#00e652]" />
                   <span className="text-white/80 font-bold text-[11px] sm:text-xs">Estampado Nombre & Dorsal</span>
                 </div>
-                <span className="text-[#ccff00] font-black uppercase text-[10px] bg-[#ccff00]/10 border border-[#ccff00]/40 px-2.5 py-1 rounded whitespace-nowrap">
+                <span className="text-[#00e652] font-black uppercase text-[10px] bg-[#00e652]/10 border border-[#00e652]/40 px-2.5 py-1 rounded whitespace-nowrap">
                   ¡GRATIS! 🎁
                 </span>
               </div>
@@ -160,7 +171,7 @@ export const Hero: React.FC<HeroProps> = ({
                   onClick={() => onSelectLeague(badge.id)}
                   className={`flex-shrink-0 flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 text-xs font-black uppercase tracking-wider transition-all cursor-pointer rounded-lg sm:rounded-none ${
                     isSelected
-                      ? 'bg-[#ccff00] text-black shadow-lg shadow-[#ccff00]/20'
+                      ? 'bg-[#00e652] text-black shadow-lg shadow-[#00e652]/20'
                       : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
                   }`}
                 >

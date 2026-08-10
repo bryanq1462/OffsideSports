@@ -34,7 +34,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/30">
+          <div className="p-2.5 rounded-xl bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/30">
             <SlidersHorizontal className="w-5 h-5 stroke-[2.5]" />
           </div>
           <div>
@@ -44,12 +44,12 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="bg-black text-[#ccff00] text-xs font-black uppercase px-3 py-1.5 border border-white/20 tracking-wider">
+          <span className="bg-black text-[#00e652] text-xs font-black uppercase px-3 py-1.5 border border-white/20 tracking-wider">
             {totalResults} {totalResults === 1 ? 'CAMISETA ENCONTRADA' : 'CAMISETAS ENCONTRADAS'}
           </span>
           <button
             onClick={onReset}
-            className="flex items-center gap-1.5 text-white/80 hover:text-[#ccff00] text-xs font-black uppercase tracking-wider bg-white/5 hover:bg-white/10 px-3.5 py-1.5 border border-white/20 transition cursor-pointer"
+            className="flex items-center gap-1.5 text-white/80 hover:text-[#00e652] text-xs font-black uppercase tracking-wider bg-white/5 hover:bg-white/10 px-3.5 py-1.5 border border-white/20 transition cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>LIMPIAR</span>
@@ -59,8 +59,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
       {/* Sports Categories Bar */}
       <div className="space-y-2 pb-2 border-b border-white/10">
-        <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#ccff00] flex items-center gap-1.5">
-          <Activity className="w-3.5 h-3.5 text-[#ccff00]" />
+        <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] flex items-center gap-1.5">
+          <Activity className="w-3.5 h-3.5 text-[#00e652]" />
           <span>CATEGORÍAS DEPORTIVAS:</span>
         </label>
         <div className="flex overflow-x-auto pb-1 gap-2 scrollbar-none -mx-2 px-2 sm:mx-0 sm:px-0">
@@ -77,8 +77,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                 }))}
                 className={`flex-shrink-0 flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-black uppercase tracking-wider transition cursor-pointer rounded-lg sm:rounded-none ${
                   isSelected
-                    ? 'bg-[#ccff00] text-black shadow-lg shadow-[#ccff00]/20 font-black'
-                    : 'bg-black text-white/80 border border-white/20 hover:border-[#ccff00]/50'
+                    ? 'bg-[#00e652] text-black shadow-lg shadow-[#00e652]/20 font-black'
+                    : 'bg-black text-white/80 border border-white/20 hover:border-[#00e652]/50'
                 }`}
               >
                 <span className="text-sm">{sport.icon}</span>
@@ -94,7 +94,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         
         {/* Search Query Input */}
         <div className="md:col-span-8 relative">
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#ccff00] mb-1.5">
+          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5">
             BUSCAR POR EQUIPO, JUGADOR O DORSAL:
           </label>
           <div className="relative">
@@ -103,7 +103,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
               value={filters.searchQuery}
               onChange={(e) => setFilters(prev => ({ ...prev, searchQuery: e.target.value }))}
               placeholder="Ej: Zidane, Mbappé, Curry, Ohtani, Verstappen, Brady, Real Madrid..."
-              className="w-full bg-black border border-white/20 rounded-xl py-2.5 pl-10 pr-4 text-xs font-bold text-white placeholder-white/40 focus:outline-none focus:border-[#ccff00] transition-colors"
+              className="w-full bg-black border border-white/20 rounded-xl py-2.5 pl-10 pr-4 text-xs font-bold text-white placeholder-white/40 focus:outline-none focus:border-[#00e652] transition-colors"
             />
             <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-3" />
           </div>
@@ -111,13 +111,13 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
         {/* Sort selector */}
         <div className="md:col-span-4">
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#ccff00] mb-1.5">
+          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5">
             ORDENAR RESULTADOS:
           </label>
           <select
             value={filters.sortBy}
             onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value as any }))}
-            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#ccff00]"
+            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#00e652]"
           >
             <option value="recommended">Destacados & Populares</option>
             <option value="price-asc">Precio: Menor a Mayor</option>
@@ -134,8 +134,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         
         {/* League Selector */}
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#ccff00] mb-1.5 flex items-center gap-1">
-            <Trophy className="w-3 h-3 text-[#ccff00]" />
+          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5 flex items-center gap-1">
+            <Trophy className="w-3 h-3 text-[#00e652]" />
             <span>LIGA / TORNEO:</span>
           </label>
           <select
@@ -148,7 +148,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                 selectedTeam: 'all' // Reset team when changing league
               }));
             }}
-            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#ccff00]"
+            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#00e652]"
           >
             <option value="all">Todas las Ligas & Torneos</option>
             {leagues.map(lg => (
@@ -161,14 +161,14 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
         {/* Team Selector (Filtered dynamically!) */}
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#ccff00] mb-1.5 flex items-center gap-1">
-            <Shield className="w-3 h-3 text-[#ccff00]" />
+          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5 flex items-center gap-1">
+            <Shield className="w-3 h-3 text-[#00e652]" />
             <span>EQUIPO / CLUB:</span>
           </label>
           <select
             value={filters.selectedTeam}
             onChange={(e) => setFilters(prev => ({ ...prev, selectedTeam: e.target.value }))}
-            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#ccff00]"
+            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#00e652]"
           >
             <option value="all">Todos los Equipos</option>
             {filteredTeams.map(team => (
@@ -179,13 +179,13 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
         {/* Jersey Type */}
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#ccff00] mb-1.5">
+          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5">
             TIPO DE EDICIÓN:
           </label>
           <select
             value={filters.selectedType}
             onChange={(e) => setFilters(prev => ({ ...prev, selectedType: e.target.value }))}
-            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#ccff00]"
+            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#00e652]"
           >
             <option value="all">Todas las Ediciones</option>
             {types.map(t => (
@@ -196,7 +196,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
         {/* Size Filter */}
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#ccff00] mb-1.5">
+          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5">
             TALLA DISPONIBLE:
           </label>
           <div className="flex gap-1">
@@ -204,7 +204,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
               onClick={() => setFilters(prev => ({ ...prev, selectedSize: 'all' }))}
               className={`px-2.5 py-2 text-[11px] font-black uppercase transition cursor-pointer ${
                 filters.selectedSize === 'all'
-                  ? 'bg-[#ccff00] text-black font-black'
+                  ? 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/60 border border-white/20'
               }`}
             >
@@ -216,7 +216,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                 onClick={() => setFilters(prev => ({ ...prev, selectedSize: sz }))}
                 className={`flex-1 py-2 text-[11px] font-black transition cursor-pointer ${
                   filters.selectedSize === sz
-                    ? 'bg-[#ccff00] text-black font-black'
+                    ? 'bg-[#00e652] text-black font-black'
                     : 'bg-black text-white/60 border border-white/20 hover:bg-white/10'
                 }`}
               >
@@ -234,42 +234,42 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
           <span className="text-white/40 text-[10px] tracking-widest">FILTROS ACTIVOS:</span>
           
           {filters.selectedSport && filters.selectedSport !== 'all' && (
-            <span className="bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
               Deporte: {filters.selectedSport}
               <button onClick={() => setFilters(p => ({ ...p, selectedSport: 'all' }))} className="hover:text-white font-black">✕</button>
             </span>
           )}
           
           {filters.selectedLeague !== 'all' && (
-            <span className="bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
               Liga: {filters.selectedLeague}
               <button onClick={() => setFilters(p => ({ ...p, selectedLeague: 'all' }))} className="hover:text-white font-black">✕</button>
             </span>
           )}
 
           {filters.selectedTeam !== 'all' && (
-            <span className="bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
               Equipo: {filters.selectedTeam}
               <button onClick={() => setFilters(p => ({ ...p, selectedTeam: 'all' }))} className="hover:text-white font-black">✕</button>
             </span>
           )}
 
           {filters.selectedType !== 'all' && (
-            <span className="bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
               Tipo: {filters.selectedType}
               <button onClick={() => setFilters(p => ({ ...p, selectedType: 'all' }))} className="hover:text-white font-black">✕</button>
             </span>
           )}
 
           {filters.selectedSize !== 'all' && (
-            <span className="bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
               Talla: {filters.selectedSize}
               <button onClick={() => setFilters(p => ({ ...p, selectedSize: 'all' }))} className="hover:text-white font-black">✕</button>
             </span>
           )}
 
           {filters.searchQuery && (
-            <span className="bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
               Búsqueda: "{filters.searchQuery}"
               <button onClick={() => setFilters(p => ({ ...p, searchQuery: '' }))} className="hover:text-white font-black">✕</button>
             </span>

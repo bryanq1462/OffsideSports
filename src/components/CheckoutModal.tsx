@@ -141,7 +141,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Top Header */}
         <div className="p-5 border-b border-white/10 bg-black flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Lock className="w-4 h-4 text-[#ccff00] stroke-[2.5]" />
+            <Lock className="w-4 h-4 text-[#00e652] stroke-[2.5]" />
             <h2 className="text-sm font-black italic uppercase tracking-wider text-white">
               PASARELA DE PAGOS SEGURA | OFFSIDE SPORTS
             </h2>
@@ -150,7 +150,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           {step !== 'processing' && (
             <button
               onClick={onClose}
-              className="p-1.5 bg-white/10 hover:bg-[#ccff00] text-white hover:text-black transition cursor-pointer"
+              className="p-1.5 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer"
             >
               <X className="w-5 h-5 stroke-[2.5]" />
             </button>
@@ -160,11 +160,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Wizard Progress Indicator */}
         {step !== 'success' && step !== 'processing' && (
           <div className="px-6 py-3 bg-[#121212] border-b border-white/10 flex justify-around text-xs font-black uppercase tracking-wider text-white/50">
-            <div className={`flex items-center gap-1.5 ${step === 'shipping' ? 'text-[#ccff00]' : 'text-white/40'}`}>
+            <div className={`flex items-center gap-1.5 ${step === 'shipping' ? 'text-[#00e652]' : 'text-white/40'}`}>
               <span className="w-5 h-5 bg-black border border-white/20 flex items-center justify-center text-[10px]">1</span>
               <span>1. ENVÍO & CLIENTE</span>
             </div>
-            <div className={`flex items-center gap-1.5 ${step === 'payment' ? 'text-[#ccff00]' : 'text-white/40'}`}>
+            <div className={`flex items-center gap-1.5 ${step === 'payment' ? 'text-[#00e652]' : 'text-white/40'}`}>
               <span className="w-5 h-5 bg-black border border-white/20 flex items-center justify-center text-[10px]">2</span>
               <span>2. MÉTODO DE PAGO</span>
             </div>
@@ -180,73 +180,73 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[10px] font-black text-[#ccff00] uppercase tracking-widest mb-1">NOMBRE COMPLETO *</label>
+                <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">NOMBRE COMPLETO *</label>
                 <input
                   type="text"
                   required
                   placeholder="ej: Carlos Rodríguez"
                   value={customer.fullName}
                   onChange={(e) => setCustomer({ ...customer, fullName: e.target.value })}
-                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#ccff00]"
+                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#00e652]"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-[#ccff00] uppercase tracking-widest mb-1">CORREO ELECTRÓNICO *</label>
+                <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">CORREO ELECTRÓNICO *</label>
                 <input
                   type="email"
                   required
                   placeholder="tuemail@ejemplo.com"
                   value={customer.email}
                   onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
-                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#ccff00]"
+                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#00e652]"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-[#ccff00] uppercase tracking-widest mb-1">TELÉFONO WHATSAPP *</label>
+                <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">TELÉFONO WHATSAPP *</label>
                 <input
                   type="tel"
                   required
                   placeholder="+506 8559 5192"
                   value={customer.phone}
                   onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
-                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#ccff00]"
+                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#00e652]"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-[#ccff00] uppercase tracking-widest mb-1">CANTÓN / CIUDAD *</label>
+                <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">CANTÓN / CIUDAD *</label>
                 <input
                   type="text"
                   required
                   placeholder="San José, Escazú, Heredia, Alajuela..."
                   value={customer.city}
                   onChange={(e) => setCustomer({ ...customer, city: e.target.value })}
-                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#ccff00]"
+                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#00e652]"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-[10px] font-black text-[#ccff00] uppercase tracking-widest mb-1">DIRECCIÓN EXACTA DE RESIDENCIA / TRABAJO *</label>
+                <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">DIRECCIÓN EXACTA DE RESIDENCIA / TRABAJO *</label>
                 <input
                   type="text"
                   required
                   placeholder="Carrera 15 # 85-30 Apto 401, Barrio El Retiro"
                   value={customer.address}
                   onChange={(e) => setCustomer({ ...customer, address: e.target.value })}
-                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#ccff00]"
+                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#00e652]"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-[10px] font-black text-[#ccff00] uppercase tracking-widest mb-1">NOTAS DE ENTREGA (OPCIONAL)</label>
+                <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">NOTAS DE ENTREGA (OPCIONAL)</label>
                 <input
                   type="text"
                   placeholder="Dejar en portería, timbrar dos veces..."
                   value={customer.notes}
                   onChange={(e) => setCustomer({ ...customer, notes: e.target.value })}
-                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#ccff00]"
+                  className="w-full bg-black border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white font-bold placeholder-white/40 focus:border-[#00e652]"
                 />
               </div>
             </div>
@@ -254,13 +254,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             {/* Order total preview */}
             <div className="p-3 bg-[#121212] border border-white/10 flex justify-between items-center text-xs">
               <span className="text-white/70 font-black uppercase tracking-wider">TOTAL A PAGAR ({cart.length} ÍTEMS):</span>
-              <span className="text-[#ccff00] font-black text-base italic">{formatPrice(totalUSD, currency)}</span>
+              <span className="text-[#00e652] font-black text-base italic">{formatPrice(totalUSD, currency)}</span>
             </div>
 
             <div className="pt-2 flex justify-end">
               <button
                 type="submit"
-                className="bg-[#ccff00] hover:bg-white text-black font-black px-8 py-3.5 text-xs uppercase tracking-widest flex items-center gap-2 cursor-pointer shadow-2xl skew-x-[-10deg]"
+                className="bg-[#00e652] hover:bg-white text-black font-black px-8 py-3.5 text-xs uppercase tracking-widest flex items-center gap-2 cursor-pointer shadow-2xl skew-x-[-10deg]"
               >
                 <div className="skew-x-[10deg] flex items-center gap-2">
                   <span>CONTINUAR A PAGO</span>
@@ -278,12 +278,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <button
                 type="button"
                 onClick={() => setStep('shipping')}
-                className="text-xs text-white/70 hover:text-[#ccff00] flex items-center gap-1 font-black uppercase cursor-pointer"
+                className="text-xs text-white/70 hover:text-[#00e652] flex items-center gap-1 font-black uppercase cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
                 <span>VOLVER A ENVÍO</span>
               </button>
-              <span className="text-xs text-[#ccff00] font-black uppercase italic">TOTAL: {formatPrice(totalUSD, currency)}</span>
+              <span className="text-xs text-[#00e652] font-black uppercase italic">TOTAL: {formatPrice(totalUSD, currency)}</span>
             </div>
 
             <div className="space-y-2">
@@ -295,7 +295,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   onClick={() => setPaymentMethod('card')}
                   className={`p-2.5 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
                     paymentMethod === 'card'
-                      ? 'bg-[#ccff00] text-black border-[#ccff00] font-black'
+                      ? 'bg-[#00e652] text-black border-[#00e652] font-black'
                       : 'bg-black border-white/10 text-white/60 hover:text-white'
                   }`}
                 >
@@ -310,7 +310,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   onClick={() => setPaymentMethod('sinpe_movil')}
                   className={`p-2.5 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
                     paymentMethod === 'sinpe_movil'
-                      ? 'bg-[#ccff00] text-black border-[#ccff00] font-black'
+                      ? 'bg-[#00e652] text-black border-[#00e652] font-black'
                       : 'bg-black border-white/10 text-white/60 hover:text-white'
                   }`}
                 >
@@ -325,7 +325,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   onClick={() => setPaymentMethod('bank_transfer')}
                   className={`p-2.5 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
                     paymentMethod === 'bank_transfer'
-                      ? 'bg-[#ccff00] text-black border-[#ccff00] font-black'
+                      ? 'bg-[#00e652] text-black border-[#00e652] font-black'
                       : 'bg-black border-white/10 text-white/60 hover:text-white'
                   }`}
                 >
@@ -340,7 +340,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   onClick={() => setPaymentMethod('paypal')}
                   className={`p-2.5 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] ${
                     paymentMethod === 'paypal'
-                      ? 'bg-[#ccff00] text-black border-[#ccff00] font-black'
+                      ? 'bg-[#00e652] text-black border-[#00e652] font-black'
                       : 'bg-black border-white/10 text-white/60 hover:text-white'
                   }`}
                 >
@@ -355,7 +355,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   onClick={() => setPaymentMethod('cash')}
                   className={`p-2.5 border text-center transition flex flex-col items-center gap-1 cursor-pointer skew-x-[-10deg] col-span-2 sm:col-span-1 ${
                     paymentMethod === 'cash'
-                      ? 'bg-[#ccff00] text-black border-[#ccff00] font-black'
+                      ? 'bg-[#00e652] text-black border-[#00e652] font-black'
                       : 'bg-black border-white/10 text-white/60 hover:text-white'
                   }`}
                 >
@@ -372,11 +372,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <div className="p-4 bg-[#121212] border border-white/10 space-y-3 rounded-xl">
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-black uppercase text-white">TARJETA VISA / MASTERCARD / AMEX</span>
-                  <div className="flex gap-1 text-[10px] font-mono text-[#ccff00]">🔒 ENCRIPTACIÓN SSL 256-BIT</div>
+                  <div className="flex gap-1 text-[10px] font-mono text-[#00e652]">🔒 ENCRIPTACIÓN SSL 256-BIT</div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] text-[#ccff00] font-black uppercase tracking-widest mb-1">NÚMERO DE TARJETA</label>
+                  <label className="block text-[10px] text-[#00e652] font-black uppercase tracking-widest mb-1">NÚMERO DE TARJETA</label>
                   <input
                     type="text"
                     required
@@ -384,13 +384,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     maxLength={19}
                     value={cardNumber}
                     onChange={(e) => setCardNumber(e.target.value)}
-                    className="w-full bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-white font-mono font-bold placeholder-white/40 focus:border-[#ccff00]"
+                    className="w-full bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-white font-mono font-bold placeholder-white/40 focus:border-[#00e652]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] text-[#ccff00] font-black uppercase tracking-widest mb-1">VENCIMIENTO (MM/AA)</label>
+                    <label className="block text-[10px] text-[#00e652] font-black uppercase tracking-widest mb-1">VENCIMIENTO (MM/AA)</label>
                     <input
                       type="text"
                       required
@@ -398,11 +398,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       maxLength={5}
                       value={cardExpiry}
                       onChange={(e) => setCardExpiry(e.target.value)}
-                      className="w-full bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-white font-mono font-bold placeholder-white/40 focus:border-[#ccff00] text-center"
+                      className="w-full bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-white font-mono font-bold placeholder-white/40 focus:border-[#00e652] text-center"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] text-[#ccff00] font-black uppercase tracking-widest mb-1">CVC / CVV</label>
+                    <label className="block text-[10px] text-[#00e652] font-black uppercase tracking-widest mb-1">CVC / CVV</label>
                     <input
                       type="password"
                       required
@@ -410,7 +410,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       maxLength={4}
                       value={cardCvc}
                       onChange={(e) => setCardCvc(e.target.value)}
-                      className="w-full bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-white font-mono font-bold placeholder-white/40 focus:border-[#ccff00] text-center"
+                      className="w-full bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-white font-mono font-bold placeholder-white/40 focus:border-[#00e652] text-center"
                     />
                   </div>
                 </div>
@@ -419,13 +419,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             {/* SINPE Móvil Details */}
             {paymentMethod === 'sinpe_movil' && (
-              <div className="p-4 bg-[#121212] border border-[#ccff00]/40 rounded-xl space-y-3 text-center">
-                <div className="inline-flex items-center gap-1.5 bg-[#ccff00]/10 border border-[#ccff00]/30 px-3 py-1 text-[11px] font-black uppercase text-[#ccff00]">
+              <div className="p-4 bg-[#121212] border border-[#00e652]/40 rounded-xl space-y-3 text-center">
+                <div className="inline-flex items-center gap-1.5 bg-[#00e652]/10 border border-[#00e652]/30 px-3 py-1 text-[11px] font-black uppercase text-[#00e652]">
                   <Smartphone className="w-3.5 h-3.5" />
                   <span>PAGO RÁPIDO POR SINPE MÓVIL</span>
                 </div>
                 <p className="text-xs text-white/90 font-semibold">
-                  Realiza la transferencia SINPE Móvil al número <strong className="text-[#ccff00] font-mono text-sm">{sinpeNumber}</strong>
+                  Realiza la transferencia SINPE Móvil al número <strong className="text-[#00e652] font-mono text-sm">{sinpeNumber}</strong>
                 </p>
 
                 <div className="bg-black p-3 border border-white/10 rounded-xl text-left text-xs space-y-1.5">
@@ -435,7 +435,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-white/60 font-bold">MONTO TOTAL A PAGAR:</span>
-                    <strong className="text-[#ccff00] font-mono font-black text-sm">{formatPrice(totalUSD, currency)}</strong>
+                    <strong className="text-[#00e652] font-mono font-black text-sm">{formatPrice(totalUSD, currency)}</strong>
                   </div>
                 </div>
 
@@ -449,7 +449,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     placeholder="Ej: 8888 8888 / Ref #10293"
                     value={sinpePhone}
                     onChange={(e) => setSinpePhone(e.target.value)}
-                    className="w-full max-w-xs mx-auto bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-center font-mono font-black text-[#ccff00] focus:border-[#ccff00]"
+                    className="w-full max-w-xs mx-auto bg-black border border-white/20 rounded-xl px-3 py-2 text-xs text-center font-mono font-black text-[#00e652] focus:border-[#00e652]"
                   />
                 </div>
               </div>
@@ -457,9 +457,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             {/* Bank Transfer Details */}
             {paymentMethod === 'bank_transfer' && (
-              <div className="p-4 bg-[#121212] border border-[#ccff00]/40 rounded-xl space-y-3">
+              <div className="p-4 bg-[#121212] border border-[#00e652]/40 rounded-xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="inline-flex items-center gap-1.5 bg-[#ccff00]/10 border border-[#ccff00]/30 px-3 py-1 text-[11px] font-black uppercase text-[#ccff00]">
+                  <div className="inline-flex items-center gap-1.5 bg-[#00e652]/10 border border-[#00e652]/30 px-3 py-1 text-[11px] font-black uppercase text-[#00e652]">
                     <Building2 className="w-3.5 h-3.5" />
                     <span>DATOS PARA TRANSFERENCIA BANCARIA / DEPÓSITO IBAN</span>
                   </div>
@@ -477,11 +477,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </div>
                   <div className="flex justify-between items-center border-b border-white/10 pb-1.5">
                     <span className="text-white/60 uppercase font-black text-[10px]">CUENTA IBAN:</span>
-                    <strong className="text-[#ccff00] font-mono font-black text-xs select-all">{bankAccountIBAN}</strong>
+                    <strong className="text-[#00e652] font-mono font-black text-xs select-all">{bankAccountIBAN}</strong>
                   </div>
                   <div className="flex justify-between items-center pt-0.5">
                     <span className="text-white/60 uppercase font-black text-[10px]">MONTO TOTAL PRODUCTO + ENVÍO:</span>
-                    <strong className="text-[#ccff00] font-mono font-black text-sm">{formatPrice(totalUSD, currency)}</strong>
+                    <strong className="text-[#00e652] font-mono font-black text-sm">{formatPrice(totalUSD, currency)}</strong>
                   </div>
                 </div>
 
@@ -501,14 +501,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             {/* Cash on Delivery info */}
             {paymentMethod === 'cash' && (
               <div className="p-4 bg-[#121212] border border-white/10 rounded-xl text-center text-xs text-white/80 space-y-1">
-                <p className="font-black text-[#ccff00] uppercase">PAGAS EN EFECTIVO AL RECIBIR EN TU PUERTA</p>
+                <p className="font-black text-[#00e652] uppercase">PAGAS EN EFECTIVO AL RECIBIR EN TU PUERTA</p>
                 <p className="text-[11px] text-white/60 font-semibold">Ten listo el dinero exacto para el repartidor al momento de la entrega.</p>
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full py-4 bg-[#ccff00] hover:bg-white text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer shadow-2xl skew-x-[-10deg]"
+              className="w-full py-4 bg-[#00e652] hover:bg-white text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer shadow-2xl skew-x-[-10deg]"
             >
               <div className="skew-x-[10deg] flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
@@ -521,7 +521,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Step 3: Processing Loader */}
         {step === 'processing' && (
           <div className="p-12 text-center space-y-5">
-            <div className="w-16 h-16 mx-auto border-4 border-[#ccff00] border-t-transparent animate-spin" />
+            <div className="w-16 h-16 mx-auto border-4 border-[#00e652] border-t-transparent animate-spin" />
             <div>
               <h3 className="text-xl font-black italic uppercase text-white">PROCESANDO PAGO SEGURO</h3>
               <p className="text-xs text-white/70 font-semibold mt-1">Conectando con la pasarela bancaria y generando tu número de guía...</p>
@@ -532,19 +532,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Step 4: Order Confirmation & Invoice Receipt */}
         {step === 'success' && completedOrder && (
           <div className="p-6 sm:p-8 text-center space-y-6">
-            <div className="w-16 h-16 mx-auto bg-[#ccff00]/20 border-2 border-[#ccff00] flex items-center justify-center text-[#ccff00] skew-x-[-10deg]">
+            <div className="w-16 h-16 mx-auto bg-[#00e652]/20 border-2 border-[#00e652] flex items-center justify-center text-[#00e652] skew-x-[-10deg]">
               <CheckCircle2 className="w-10 h-10 stroke-[2.5] skew-x-[10deg]" />
             </div>
 
             <div>
-              <span className="bg-[#ccff00] text-black font-black uppercase text-xs px-3 py-1 tracking-widest">
+              <span className="bg-[#00e652] text-black font-black uppercase text-xs px-3 py-1 tracking-widest">
                 ¡PAGO CONFIRMADO EXITOSAMENTE!
               </span>
               <h3 className="text-3xl font-black italic uppercase text-white mt-3">
                 GRACIAS POR TU COMPRA, {completedOrder.customer.fullName.split(' ')[0]}
               </h3>
               <p className="text-xs text-white/70 font-semibold mt-1">
-                Tu pedido <strong className="text-[#ccff00] font-mono">{completedOrder.id}</strong> ha sido registrado. Enviaremos las actualizaciones del envío a <strong className="text-white">{completedOrder.customer.email}</strong>.
+                Tu pedido <strong className="text-[#00e652] font-mono">{completedOrder.id}</strong> ha sido registrado. Enviaremos las actualizaciones del envío a <strong className="text-white">{completedOrder.customer.email}</strong>.
               </p>
             </div>
 
@@ -552,7 +552,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <div className="p-4 bg-[#121212] border border-white/10 text-left text-xs space-y-3 font-mono">
               <div className="flex justify-between pb-2 border-b border-white/10">
                 <span className="text-white/60 font-bold uppercase">NÚMERO DE ORDEN:</span>
-                <span className="text-[#ccff00] font-black">{completedOrder.id}</span>
+                <span className="text-[#00e652] font-black">{completedOrder.id}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-white/60 uppercase">Fecha:</span>
@@ -568,7 +568,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
               <div className="flex justify-between pt-2 border-t border-white/10">
                 <span className="text-white/60 font-black uppercase">TOTAL PAGADO:</span>
-                <span className="text-[#ccff00] font-black text-sm">{formatPrice(completedOrder.total, currency)}</span>
+                <span className="text-[#00e652] font-black text-sm">{formatPrice(completedOrder.total, currency)}</span>
               </div>
             </div>
 
@@ -580,7 +580,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 )}`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 py-4 bg-[#ccff00] hover:bg-white text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer shadow-2xl skew-x-[-10deg]"
+                className="flex-1 py-4 bg-[#00e652] hover:bg-white text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer shadow-2xl skew-x-[-10deg]"
               >
                 <div className="skew-x-[10deg] flex items-center gap-2">
                   <MessageCircle className="w-4 h-4 stroke-[2.5]" />

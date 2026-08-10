@@ -225,7 +225,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                   ) : null}
                 </div>
                 {stampEnabled && (
-                  <p className="text-[11px] text-[#ccff00] font-bold mt-1">
+                  <p className="text-[11px] text-[#00e652] font-bold mt-1">
                     🎁 Personalización de nombre y número incluida sin costo adicional
                   </p>
                 )}
@@ -283,7 +283,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
             </div>
 
             {/* Custom Stamping Customizer */}
-            <div className="p-4 bg-slate-950/80 border border-[#ccff00]/30 rounded-2xl space-y-3">
+            <div className="p-4 bg-slate-950/80 border border-[#00e652]/30 rounded-2xl space-y-3">
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -296,8 +296,8 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                     className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-500 bg-slate-900 border-slate-700"
                   />
                   <span className="text-xs font-black uppercase text-white flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-[#ccff00]" />
-                    2. Personalizar Nombre & Dorsal <span className="text-[#ccff00] font-black">(¡TOTALMENTE GRATIS! 🎁)</span>
+                    <Sparkles className="w-4 h-4 text-[#00e652]" />
+                    2. Personalizar Nombre & Dorsal <span className="text-[#00e652] font-black">(¡TOTALMENTE GRATIS! 🎁)</span>
                   </span>
                 </label>
               </div>

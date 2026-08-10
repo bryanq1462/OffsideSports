@@ -19,7 +19,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
         <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center sm:text-left">
           
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/30">
+            <div className="p-2.5 rounded-xl bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/30">
               <Truck className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
@@ -29,7 +29,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/30">
+            <div className="p-2.5 rounded-xl bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/30">
               <ShieldCheck className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
@@ -39,7 +39,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/30">
+            <div className="p-2.5 rounded-xl bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/30">
               <RotateCcw className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
@@ -49,7 +49,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#ccff00]/10 text-[#ccff00] border border-[#ccff00]/30">
+            <div className="p-2.5 rounded-xl bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/30">
               <Shirt className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
@@ -66,13 +66,17 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
         
         {/* Brand info */}
         <div className="md:col-span-5 space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-[#ccff00] text-black font-black flex items-center justify-center skew-x-[-10deg]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 bg-[#00e652] text-black font-black flex items-center justify-center skew-x-[-10deg] shadow-[0_0_15px_rgba(0,230,82,0.4)]">
               <Shirt className="w-5 h-5 stroke-[3] skew-x-[10deg]" />
             </div>
-            <div className="flex items-center gap-1 text-2xl font-black italic tracking-tighter uppercase">
-              <span className="text-white">OFFSIDE</span>
-              <span className="text-[#ccff00]">sports</span>
+            <div>
+              <div className="flex items-center gap-1 text-2xl font-black italic tracking-tighter uppercase leading-none">
+                <span className="text-white">OFF</span>
+                <span className="text-[#00e652]">side</span>
+                <span className="text-white/80 text-xl font-black ml-1">Sports</span>
+              </div>
+              <p className="text-[8px] font-black uppercase tracking-[0.25em] text-[#00e652] mt-0.5">ROPA DEPORTIVA</p>
             </div>
           </div>
 
@@ -82,9 +86,9 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
 
           {/* Payment Methods */}
           <div className="pt-2">
-            <p className="text-[10px] font-black uppercase text-[#ccff00] tracking-widest mb-2">MEDIOS DE PAGO ACEPTADOS:</p>
+            <p className="text-[10px] font-black uppercase text-[#00e652] tracking-widest mb-2">MEDIOS DE PAGO ACEPTADOS:</p>
             <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase text-white/90">
-              <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm text-[#ccff00]">SINPE Móvil ({phoneDisplay})</span>
+              <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm text-[#00e652]">SINPE Móvil ({phoneDisplay})</span>
               <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm">Visa</span>
               <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm">Mastercard</span>
               <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm">PayPal</span>
@@ -98,29 +102,29 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
           <h4 className="font-black italic uppercase text-white text-sm tracking-wider">NAVEGACIÓN RÁPIDA</h4>
           <ul className="space-y-2 text-xs font-bold uppercase tracking-wider">
             <li>
-              <button onClick={() => setActiveTab('catalog')} className="hover:text-[#ccff00] transition cursor-pointer">
+              <button onClick={() => setActiveTab('catalog')} className="hover:text-[#00e652] transition cursor-pointer">
                 Catálogo de Camisetas
               </button>
             </li>
             {onOpenOrderHistory && (
               <li>
-                <button onClick={onOpenOrderHistory} className="text-[#ccff00] hover:underline transition cursor-pointer font-black flex items-center gap-1">
+                <button onClick={onOpenOrderHistory} className="text-[#00e652] hover:underline transition cursor-pointer font-black flex items-center gap-1">
                   📦 Historial de Compras / Rastrear Pedido
                 </button>
               </li>
             )}
             <li>
-              <button onClick={() => setActiveTab('filters')} className="hover:text-[#ccff00] transition cursor-pointer">
+              <button onClick={() => setActiveTab('filters')} className="hover:text-[#00e652] transition cursor-pointer">
                 Buscador por Liga y Equipo
               </button>
             </li>
             <li>
-              <button onClick={() => setActiveTab('reviews')} className="hover:text-[#ccff00] transition cursor-pointer">
+              <button onClick={() => setActiveTab('reviews')} className="hover:text-[#00e652] transition cursor-pointer">
                 Reseñas de Clientes Verificados
               </button>
             </li>
             <li>
-              <button onClick={() => setActiveTab('contact')} className="hover:text-[#ccff00] transition cursor-pointer">
+              <button onClick={() => setActiveTab('contact')} className="hover:text-[#00e652] transition cursor-pointer">
                 Atención por WhatsApp
               </button>
             </li>
@@ -145,7 +149,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
                   <p className="text-[11px] text-pink-300 font-mono font-bold">@offside_sports22</p>
                 </div>
               </div>
-              <span className="text-[10px] font-black uppercase bg-white text-black px-2.5 py-1 rounded-lg group-hover:bg-[#ccff00]">
+              <span className="text-[10px] font-black uppercase bg-white text-black px-2.5 py-1 rounded-lg group-hover:bg-[#00e652]">
                 VER PERFIL
               </span>
             </a>
@@ -154,7 +158,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
               <p className="text-[11px] text-white/50 font-semibold mb-2">Acceso a gestión privada de inventario y pedidos:</p>
               <button
                 onClick={onOpenAdmin}
-                className="bg-white/5 hover:bg-[#ccff00] text-white hover:text-black border border-white/20 hover:border-[#ccff00] px-4 py-2.5 text-xs font-black uppercase tracking-widest skew-x-[-10deg] transition-all cursor-pointer flex items-center gap-2"
+                className="bg-white/5 hover:bg-[#00e652] text-white hover:text-black border border-white/20 hover:border-[#00e652] px-4 py-2.5 text-xs font-black uppercase tracking-widest skew-x-[-10deg] transition-all cursor-pointer flex items-center gap-2"
               >
                 <div className="skew-x-[10deg] flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 stroke-[2.5]" />

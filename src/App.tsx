@@ -493,7 +493,7 @@ export default function App() {
           href={`https://wa.me/${(settings.contactPhone || '+506 8559 5192').replace(/[^0-9]/g, '') || '50685595192'}?text=${encodeURIComponent('Hola OFFSIDE Sports! ⚽ Quisiera consultar sobre disponibilidad de camisetas.')}`}
           target="_blank"
           rel="noreferrer"
-          className="group flex items-center gap-2 bg-[#ccff00] hover:bg-white text-black font-black px-4 py-3 rounded-full shadow-2xl hover:scale-105 transition-all cursor-pointer border border-black/10"
+          className="group flex items-center gap-2 bg-[#00e652] hover:bg-white text-black font-black px-4 py-3 rounded-full shadow-2xl hover:scale-105 transition-all cursor-pointer border border-black/10"
           title="Atención por WhatsApp"
         >
           <MessageCircle className="w-5 h-5 stroke-[2.5]" />

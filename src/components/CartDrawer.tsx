@@ -96,17 +96,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           {/* Header */}
           <div className="p-5 border-b border-white/10 bg-black flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-[#ccff00] text-black font-black skew-x-[-10deg]">
+              <div className="p-2 bg-[#00e652] text-black font-black skew-x-[-10deg]">
                 <ShoppingBag className="w-5 h-5 stroke-[3] skew-x-[10deg]" />
               </div>
               <div>
                 <h2 className="text-lg font-black italic uppercase tracking-wider text-white">TU CARRITO DE COMPRAS</h2>
-                <p className="text-[11px] text-[#ccff00] font-black uppercase tracking-widest">{cart.length} {cart.length === 1 ? 'PRODUCTO' : 'PRODUCTOS'}</p>
+                <p className="text-[11px] text-[#00e652] font-black uppercase tracking-widest">{cart.length} {cart.length === 1 ? 'PRODUCTO' : 'PRODUCTOS'}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 bg-white/10 hover:bg-[#ccff00] text-white hover:text-black transition cursor-pointer"
+              className="p-2 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer"
             >
               <X className="w-5 h-5 stroke-[2.5]" />
             </button>
@@ -114,8 +114,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
           {/* Shipping notice */}
           <div className="p-3 bg-[#121212] border-b border-white/10 text-xs">
-            <div className="flex items-center gap-2 text-[#ccff00] font-bold text-[11px] uppercase tracking-wider">
-              <Truck className="w-4 h-4 text-[#ccff00] flex-shrink-0" />
+            <div className="flex items-center gap-2 text-[#00e652] font-bold text-[11px] uppercase tracking-wider">
+              <Truck className="w-4 h-4 text-[#00e652] flex-shrink-0" />
               <span>Envíos a todo Costa Rica por Correos de CR o Mensajería Express</span>
             </div>
           </div>
@@ -124,7 +124,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           <div className="flex-1 overflow-y-auto p-5 space-y-4">
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4">
-                <div className="w-16 h-16 bg-[#121212] border border-white/10 flex items-center justify-center text-[#ccff00] skew-x-[-10deg]">
+                <div className="w-16 h-16 bg-[#121212] border border-white/10 flex items-center justify-center text-[#00e652] skew-x-[-10deg]">
                   <ShoppingBag className="w-8 h-8 stroke-[2.5] skew-x-[10deg]" />
                 </div>
                 <div>
@@ -133,7 +133,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
                 <button
                   onClick={onClose}
-                  className="bg-[#ccff00] hover:bg-white text-black font-black px-6 py-3 uppercase text-xs tracking-widest skew-x-[-10deg] cursor-pointer shadow-xl"
+                  className="bg-[#00e652] hover:bg-white text-black font-black px-6 py-3 uppercase text-xs tracking-widest skew-x-[-10deg] cursor-pointer shadow-xl"
                 >
                   <span className="skew-x-[10deg] inline-block">EXPLORAR CAMISETAS</span>
                 </button>
@@ -171,13 +171,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           </button>
                         </div>
 
-                        <p className="text-[11px] text-[#ccff00] font-black uppercase mt-0.5 tracking-wider">
+                        <p className="text-[11px] text-[#00e652] font-black uppercase mt-0.5 tracking-wider">
                           TALLA: <span className="text-white bg-black border border-white/20 px-1.5 py-0.5 rounded ml-1">{item.size}</span>
                         </p>
 
                         {/* Stamping details badge */}
                         {item.customStamping?.enabled && (
-                          <div className="mt-1.5 p-1.5 bg-black border border-[#ccff00]/40 text-[10px] text-[#ccff00] font-mono uppercase tracking-wider">
+                          <div className="mt-1.5 p-1.5 bg-black border border-[#00e652]/40 text-[10px] text-[#00e652] font-mono uppercase tracking-wider">
                             <span className="font-black">ESTAMPADO GRATIS 🎁:</span> {item.customStamping.name} #{item.customStamping.number}
                             {item.customStamping.patch && (
                               <p className="text-[9px] text-white/80 mt-0.5">+{item.customStamping.patch}</p>
@@ -190,14 +190,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           <div className="flex items-center bg-black border border-white/20">
                             <button
                               onClick={() => onUpdateQuantity(item.cartItemId, item.quantity - 1)}
-                              className="px-2 py-0.5 text-white/70 hover:text-[#ccff00] font-black text-xs cursor-pointer"
+                              className="px-2 py-0.5 text-white/70 hover:text-[#00e652] font-black text-xs cursor-pointer"
                             >
                               -
                             </button>
-                            <span className="px-2 text-xs font-black text-[#ccff00]">{item.quantity}</span>
+                            <span className="px-2 text-xs font-black text-[#00e652]">{item.quantity}</span>
                             <button
                               onClick={() => onUpdateQuantity(item.cartItemId, item.quantity + 1)}
-                              className="px-2 py-0.5 text-white/70 hover:text-[#ccff00] font-black text-xs cursor-pointer"
+                              className="px-2 py-0.5 text-white/70 hover:text-[#00e652] font-black text-xs cursor-pointer"
                             >
                               +
                             </button>
@@ -228,19 +228,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       placeholder="Código cupón (ej: OFFSIDE10)"
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value)}
-                      className="w-full bg-[#121212] border border-white/20 rounded-xl py-2 pl-8 pr-3 text-xs text-white uppercase font-bold placeholder-white/40 focus:border-[#ccff00]"
+                      className="w-full bg-[#121212] border border-white/20 rounded-xl py-2 pl-8 pr-3 text-xs text-white uppercase font-bold placeholder-white/40 focus:border-[#00e652]"
                     />
-                    <Tag className="w-3.5 h-3.5 text-[#ccff00] absolute left-2.5 top-2.5 stroke-[2.5]" />
+                    <Tag className="w-3.5 h-3.5 text-[#00e652] absolute left-2.5 top-2.5 stroke-[2.5]" />
                   </div>
                   <button
                     type="submit"
-                    className="bg-[#ccff00] hover:bg-white text-black font-black px-4 py-2 text-xs uppercase tracking-wider cursor-pointer skew-x-[-10deg]"
+                    className="bg-[#00e652] hover:bg-white text-black font-black px-4 py-2 text-xs uppercase tracking-wider cursor-pointer skew-x-[-10deg]"
                   >
                     <span className="skew-x-[10deg] inline-block">APLICAR</span>
                   </button>
                 </div>
                 {couponApplied && (
-                  <p className="text-[11px] text-[#ccff00] font-black uppercase tracking-wider flex items-center gap-1">
+                  <p className="text-[11px] text-[#00e652] font-black uppercase tracking-wider flex items-center gap-1">
                     <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                     Cupón {couponApplied.code} aplicado ({couponApplied.percent}% de descuento)
                   </p>
@@ -258,7 +258,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
                 
                 {couponApplied && (
-                  <div className="flex justify-between text-[#ccff00]">
+                  <div className="flex justify-between text-[#00e652]">
                     <span>Descuento ({couponApplied.percent}%):</span>
                     <span className="font-bold">-{formatPrice(discountUSD, currency)}</span>
                   </div>
@@ -273,7 +273,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                 <div className="flex justify-between text-base font-black text-white pt-2 border-t border-white/10 uppercase italic">
                   <span>TOTAL A PAGAR:</span>
-                  <span className="text-[#ccff00]">{formatPrice(totalUSD, currency)}</span>
+                  <span className="text-[#00e652]">{formatPrice(totalUSD, currency)}</span>
                 </div>
               </div>
 
@@ -281,7 +281,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <div className="space-y-2 pt-1">
                 <button
                   onClick={() => onProceedToCheckout(discountUSD)}
-                  className="w-full py-4 bg-[#ccff00] hover:bg-white text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-2xl cursor-pointer skew-x-[-10deg]"
+                  className="w-full py-4 bg-[#00e652] hover:bg-white text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-2xl cursor-pointer skew-x-[-10deg]"
                 >
                   <div className="skew-x-[10deg] flex items-center gap-2">
                     <span>IR A PASARELA DE PAGOS</span>
@@ -291,7 +291,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                 <button
                   onClick={onWhatsAppOrder}
-                  className="w-full py-3 bg-white/5 hover:bg-white/10 text-[#ccff00] border border-[#ccff00]/40 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer skew-x-[-10deg]"
+                  className="w-full py-3 bg-white/5 hover:bg-white/10 text-[#00e652] border border-[#00e652]/40 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer skew-x-[-10deg]"
                 >
                   <div className="skew-x-[10deg] flex items-center gap-2">
                     <MessageCircle className="w-4 h-4 stroke-[2.5]" />

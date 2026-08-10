@@ -312,17 +312,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         <div className="relative w-full max-w-md bg-[#0a0a0a] border border-white/10 rounded-3xl shadow-2xl p-6 text-white animate-in zoom-in-95">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-[#ccff00] text-white hover:text-black transition cursor-pointer rounded-full"
+            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer rounded-full"
           >
             <X className="w-5 h-5 stroke-[2.5]" />
           </button>
 
           <div className="text-center space-y-3 mb-6">
-            <div className="w-14 h-14 bg-[#ccff00] text-black mx-auto flex items-center justify-center rounded-2xl skew-x-[-10deg] shadow-lg">
+            <div className="w-14 h-14 bg-[#00e652] text-black mx-auto flex items-center justify-center rounded-2xl skew-x-[-10deg] shadow-lg">
               <ShieldCheck className="w-8 h-8 stroke-[2.5] skew-x-[10deg]" />
             </div>
             <div>
-              <span className="bg-[#ccff00] text-black text-[10px] font-black uppercase px-2 py-0.5 tracking-widest rounded-sm">
+              <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2 py-0.5 tracking-widest rounded-sm">
                 ACCESO RESTRINGIDO
               </span>
               <h2 className="text-xl font-black italic uppercase text-white mt-2">PANEL ADMINISTRATIVO</h2>
@@ -332,7 +332,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
           <form onSubmit={handleAdminLogin} className="space-y-4">
             <div>
-              <label className="block text-[10px] font-black text-[#ccff00] uppercase tracking-widest mb-1">
+              <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">
                 CORREO DE ADMINISTRADOR
               </label>
               <input
@@ -341,12 +341,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 placeholder="admin@offsidesports.cr"
                 value={adminEmail}
                 onChange={(e) => setAdminEmail(e.target.value)}
-                className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-3 text-xs text-white font-bold placeholder-white/30 focus:border-[#ccff00] outline-none"
+                className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-3 text-xs text-white font-bold placeholder-white/30 focus:border-[#00e652] outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-[#ccff00] uppercase tracking-widest mb-1">
+              <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">
                 CONTRASEÑA ADMINISTRATIVA
               </label>
               <input
@@ -355,7 +355,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 placeholder="••••••••"
                 value={adminPassword}
                 onChange={(e) => setAdminPassword(e.target.value)}
-                className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-3 text-xs text-white font-bold placeholder-white/30 focus:border-[#ccff00] outline-none"
+                className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-3 text-xs text-white font-bold placeholder-white/30 focus:border-[#00e652] outline-none"
               />
             </div>
 
@@ -367,7 +367,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
             <button
               type="submit"
-              className="w-full bg-[#ccff00] hover:bg-white text-black font-black py-3.5 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer shadow-xl skew-x-[-10deg] mt-2"
+              className="w-full bg-[#00e652] hover:bg-white text-black font-black py-3.5 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer shadow-xl skew-x-[-10deg] mt-2"
             >
               <span className="skew-x-[10deg] inline-block">INGRESAR AL PANEL</span>
             </button>
@@ -384,13 +384,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         {/* Header */}
         <div className="p-5 border-b border-white/10 bg-black flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[#ccff00] text-black skew-x-[-10deg]">
+            <div className="p-2.5 bg-[#00e652] text-black skew-x-[-10deg]">
               <ShieldCheck className="w-6 h-6 stroke-[2.5] skew-x-[10deg]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-black italic uppercase text-white tracking-wider">PANEL ADMINISTRATIVO</h2>
-                <span className="bg-[#ccff00] text-black text-[10px] font-black uppercase px-2 py-0.5 tracking-widest">
+                <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2 py-0.5 tracking-widest">
                   OFFSIDE ADMIN
                 </span>
               </div>
@@ -400,7 +400,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
           <button
             onClick={onClose}
-            className="p-2 bg-white/10 hover:bg-[#ccff00] text-white hover:text-black transition cursor-pointer"
+            className="p-2 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer"
           >
             <X className="w-5 h-5 stroke-[2.5]" />
           </button>
@@ -408,12 +408,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
         {/* Admin Navigation Tabs */}
         <div className="px-3 sm:px-6 py-2.5 sm:py-3 bg-[#121212] border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs font-black uppercase tracking-wider">
-          <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1.5 md:pb-0 scrollbar-thin scrollbar-thumb-[#ccff00]/40 touch-pan-x">
+          <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1.5 md:pb-0 scrollbar-thin scrollbar-thumb-[#00e652]/40 touch-pan-x">
             <button
               onClick={() => setActiveTab('inventory')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'inventory'
-                  ? 'bg-[#ccff00] text-black font-black'
+                  ? 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
@@ -427,7 +427,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onClick={() => setActiveTab('settings')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'settings'
-                  ? 'bg-[#ccff00] text-black font-black'
+                  ? 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
@@ -441,7 +441,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onClick={() => setActiveTab('orders')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'orders'
-                  ? 'bg-[#ccff00] text-black font-black'
+                  ? 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
@@ -449,7 +449,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <ShoppingBag className="w-4 h-4 stroke-[2.5]" />
                 <span className="whitespace-nowrap">PEDIDOS ({orders.length})</span>
                 {pendingOrders > 0 && (
-                  <span className="bg-black text-[#ccff00] border border-[#ccff00] text-[10px] px-1.5 py-0.2 font-black">
+                  <span className="bg-black text-[#00e652] border border-[#00e652] text-[10px] px-1.5 py-0.2 font-black">
                     {pendingOrders}
                   </span>
                 )}
@@ -460,7 +460,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onClick={() => setActiveTab('coupons')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'coupons'
-                  ? 'bg-[#ccff00] text-black font-black'
+                  ? 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
@@ -474,7 +474,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onClick={() => setActiveTab('stats')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'stats'
-                  ? 'bg-[#ccff00] text-black font-black'
+                  ? 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
@@ -505,7 +505,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 setUsdInputValue(String(initialPrice));
                 setIsNewModalOpen(true);
               }}
-              className="shrink-0 bg-[#ccff00] hover:bg-white text-black px-4 py-2 flex items-center justify-center gap-2 font-black cursor-pointer shadow-xl skew-x-[-10deg] text-xs"
+              className="shrink-0 bg-[#00e652] hover:bg-white text-black px-4 py-2 flex items-center justify-center gap-2 font-black cursor-pointer shadow-xl skew-x-[-10deg] text-xs"
             >
               <div className="skew-x-[10deg] flex items-center gap-2">
                 <Plus className="w-4 h-4 stroke-[2.5]" />
@@ -528,7 +528,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   placeholder="Buscar en inventario por equipo o liga..."
                   value={adminSearch}
                   onChange={(e) => setAdminSearch(e.target.value)}
-                  className="w-full bg-black border border-white/20 rounded-xl py-2 pl-9 pr-4 text-xs text-white placeholder-white/40 focus:border-[#ccff00]"
+                  className="w-full bg-black border border-white/20 rounded-xl py-2 pl-9 pr-4 text-xs text-white placeholder-white/40 focus:border-[#00e652]"
                 />
                 <Search className="w-3.5 h-3.5 text-white/50 absolute left-3 top-2.5" />
               </div>
@@ -536,7 +536,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               {/* Inventory Table */}
               <div className="bg-black border border-white/10 overflow-x-auto shadow-inner">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#121212] border-b border-white/10 text-[#ccff00] uppercase font-black text-[10px] tracking-widest">
+                  <thead className="bg-[#121212] border-b border-white/10 text-[#00e652] uppercase font-black text-[10px] tracking-widest">
                     <tr>
                       <th className="p-3">CAMISETA</th>
                       <th className="p-3">LIGA / EQUIPO</th>
@@ -558,7 +558,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           />
                           <div>
                             <p className="font-black italic uppercase text-white line-clamp-1">{jersey.name}</p>
-                            <p className="text-[10px] text-[#ccff00] font-mono">{jersey.type} • {jersey.yearSeason}</p>
+                            <p className="text-[10px] text-[#00e652] font-mono">{jersey.type} • {jersey.yearSeason}</p>
                           </div>
                         </td>
 
@@ -567,14 +567,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <p className="text-[10px] text-white/60">{jersey.league}</p>
                         </td>
 
-                        <td className="p-3 font-black text-[#ccff00] text-sm italic">
+                        <td className="p-3 font-black text-[#00e652] text-sm italic">
                           {formatPrice(jersey.price, currency)}
                         </td>
 
                         <td className="p-3">
                           {jersey.stock > 0 ? (
                             <span className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${
-                              jersey.stock <= 5 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-[#ccff00]/20 text-[#ccff00] border border-[#ccff00]/40'
+                              jersey.stock <= 5 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-[#00e652]/20 text-[#00e652] border border-[#00e652]/40'
                             }`}>
                               {jersey.stock} UNDS.
                             </span>
@@ -598,7 +598,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                               );
                               setIsNewModalOpen(true);
                             }}
-                            className="p-1.5 bg-white/10 hover:bg-[#ccff00] text-white hover:text-black transition cursor-pointer"
+                            className="p-1.5 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer"
                             title="Editar Camiseta"
                           >
                             <Edit className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -623,7 +623,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           {activeTab === 'settings' && (
             <div className="max-w-3xl mx-auto space-y-6 bg-black border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl">
               <div className="border-b border-white/10 pb-4 space-y-1">
-                <div className="inline-flex items-center gap-2 bg-[#ccff00]/10 border border-[#ccff00]/30 px-3 py-1 text-[11px] font-black uppercase text-[#ccff00] tracking-wider">
+                <div className="inline-flex items-center gap-2 bg-[#00e652]/10 border border-[#00e652]/30 px-3 py-1 text-[11px] font-black uppercase text-[#00e652] tracking-wider">
                   <SettingsIcon className="w-3.5 h-3.5" />
                   <span>AJUSTES GLOBALES DE LA TIENDA</span>
                 </div>
@@ -634,7 +634,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               </div>
 
               {settingsSavedMessage && (
-                <div className="bg-[#ccff00] text-black p-4 font-black uppercase text-xs flex items-center justify-between shadow-xl animate-bounce">
+                <div className="bg-[#00e652] text-black p-4 font-black uppercase text-xs flex items-center justify-between shadow-xl animate-bounce">
                   <div className="flex items-center gap-2">
                     <Check className="w-5 h-5 stroke-[3]" />
                     <span>¡CONFIGURACIÓN GUARDADA Y ACTUALIZADA EN TODA LA PLATAFORMA!</span>
@@ -647,11 +647,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 {/* Prices Section - CRC & USD */}
                 <div className="space-y-4 bg-[#121212] p-5 border border-white/10 rounded-2xl">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-black italic uppercase text-[#ccff00] flex items-center gap-2">
+                    <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
                       <DollarSign className="w-4 h-4 stroke-[2.5]" />
                       <span>CONFIGURACIÓN DE MONTOS Y TARIFAS (COLONES ₡ & USD)</span>
                     </h4>
-                    <span className="text-[10px] bg-[#ccff00]/10 text-[#ccff00] px-2 py-0.5 border border-[#ccff00]/30 font-black uppercase">
+                    <span className="text-[10px] bg-[#00e652]/10 text-[#00e652] px-2 py-0.5 border border-[#00e652]/30 font-black uppercase">
                       1 USD = ₡520 CRC
                     </span>
                   </div>
@@ -666,7 +666,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <div>
                           <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN COLONES (₡ CRC):</span>
                           <div className="relative">
-                            <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">₡</span>
+                            <span className="absolute left-3 top-2.5 text-[#00e652] font-black">₡</span>
                             <input
                               type="number"
                               step="any"
@@ -681,7 +681,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                   customizationPriceUSD: Number((crc / 520).toFixed(2))
                                 });
                               }}
-                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white font-mono font-black text-sm focus:border-[#ccff00]"
+                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white font-mono font-black text-sm focus:border-[#00e652]"
                             />
                           </div>
                         </div>
@@ -689,7 +689,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <div>
                           <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN DÓLARES ($ USD):</span>
                           <div className="relative">
-                            <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">$</span>
+                            <span className="absolute left-3 top-2.5 text-[#00e652] font-black">$</span>
                             <input
                               type="number"
                               step="any"
@@ -704,7 +704,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                   customizationPriceCRC: Math.round(usd * 520)
                                 });
                               }}
-                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white/80 font-mono font-bold text-sm focus:border-[#ccff00]"
+                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white/80 font-mono font-bold text-sm focus:border-[#00e652]"
                             />
                           </div>
                         </div>
@@ -720,7 +720,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <div>
                           <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN COLONES (₡ CRC):</span>
                           <div className="relative">
-                            <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">₡</span>
+                            <span className="absolute left-3 top-2.5 text-[#00e652] font-black">₡</span>
                             <input
                               type="number"
                               step="any"
@@ -735,7 +735,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                   shippingFeeUSD: Number((crc / 520).toFixed(2))
                                 });
                               }}
-                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white font-mono font-black text-sm focus:border-[#ccff00]"
+                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white font-mono font-black text-sm focus:border-[#00e652]"
                             />
                           </div>
                         </div>
@@ -743,7 +743,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <div>
                           <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN DÓLARES ($ USD):</span>
                           <div className="relative">
-                            <span className="absolute left-3 top-2.5 text-[#ccff00] font-black">$</span>
+                            <span className="absolute left-3 top-2.5 text-[#00e652] font-black">$</span>
                             <input
                               type="number"
                               step="any"
@@ -758,7 +758,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                   shippingFeeCRC: Math.round(usd * 520)
                                 });
                               }}
-                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white/80 font-mono font-bold text-sm focus:border-[#ccff00]"
+                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white/80 font-mono font-bold text-sm focus:border-[#00e652]"
                             />
                           </div>
                         </div>
@@ -768,13 +768,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
 
                 {/* Bank Account Receiver Section */}
-                <div className="space-y-4 bg-[#121212] p-5 border border-[#ccff00]/30 rounded-2xl">
+                <div className="space-y-4 bg-[#121212] p-5 border border-[#00e652]/30 rounded-2xl">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-black italic uppercase text-[#ccff00] flex items-center gap-2">
+                    <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
                       <Landmark className="w-4 h-4 stroke-[2.5]" />
                       <span>CUENTA BANCARIA & RECEPCIÓN DE FONDOS DE CLIENTES</span>
                     </h4>
-                    <span className="text-[10px] bg-[#ccff00] text-black px-2 py-0.5 font-black uppercase">
+                    <span className="text-[10px] bg-[#00e652] text-black px-2 py-0.5 font-black uppercase">
                       CUENTA DE INGRESO
                     </span>
                   </div>
@@ -785,7 +785,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5 sm:col-span-2">
                       <label className="block font-black uppercase text-white tracking-wider flex items-center gap-2">
-                        <Building2 className="w-3.5 h-3.5 text-[#ccff00]" />
+                        <Building2 className="w-3.5 h-3.5 text-[#00e652]" />
                         <span>TITULAR DE LA CUENTA / NOMBRE DE EMPRESA:</span>
                       </label>
                       <input
@@ -793,7 +793,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         required
                         value={localSettings.bankAccountHolder || ''}
                         onChange={(e) => setLocalSettings({ ...localSettings, bankAccountHolder: e.target.value })}
-                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold focus:border-[#ccff00]"
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold focus:border-[#00e652]"
                         placeholder="Ej: OFFSIDE Sports Costa Rica S.A. (3-101-882910)"
                       />
                       <p className="text-[10px] text-white/50">
@@ -810,7 +810,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         required
                         value={localSettings.bankName || ''}
                         onChange={(e) => setLocalSettings({ ...localSettings, bankName: e.target.value })}
-                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold focus:border-[#ccff00]"
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold focus:border-[#00e652]"
                         placeholder="Ej: BAC Credomatic Costa Rica / Banco Nacional"
                       />
                     </div>
@@ -824,7 +824,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         required
                         value={localSettings.sinpePhone || localSettings.contactPhone || ''}
                         onChange={(e) => setLocalSettings({ ...localSettings, sinpePhone: e.target.value, contactPhone: e.target.value })}
-                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-[#ccff00] font-mono font-black focus:border-[#ccff00]"
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-[#00e652] font-mono font-black focus:border-[#00e652]"
                         placeholder="+506 8559 5192"
                       />
                     </div>
@@ -838,7 +838,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         required
                         value={localSettings.bankAccountIBAN || ''}
                         onChange={(e) => setLocalSettings({ ...localSettings, bankAccountIBAN: e.target.value })}
-                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-[#ccff00] font-mono font-black focus:border-[#ccff00]"
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-[#00e652] font-mono font-black focus:border-[#00e652]"
                         placeholder="CR05015202001026384920"
                       />
                       <p className="text-[10px] text-white/50">
@@ -850,7 +850,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                 {/* Contact & Messages Section */}
                 <div className="space-y-4 bg-[#121212] p-5 border border-white/10 rounded-2xl">
-                  <h4 className="text-sm font-black italic uppercase text-[#ccff00] flex items-center gap-2">
+                  <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
                     <Mail className="w-4 h-4 stroke-[2.5]" />
                     <span>CANALES DE MENSAJES & NOTIFICACIONES</span>
                   </h4>
@@ -858,7 +858,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div className="space-y-4">
                     <div className="space-y-1.5">
                       <label className="block font-black uppercase text-white tracking-wider flex items-center gap-2">
-                        <Mail className="w-3.5 h-3.5 text-[#ccff00]" />
+                        <Mail className="w-3.5 h-3.5 text-[#00e652]" />
                         <span>CORREO PARA RECIBIR CONSULTAS Y NOTIFICACIONES DE COMPRA:</span>
                       </label>
                       <input
@@ -866,14 +866,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         required
                         value={localSettings.contactEmail}
                         onChange={(e) => setLocalSettings({ ...localSettings, contactEmail: e.target.value })}
-                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold focus:border-[#ccff00]"
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold focus:border-[#00e652]"
                         placeholder="contacto@offsidesports.cr"
                       />
                     </div>
 
                     <div className="space-y-1.5">
                       <label className="block font-black uppercase text-white tracking-wider flex items-center gap-2">
-                        <Phone className="w-3.5 h-3.5 text-[#ccff00]" />
+                        <Phone className="w-3.5 h-3.5 text-[#00e652]" />
                         <span>TELÉFONO PRINCIPAL ATENCIÓN WHATSAPP:</span>
                       </label>
                       <input
@@ -881,7 +881,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         required
                         value={localSettings.contactPhone}
                         onChange={(e) => setLocalSettings({ ...localSettings, contactPhone: e.target.value })}
-                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold font-mono focus:border-[#ccff00]"
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold font-mono focus:border-[#00e652]"
                         placeholder="+506 8559 5192"
                       />
                     </div>
@@ -890,7 +890,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                 {/* Banner & Hero Tagline Section */}
                 <div className="space-y-4 bg-[#121212] p-5 border border-white/10 rounded-2xl">
-                  <h4 className="text-sm font-black italic uppercase text-[#ccff00] flex items-center gap-2">
+                  <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
                     <Sparkles className="w-4 h-4 stroke-[2.5]" />
                     <span>TEXTO Y ETIQUETA DESTACADA DEL BANNER PRINCIPAL (HERO)</span>
                   </h4>
@@ -904,7 +904,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       required
                       value={localSettings.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25'}
                       onChange={(e) => setLocalSettings({ ...localSettings, heroTagline: e.target.value })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-3 text-[#ccff00] font-black focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-3 text-[#00e652] font-black focus:border-[#00e652]"
                       placeholder="NEW ARRIVAL / TEMPORADA 24-25"
                     />
                     <p className="text-[10px] text-white/50">
@@ -916,7 +916,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <div className="pt-2 flex justify-end">
                   <button
                     type="submit"
-                    className="bg-[#ccff00] hover:bg-white text-black font-black uppercase px-8 py-4 text-xs tracking-widest skew-x-[-10deg] transition cursor-pointer shadow-2xl flex items-center gap-2"
+                    className="bg-[#00e652] hover:bg-white text-black font-black uppercase px-8 py-4 text-xs tracking-widest skew-x-[-10deg] transition cursor-pointer shadow-2xl flex items-center gap-2"
                   >
                     <div className="skew-x-[10deg] flex items-center gap-2">
                       <Save className="w-4 h-4 stroke-[2.5]" />
@@ -933,7 +933,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           {activeTab === 'coupons' && (
             <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 bg-black border border-white/10 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-2xl">
               <div className="border-b border-white/10 pb-4 space-y-1">
-                <div className="inline-flex items-center gap-2 bg-[#ccff00]/10 border border-[#ccff00]/30 px-3 py-1 text-[11px] font-black uppercase text-[#ccff00] tracking-wider">
+                <div className="inline-flex items-center gap-2 bg-[#00e652]/10 border border-[#00e652]/30 px-3 py-1 text-[11px] font-black uppercase text-[#00e652] tracking-wider">
                   <Tag className="w-3.5 h-3.5" />
                   <span>GESTIÓN DE CUPONES DE DESCUENTO</span>
                 </div>
@@ -944,7 +944,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               </div>
 
               {couponSuccessMsg && (
-                <div className="bg-[#ccff00] text-black p-3.5 font-black uppercase text-xs flex items-center justify-between shadow-xl animate-bounce rounded-xl">
+                <div className="bg-[#00e652] text-black p-3.5 font-black uppercase text-xs flex items-center justify-between shadow-xl animate-bounce rounded-xl">
                   <div className="flex items-center gap-2">
                     <Check className="w-5 h-5 stroke-[3]" />
                     <span>¡CÓDIGO DE DESCUENTO GUARDADO Y ACTIVADO CON ÉXITO!</span>
@@ -966,7 +966,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
               {/* Create New Coupon Form */}
               <form onSubmit={handleCreateCoupon} className="bg-[#121212] p-4 sm:p-5 border border-white/10 rounded-2xl space-y-4">
-                <h4 className="text-xs sm:text-sm font-black italic uppercase text-[#ccff00] flex items-center gap-2">
+                <h4 className="text-xs sm:text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
                   <Plus className="w-4 h-4 stroke-[2.5]" />
                   <span>CREAR NUEVO CÓDIGO DE DESCUENTO</span>
                 </h4>
@@ -980,7 +980,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       placeholder="Ej: OFFSIDE20, VERANO25, CR7"
                       value={newCouponCode}
                       onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-xs text-white font-mono font-black uppercase focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-xs text-white font-mono font-black uppercase focus:border-[#00e652]"
                     />
                   </div>
 
@@ -994,16 +994,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         required
                         value={newCouponPercent}
                         onChange={(e) => setNewCouponPercent(Number(e.target.value))}
-                        className="w-full bg-black border border-white/20 rounded-xl p-2.5 pr-8 text-xs text-[#ccff00] font-mono font-black focus:border-[#ccff00]"
+                        className="w-full bg-black border border-white/20 rounded-xl p-2.5 pr-8 text-xs text-[#00e652] font-mono font-black focus:border-[#00e652]"
                       />
-                      <span className="absolute right-3 top-2.5 text-xs text-[#ccff00] font-black">%</span>
+                      <span className="absolute right-3 top-2.5 text-xs text-[#00e652] font-black">%</span>
                     </div>
                   </div>
 
                   <div>
                     <button
                       type="submit"
-                      className="w-full bg-[#ccff00] hover:bg-white text-black font-black uppercase p-2.5 text-xs tracking-wider cursor-pointer skew-x-[-10deg] transition shadow-lg flex items-center justify-center gap-2"
+                      className="w-full bg-[#00e652] hover:bg-white text-black font-black uppercase p-2.5 text-xs tracking-wider cursor-pointer skew-x-[-10deg] transition shadow-lg flex items-center justify-center gap-2"
                     >
                       <div className="skew-x-[10deg] flex items-center gap-1.5">
                         <Plus className="w-4 h-4 stroke-[2.5]" />
@@ -1018,7 +1018,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <div className="bg-black border border-white/10 rounded-2xl overflow-hidden">
                 <div className="p-3.5 sm:p-4 bg-[#121212] border-b border-white/10 flex items-center justify-between">
                   <h4 className="text-xs font-black uppercase text-white tracking-wider">CUPONES REGISTRADOS ({discountCodes.length})</h4>
-                  <span className="text-[10px] text-[#ccff00] font-mono font-bold">Aplica al subtotal</span>
+                  <span className="text-[10px] text-[#00e652] font-mono font-bold">Aplica al subtotal</span>
                 </div>
 
                 {discountCodes.length === 0 ? (
@@ -1032,9 +1032,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                       if (isEditingThis) {
                         return (
-                          <div key={coupon.id} className="p-4 bg-[#121212] border-l-4 border-[#ccff00] space-y-3">
+                          <div key={coupon.id} className="p-4 bg-[#121212] border-l-4 border-[#00e652] space-y-3">
                             <div className="flex items-center justify-between">
-                              <span className="text-xs font-black text-[#ccff00] uppercase tracking-wider flex items-center gap-1.5">
+                              <span className="text-xs font-black text-[#00e652] uppercase tracking-wider flex items-center gap-1.5">
                                 <Edit className="w-3.5 h-3.5" />
                                 <span>EDITANDO CUPÓN</span>
                               </span>
@@ -1049,7 +1049,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                   required
                                   value={editCouponCode}
                                   onChange={(e) => setEditCouponCode(e.target.value.toUpperCase())}
-                                  className="w-full bg-black border border-white/30 rounded-lg p-2 text-xs text-white font-mono font-black uppercase focus:border-[#ccff00]"
+                                  className="w-full bg-black border border-white/30 rounded-lg p-2 text-xs text-white font-mono font-black uppercase focus:border-[#00e652]"
                                 />
                               </div>
 
@@ -1062,7 +1062,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                   required
                                   value={editCouponPercent}
                                   onChange={(e) => setEditCouponPercent(Number(e.target.value))}
-                                  className="w-full bg-black border border-white/30 rounded-lg p-2 text-xs text-[#ccff00] font-mono font-black focus:border-[#ccff00]"
+                                  className="w-full bg-black border border-white/30 rounded-lg p-2 text-xs text-[#00e652] font-mono font-black focus:border-[#00e652]"
                                 />
                               </div>
                             </div>
@@ -1079,7 +1079,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                               <button
                                 type="button"
                                 onClick={() => handleSaveEditCoupon(coupon.id)}
-                                className="px-4 py-1.5 bg-[#ccff00] hover:bg-white text-black font-black text-[10px] uppercase rounded transition cursor-pointer flex items-center gap-1 shadow-md"
+                                className="px-4 py-1.5 bg-[#00e652] hover:bg-white text-black font-black text-[10px] uppercase rounded transition cursor-pointer flex items-center gap-1 shadow-md"
                               >
                                 <Save className="w-3.5 h-3.5 stroke-[2.5]" />
                                 <span>GUARDAR</span>
@@ -1092,7 +1092,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       return (
                         <div key={coupon.id} className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-white/5 transition gap-3 sm:gap-4">
                           <div className="flex items-start sm:items-center gap-3">
-                            <div className="shrink-0 p-1.5 bg-[#ccff00]/10 border border-[#ccff00]/30 text-[#ccff00] font-mono font-black text-xs sm:text-sm px-2.5 py-1 skew-x-[-10deg]">
+                            <div className="shrink-0 p-1.5 bg-[#00e652]/10 border border-[#00e652]/30 text-[#00e652] font-mono font-black text-xs sm:text-sm px-2.5 py-1 skew-x-[-10deg]">
                               <span className="skew-x-[10deg] inline-block">{coupon.code}</span>
                             </div>
                             <div>
@@ -1155,7 +1155,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     placeholder="Buscar por ID de orden o cliente..."
                     value={adminSearch}
                     onChange={(e) => setAdminSearch(e.target.value)}
-                    className="w-full bg-black border border-white/20 rounded-xl py-2 pl-9 pr-4 text-xs text-white placeholder-white/40 focus:border-[#ccff00]"
+                    className="w-full bg-black border border-white/20 rounded-xl py-2 pl-9 pr-4 text-xs text-white placeholder-white/40 focus:border-[#00e652]"
                   />
                   <Search className="w-3.5 h-3.5 text-white/50 absolute left-3 top-2.5" />
                 </div>
@@ -1165,7 +1165,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <select
                     value={orderStatusFilter}
                     onChange={(e) => setOrderStatusFilter(e.target.value)}
-                    className="bg-black border border-white/20 text-white font-bold rounded-xl py-1.5 px-3 focus:border-[#ccff00]"
+                    className="bg-black border border-white/20 text-white font-bold rounded-xl py-1.5 px-3 focus:border-[#00e652]"
                   >
                     <option value="all">Todos los Estados</option>
                     <option value="Solicitado">🟡 Solicitado</option>
@@ -1184,7 +1184,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               {/* Orders Table */}
               <div className="bg-black border border-white/10 overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#121212] border-b border-white/10 text-[#ccff00] uppercase font-black text-[10px] tracking-widest">
+                  <thead className="bg-[#121212] border-b border-white/10 text-[#00e652] uppercase font-black text-[10px] tracking-widest">
                     <tr>
                       <th className="p-3">ORDEN ID</th>
                       <th className="p-3">CLIENTE</th>
@@ -1197,7 +1197,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <tbody className="divide-y divide-white/10">
                     {filteredOrders.map((order) => (
                       <tr key={order.id} className="hover:bg-white/5 transition">
-                        <td className="p-3 font-mono font-black text-[#ccff00]">
+                        <td className="p-3 font-mono font-black text-[#00e652]">
                           {order.id}
                         </td>
                         <td className="p-3">
@@ -1210,7 +1210,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <select
                             value={order.status}
                             onChange={(e) => handleStatusChange(order.id, e.target.value as OrderStatus)}
-                            className="bg-black border border-[#ccff00]/40 text-xs font-black uppercase rounded-lg px-2.5 py-1.5 text-[#ccff00] focus:outline-none cursor-pointer"
+                            className="bg-black border border-[#00e652]/40 text-xs font-black uppercase rounded-lg px-2.5 py-1.5 text-[#00e652] focus:outline-none cursor-pointer"
                           >
                             <option value="Solicitado">🟡 Solicitado</option>
                             <option value="Empaquetando">📦 Empaquetando</option>
@@ -1226,7 +1226,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <td className="p-3 text-right">
                           <button
                             onClick={() => setSelectedOrder(order)}
-                            className="px-3 py-1.5 bg-[#ccff00] hover:bg-white text-black font-black uppercase tracking-wider text-[10px] cursor-pointer skew-x-[-10deg]"
+                            className="px-3 py-1.5 bg-[#00e652] hover:bg-white text-black font-black uppercase tracking-wider text-[10px] cursor-pointer skew-x-[-10deg]"
                           >
                             <span className="skew-x-[10deg] inline-block">VER DETALLES</span>
                           </button>
@@ -1243,25 +1243,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           {activeTab === 'stats' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-5 bg-black border border-white/10 space-y-2">
-                <p className="text-xs font-black uppercase tracking-widest text-[#ccff00]">VENTAS TOTALES</p>
+                <p className="text-xs font-black uppercase tracking-widest text-[#00e652]">VENTAS TOTALES</p>
                 <p className="text-3xl font-black italic text-white">{formatPrice(totalRevenueUSD, currency)}</p>
                 <p className="text-[10px] text-white/50 font-mono uppercase">Facturación acumulada</p>
               </div>
 
               <div className="p-5 bg-black border border-white/10 space-y-2">
-                <p className="text-xs font-black uppercase tracking-widest text-[#ccff00]">TOTAL DE PEDIDOS</p>
+                <p className="text-xs font-black uppercase tracking-widest text-[#00e652]">TOTAL DE PEDIDOS</p>
                 <p className="text-3xl font-black italic text-white">{orders.length}</p>
                 <p className="text-[10px] text-white/50 font-mono uppercase">{pendingOrders} pedidos en proceso</p>
               </div>
 
               <div className="p-5 bg-black border border-white/10 space-y-2">
-                <p className="text-xs font-black uppercase tracking-widest text-[#ccff00]">CATÁLOGO ACTIVO</p>
+                <p className="text-xs font-black uppercase tracking-widest text-[#00e652]">CATÁLOGO ACTIVO</p>
                 <p className="text-3xl font-black italic text-white">{jerseys.length} MODELOS</p>
                 <p className="text-[10px] text-white/50 font-mono uppercase">Disponibles en tienda</p>
               </div>
 
               <div className="p-5 bg-black border border-white/10 space-y-2">
-                <p className="text-xs font-black uppercase tracking-widest text-[#ccff00]">BAJO STOCK</p>
+                <p className="text-xs font-black uppercase tracking-widest text-[#00e652]">BAJO STOCK</p>
                 <p className="text-3xl font-black italic text-amber-400">{lowStockCount}</p>
                 <p className="text-[10px] text-white/50 font-mono uppercase">Camisetas con ≤5 unds</p>
               </div>
@@ -1280,7 +1280,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             {/* Header */}
             <div className="flex justify-between items-center border-b border-white/10 pb-4">
               <div className="flex items-center gap-2">
-                <div className="p-2 bg-[#ccff00] text-black skew-x-[-10deg]">
+                <div className="p-2 bg-[#00e652] text-black skew-x-[-10deg]">
                   <Package className="w-5 h-5 stroke-[2.5] skew-x-[10deg]" />
                 </div>
                 <div>
@@ -1294,7 +1294,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               </div>
               <button 
                 onClick={() => setIsNewModalOpen(false)} 
-                className="p-2 bg-white/10 hover:bg-[#ccff00] text-white hover:text-black transition cursor-pointer"
+                className="p-2 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer"
               >
                 <X className="w-4 h-4 stroke-[2.5]" />
               </button>
@@ -1304,8 +1304,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               
               {/* Sección 1: Datos Principales del Producto */}
               <div className="space-y-3 bg-[#121212] p-4 border border-white/10 rounded-2xl">
-                <h4 className="text-xs font-black uppercase text-[#ccff00] tracking-wider flex items-center gap-2">
-                  <Tag className="w-3.5 h-3.5 text-[#ccff00]" />
+                <h4 className="text-xs font-black uppercase text-[#00e652] tracking-wider flex items-center gap-2">
+                  <Tag className="w-3.5 h-3.5 text-[#00e652]" />
                   <span>DATOS GENERALES DE LA CAMISETA</span>
                 </h4>
 
@@ -1318,7 +1318,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       placeholder="Ej: Real Madrid Local 2025/2026 Versión Jugador"
                       value={editingJersey.name || ''}
                       onChange={(e) => setEditingJersey({ ...editingJersey, name: e.target.value })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     />
                   </div>
 
@@ -1330,7 +1330,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       placeholder="Ej: Saprissa, Real Madrid, Selección Costa Rica"
                       value={editingJersey.team || ''}
                       onChange={(e) => setEditingJersey({ ...editingJersey, team: e.target.value })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     />
                   </div>
 
@@ -1339,7 +1339,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <select
                       value={editingJersey.sportCategory || 'Fútbol'}
                       onChange={(e) => setEditingJersey({ ...editingJersey, sportCategory: e.target.value as SportCategory })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     >
                       {SPORTS_LIST.filter(s => s.id !== 'all').map(sp => (
                         <option key={sp.id} value={sp.id}>{sp.icon} {sp.name}</option>
@@ -1352,7 +1352,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <select
                       value={editingJersey.league || 'Liga Promerica (CR)'}
                       onChange={(e) => setEditingJersey({ ...editingJersey, league: e.target.value as League })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     >
                       {INITIAL_LEAGUES.map(lg => (
                         <option key={lg} value={lg}>
@@ -1367,7 +1367,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <select
                       value={editingJersey.version || 'Versión Jugador (Player Issue)'}
                       onChange={(e) => setEditingJersey({ ...editingJersey, version: e.target.value as JerseyVersion })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     >
                       <option value="Versión Jugador (Player Issue)">⚡ Versión Jugador (Player Issue / Premium)</option>
                       <option value="Versión Fan (Aficionado)">🧢 Versión Fan (Aficionado / Stadium)</option>
@@ -1382,7 +1382,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <select
                       value={editingJersey.genderCategory || 'Unisex (Adulto)'}
                       onChange={(e) => setEditingJersey({ ...editingJersey, genderCategory: e.target.value as GenderCategory })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     >
                       <option value="Unisex (Adulto)">👥 Unisex / Adulto (Hombre / Mujer)</option>
                       <option value="Femenina (Mujer)">👚 Corte Femenino (Mujer)</option>
@@ -1395,7 +1395,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <select
                       value={editingJersey.type || 'Local'}
                       onChange={(e) => setEditingJersey({ ...editingJersey, type: e.target.value as JerseyType })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     >
                       <option value="Local">🏠 Local (Home Kit)</option>
                       <option value="Visitante">✈️ Visitante (Away Kit)</option>
@@ -1412,7 +1412,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       placeholder="2025/2026"
                       value={editingJersey.yearSeason || '2025/2026'}
                       onChange={(e) => setEditingJersey({ ...editingJersey, yearSeason: e.target.value })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     />
                   </div>
                 </div>
@@ -1420,8 +1420,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
               {/* Sección 2: Precios y Stock */}
               <div className="space-y-3 bg-[#121212] p-4 border border-white/10 rounded-2xl">
-                <h4 className="text-xs font-black uppercase text-[#ccff00] tracking-wider flex items-center gap-2">
-                  <DollarSign className="w-3.5 h-3.5 text-[#ccff00]" />
+                <h4 className="text-xs font-black uppercase text-[#00e652] tracking-wider flex items-center gap-2">
+                  <DollarSign className="w-3.5 h-3.5 text-[#00e652]" />
                   <span>PRECIOS EN COLONES (₡ CRC) / DÓLARES ($ USD) & INVENTARIO</span>
                 </h4>
 
@@ -1429,7 +1429,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div>
                     <label className="block text-white font-black uppercase tracking-wider mb-1">PRECIO EN COLONES (₡ CRC):</label>
                     <div className="relative">
-                      <span className="absolute left-3 top-2.5 text-[#ccff00] font-black z-10 pointer-events-none">₡</span>
+                      <span className="absolute left-3 top-2.5 text-[#00e652] font-black z-10 pointer-events-none">₡</span>
                       <input
                         type="text"
                         inputMode="numeric"
@@ -1453,7 +1453,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             setUsdInputValue(String(usdCalc));
                           }
                         }}
-                        className="w-full bg-black border border-white/20 rounded-xl pl-8 pr-2.5 py-2.5 text-[#ccff00] font-mono font-black text-sm focus:border-[#ccff00] outline-none"
+                        className="w-full bg-black border border-white/20 rounded-xl pl-8 pr-2.5 py-2.5 text-[#00e652] font-mono font-black text-sm focus:border-[#00e652] outline-none"
                       />
                     </div>
                     <p className="text-[10px] text-white/50 mt-1">
@@ -1464,7 +1464,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div>
                     <label className="block text-white font-black uppercase tracking-wider mb-1">PRECIO EN DÓLARES ($ USD):</label>
                     <div className="relative">
-                      <span className="absolute left-3 top-2.5 text-[#ccff00] font-black z-10 pointer-events-none">$</span>
+                      <span className="absolute left-3 top-2.5 text-[#00e652] font-black z-10 pointer-events-none">$</span>
                       <input
                         type="text"
                         inputMode="decimal"
@@ -1495,7 +1495,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             }
                           }
                         }}
-                        className="w-full bg-black border border-white/20 rounded-xl pl-8 pr-2.5 py-2.5 text-white font-mono font-bold focus:border-[#ccff00] outline-none"
+                        className="w-full bg-black border border-white/20 rounded-xl pl-8 pr-2.5 py-2.5 text-white font-mono font-bold focus:border-[#00e652] outline-none"
                       />
                     </div>
                     <p className="text-[10px] text-white/50 mt-1">
@@ -1521,7 +1521,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           stock: val === '' ? ('' as unknown as number) : Number(val)
                         });
                       }}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     />
                     <p className="text-[10px] text-white/50 mt-1">Unidades físicas en bodega</p>
                   </div>
@@ -1530,7 +1530,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 {/* Individual Product Discount & Badge Tags */}
                 <div className="pt-2 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[#ccff00] font-black uppercase tracking-wider mb-1">
+                    <label className="block text-[#00e652] font-black uppercase tracking-wider mb-1">
                       DESCUENTO INDIVIDUAL EN ESTE PRODUCTO (%):
                     </label>
                     <select
@@ -1542,7 +1542,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           discountPercent: pct
                         });
                       }}
-                      className="w-full bg-black border border-[#ccff00]/40 rounded-xl p-2.5 text-[#ccff00] font-black focus:border-[#ccff00]"
+                      className="w-full bg-black border border-[#00e652]/40 rounded-xl p-2.5 text-[#00e652] font-black focus:border-[#00e652]"
                     >
                       <option value={0}>Sin Descuento Individual (0% OFF)</option>
                       <option value={5}>🔥 5% de Descuento</option>
@@ -1573,7 +1573,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         const tags = e.target.value.split(',').map(t => t.trim()).filter(Boolean);
                         setEditingJersey({ ...editingJersey, badgeTags: tags });
                       }}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     />
                     <p className="text-[10px] text-white/50 mt-1">Etiqueta personalizada para destacar la camiseta</p>
                   </div>
@@ -1583,11 +1583,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               {/* Sección 3: Carga de Fotos (Dispositivo Local vs URL) */}
               <div className="space-y-4 bg-[#121212] p-4 border border-white/10 rounded-2xl">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-black uppercase text-[#ccff00] tracking-wider flex items-center gap-2">
-                    <ImageIcon className="w-3.5 h-3.5 text-[#ccff00]" />
+                  <h4 className="text-xs font-black uppercase text-[#00e652] tracking-wider flex items-center gap-2">
+                    <ImageIcon className="w-3.5 h-3.5 text-[#00e652]" />
                     <span>FOTOS DEL PRODUCTO (DESDE EL DISPOSITIVO O URL)</span>
                   </h4>
-                  <span className="text-[10px] bg-[#ccff00]/10 text-[#ccff00] px-2 py-0.5 border border-[#ccff00]/30 font-black">
+                  <span className="text-[10px] bg-[#00e652]/10 text-[#00e652] px-2 py-0.5 border border-[#00e652]/30 font-black">
                     NUEVA FUNCIÓN: CARGA LOCAL ACTIVADA
                   </span>
                 </div>
@@ -1610,12 +1610,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             className="w-full h-full object-contain"
                           />
                           <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                            <span className="text-[10px] text-[#ccff00] font-black uppercase">Vista Previa Frente</span>
+                            <span className="text-[10px] text-[#00e652] font-black uppercase">Vista Previa Frente</span>
                           </div>
                         </>
                       ) : (
                         <div className="text-center text-white/40 space-y-1">
-                          <Upload className="w-6 h-6 mx-auto text-[#ccff00]" />
+                          <Upload className="w-6 h-6 mx-auto text-[#00e652]" />
                           <p className="text-[10px]">Sin imagen principal</p>
                         </div>
                       )}
@@ -1623,7 +1623,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                     {/* File Upload Button */}
                     <div>
-                      <label className="block w-full bg-[#ccff00] hover:bg-white text-black font-black uppercase text-[10px] tracking-wider text-center py-2 px-3 rounded-lg cursor-pointer transition">
+                      <label className="block w-full bg-[#00e652] hover:bg-white text-black font-black uppercase text-[10px] tracking-wider text-center py-2 px-3 rounded-lg cursor-pointer transition">
                         <Upload className="w-3.5 h-3.5 inline mr-1 stroke-[3]" />
                         SELECCIONAR FOTO DEL DISPOSITIVO
                         <input 
@@ -1643,7 +1643,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         placeholder="https://..."
                         value={editingJersey.image || ''}
                         onChange={(e) => setEditingJersey({ ...editingJersey, image: e.target.value })}
-                        className="w-full bg-[#121212] border border-white/20 rounded-lg p-2 text-white text-[11px] font-mono focus:border-[#ccff00]"
+                        className="w-full bg-[#121212] border border-white/20 rounded-lg p-2 text-white text-[11px] font-mono focus:border-[#00e652]"
                       />
                     </div>
                   </div>
@@ -1682,7 +1682,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                     {/* File Upload Button */}
                     <div>
-                      <label className="block w-full bg-white/10 hover:bg-[#ccff00] text-white hover:text-black font-black uppercase text-[10px] tracking-wider text-center py-2 px-3 rounded-lg cursor-pointer transition">
+                      <label className="block w-full bg-white/10 hover:bg-[#00e652] text-white hover:text-black font-black uppercase text-[10px] tracking-wider text-center py-2 px-3 rounded-lg cursor-pointer transition">
                         <Upload className="w-3.5 h-3.5 inline mr-1 stroke-[2.5]" />
                         SUBIR ESPALDA DESDE ARCHIVOS
                         <input 
@@ -1702,7 +1702,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         placeholder="https://..."
                         value={editingJersey.backImage || ''}
                         onChange={(e) => setEditingJersey({ ...editingJersey, backImage: e.target.value })}
-                        className="w-full bg-[#121212] border border-white/20 rounded-lg p-2 text-white text-[11px] font-mono focus:border-[#ccff00]"
+                        className="w-full bg-[#121212] border border-white/20 rounded-lg p-2 text-white text-[11px] font-mono focus:border-[#00e652]"
                       />
                     </div>
                   </div>
@@ -1713,7 +1713,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <div className="pt-2 space-y-2 border-t border-white/10">
                   <div className="flex items-center justify-between">
                     <label className="block text-xs font-black uppercase text-white">3. GALERÍA ADICIONAL (DETALLES / PARCHES):</label>
-                    <label className="inline-flex items-center gap-1.5 bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black border border-[#ccff00]/30 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider cursor-pointer transition">
+                    <label className="inline-flex items-center gap-1.5 bg-[#00e652]/10 hover:bg-[#00e652] text-[#00e652] hover:text-black border border-[#00e652]/30 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider cursor-pointer transition">
                       <Plus className="w-3 h-3" />
                       <span>AGREGAR FOTO DESDE DISPOSITIVO</span>
                       <input 
@@ -1752,8 +1752,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
               {/* Sección 4: Tallas, Telas y Descripción */}
               <div className="space-y-3 bg-[#121212] p-4 border border-white/10 rounded-2xl">
-                <h4 className="text-xs font-black uppercase text-[#ccff00] tracking-wider flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-[#ccff00]" />
+                <h4 className="text-xs font-black uppercase text-[#00e652] tracking-wider flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-[#00e652]" />
                   <span>ESPECIFICACIONES TÉCNICAS Y TALLAS</span>
                 </h4>
 
@@ -1776,7 +1776,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             }}
                             className={`px-3.5 py-1.5 text-xs font-black border transition cursor-pointer skew-x-[-10deg] ${
                               isSelected
-                                ? 'bg-[#ccff00] text-black border-[#ccff00]'
+                                ? 'bg-[#00e652] text-black border-[#00e652]'
                                 : 'bg-black text-white/60 border-white/20 hover:border-white'
                             }`}
                           >
@@ -1794,7 +1794,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       placeholder="Ej: 100% Poliéster Reciclado Dri-FIT ADV / Heat.RDY"
                       value={editingJersey.fabricInfo || ''}
                       onChange={(e) => setEditingJersey({ ...editingJersey, fabricInfo: e.target.value })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-medium focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-medium focus:border-[#00e652]"
                     />
                   </div>
 
@@ -1805,7 +1805,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       placeholder="Escribe detalles del diseño, tecnología, historia o parches oficiales..."
                       value={editingJersey.description || ''}
                       onChange={(e) => setEditingJersey({ ...editingJersey, description: e.target.value })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-medium focus:border-[#ccff00]"
+                      className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-medium focus:border-[#00e652]"
                     />
                   </div>
                 </div>
@@ -1822,7 +1822,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-8 py-2.5 bg-[#ccff00] hover:bg-white text-black font-black uppercase tracking-widest cursor-pointer skew-x-[-10deg] transition shadow-2xl"
+                  className="px-8 py-2.5 bg-[#00e652] hover:bg-white text-black font-black uppercase tracking-widest cursor-pointer skew-x-[-10deg] transition shadow-2xl"
                 >
                   <span className="skew-x-[10deg] inline-block">GUARDAR PUBLICACIÓN EN INVENTARIO</span>
                 </button>
@@ -1838,10 +1838,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         <div className="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#0a0a0a] border border-white/10 rounded-3xl p-6 w-full max-w-xl text-white space-y-4">
             <div className="flex justify-between items-center border-b border-white/10 pb-3">
-              <h3 className="text-base font-black italic uppercase text-[#ccff00]">
+              <h3 className="text-base font-black italic uppercase text-[#00e652]">
                 DETALLES DE PEDIDO #{selectedOrder.id}
               </h3>
-              <button onClick={() => setSelectedOrder(null)} className="p-1 bg-white/10 hover:bg-[#ccff00] text-white hover:text-black">✕</button>
+              <button onClick={() => setSelectedOrder(null)} className="p-1 bg-white/10 hover:bg-[#00e652] text-white hover:text-black">✕</button>
             </div>
 
             <div className="space-y-3 text-xs font-mono">
@@ -1850,7 +1850,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <p><strong className="text-white/60">DIRECCIÓN:</strong> {selectedOrder.customer.address}, {selectedOrder.customer.city}</p>
               <p><strong className="text-white/60">MÉTODO DE PAGO:</strong> {selectedOrder.paymentMethod.toUpperCase()}</p>
               
-              <div className="bg-black p-3 border border-[#ccff00]/40 rounded-xl space-y-1">
+              <div className="bg-black p-3 border border-[#00e652]/40 rounded-xl space-y-1">
                 <label className="block text-white/80 font-black text-[10px] uppercase">CAMBIAR ESTADO DEL PEDIDO:</label>
                 <select
                   value={selectedOrder.status}
@@ -1859,7 +1859,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     handleStatusChange(selectedOrder.id, newStatus);
                     setSelectedOrder({ ...selectedOrder, status: newStatus });
                   }}
-                  className="w-full bg-[#121212] border border-[#ccff00] text-[#ccff00] font-black text-xs p-2 rounded-lg cursor-pointer"
+                  className="w-full bg-[#121212] border border-[#00e652] text-[#00e652] font-black text-xs p-2 rounded-lg cursor-pointer"
                 >
                   <option value="Solicitado">🟡 Solicitado (Pendiente de Verificación)</option>
                   <option value="Empaquetando">📦 Empaquetando (Preparando en Bodega)</option>
@@ -1874,23 +1874,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               </div>
 
               <div className="border-t border-white/10 pt-2 space-y-2">
-                <p className="font-black text-[#ccff00] uppercase">PRODUCTOS:</p>
+                <p className="font-black text-[#00e652] uppercase">PRODUCTOS:</p>
                 {selectedOrder.items.map((it, idx) => (
                   <div key={idx} className="p-2.5 bg-black border border-white/10 flex justify-between">
                     <div>
                       <p className="font-bold text-white">{it.jersey.name} (TALLA: {it.size})</p>
                       {it.customStamping?.enabled && (
-                        <p className="text-[10px] text-[#ccff00]">DORSAL: {it.customStamping.name} #{it.customStamping.number}</p>
+                        <p className="text-[10px] text-[#00e652]">DORSAL: {it.customStamping.name} #{it.customStamping.number}</p>
                       )}
                     </div>
-                    <span className="font-black text-[#ccff00]">{it.quantity} x {formatPrice(it.jersey.price, currency)}</span>
+                    <span className="font-black text-[#00e652]">{it.quantity} x {formatPrice(it.jersey.price, currency)}</span>
                   </div>
                 ))}
               </div>
 
               <div className="border-t border-white/10 pt-2 flex justify-between font-black text-sm">
                 <span className="uppercase text-white/60">TOTAL:</span>
-                <span className="text-[#ccff00]">{formatPrice(selectedOrder.total, currency)}</span>
+                <span className="text-[#00e652]">{formatPrice(selectedOrder.total, currency)}</span>
               </div>
             </div>
 
@@ -1918,7 +1918,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               </h3>
               <p className="text-xs text-white/70 font-medium leading-relaxed">
                 ¿Estás seguro de que deseas eliminar permanentemente{' '}
-                <span className="text-[#ccff00] font-bold">"{deleteTarget.title}"</span>? Esta acción no se podrá deshacer.
+                <span className="text-[#00e652] font-bold">"{deleteTarget.title}"</span>? Esta acción no se podrá deshacer.
               </p>
             </div>
 
