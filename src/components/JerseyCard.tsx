@@ -18,12 +18,16 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
   onQuickAdd,
   onOpenDetail
 }) => {
-  const [selectedSize, setSelectedSize] = useState<Size>(jersey.sizesAvailable[0] || 'M');
+  const sizes = jersey.sizesAvailable || [];
+  const [selectedSize, setSelectedSize] = useState<Size>(sizes[0] || 'M');
   const [added, setAdded] = useState(false);
+
+  const effectiveSize = sizes.includes(selectedSize) ? selectedSize : (sizes[0] || 'M');
 
   const handleAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onQuickAdd(jersey, selectedSize);
+    if (jersey.stock <= 0 || sizes.length === 0) return;
+    onQuickAdd(jersey, effectiveSize);
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
   };
@@ -145,34 +149,38 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
         >
           <span className="text-[9px] sm:text-[10px] uppercase text-white/50 font-black tracking-widest">Talla:</span>
           <div className="flex gap-0.5 sm:gap-1">
-            {jersey.sizesAvailable.map((size) => (
-              <button
-                key={size}
-                onClick={() => setSelectedSize(size)}
-                className={`w-5 h-5 sm:w-7 sm:h-7 rounded-none text-[9px] sm:text-[11px] font-black transition-all cursor-pointer ${
-                  selectedSize === size
-                    ? 'bg-[#ccff00] text-black font-black'
-                    : 'bg-white/5 text-white/80 hover:bg-white/20 border border-white/10'
-                }`}
-              >
-                {size}
-              </button>
-            ))}
+            {sizes.length > 0 ? (
+              sizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`w-5 h-5 sm:w-7 sm:h-7 rounded-none text-[9px] sm:text-[11px] font-black transition-all cursor-pointer ${
+                    effectiveSize === size
+                      ? 'bg-[#ccff00] text-black font-black'
+                      : 'bg-white/5 text-white/80 hover:bg-white/20 border border-white/10'
+                  }`}
+                >
+                  {size}
+                </button>
+              ))
+            ) : (
+              <span className="text-[9px] text-white/40 font-mono">Sin Tallas</span>
+            )}
           </div>
         </div>
 
         <button
           onClick={handleAdd}
-          disabled={jersey.stock <= 0}
+          disabled={jersey.stock <= 0 || sizes.length === 0}
           className={`w-full py-2 sm:py-2.5 uppercase font-black tracking-widest text-[9px] sm:text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
             added
               ? 'bg-emerald-500 text-black'
-              : jersey.stock > 0
+              : jersey.stock > 0 && sizes.length > 0
               ? 'bg-[#ccff00] hover:bg-white text-black skew-x-[-10deg]'
               : 'bg-white/5 text-white/40 border border-white/10 cursor-not-allowed'
           }`}
         >
-          <div className={jersey.stock > 0 ? "skew-x-[10deg] flex items-center gap-1.5 sm:gap-2" : "flex items-center gap-1.5 sm:gap-2"}>
+          <div className={jersey.stock > 0 && sizes.length > 0 ? "skew-x-[10deg] flex items-center gap-1.5 sm:gap-2" : "flex items-center gap-1.5 sm:gap-2"}>
             {added ? (
               <>
                 <Check className="w-3.5 h-3.5 stroke-[3]" />
@@ -181,7 +189,7 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
             ) : (
               <>
                 <ShoppingBag className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span className="truncate">{jersey.stock > 0 ? 'AGREGAR' : 'AGOTADA'}</span>
+                <span className="truncate">{jersey.stock > 0 && sizes.length > 0 ? 'AGREGAR' : 'AGOTADA'}</span>
               </>
             )}
           </div>

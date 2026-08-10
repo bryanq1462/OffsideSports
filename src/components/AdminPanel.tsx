@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { Jersey, Order, OrderStatus, League, JerseyType, JerseyVersion, GenderCategory, Size, StoreSettings, SportCategory, DiscountCode } from '../types';
 import { formatPrice } from '../utils/storage';
-import { handleImageError } from '../utils/imageUtils';
+import { handleImageError, compressImageFile } from '../utils/imageUtils';
 import { INITIAL_LEAGUES, LEAGUE_FLAGS, SPORTS_LIST } from '../data/mockData';
 
 interface AdminPanelProps {
@@ -85,6 +85,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   // Jersey Add/Edit Modal
   const [editingJersey, setEditingJersey] = useState<Partial<Jersey> | null>(null);
+  const [crcInputValue, setCrcInputValue] = useState<string>('');
+  const [usdInputValue, setUsdInputValue] = useState<string>('');
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
 
   // Selected Order Detail Modal
@@ -190,31 +192,32 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setCouponErrorMsg('');
   };
 
-  // Image Upload Handler (reads local file from disk and converts to Base64)
-  const handleImageFileUpload = (
+  // Image Upload Handler (reads local file from disk and compresses to lightweight Base64)
+  const handleImageFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     field: 'image' | 'backImage' | 'gallery'
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (typeof reader.result === 'string') {
+    try {
+      const compressedUrl = await compressImageFile(file);
+      if (compressedUrl) {
         if (field === 'gallery') {
           const currentImages = editingJersey?.images || [];
           setEditingJersey(prev => ({
             ...prev,
-            images: [...currentImages, reader.result as string]
+            images: [...currentImages, compressedUrl]
           }));
         } else {
           setEditingJersey(prev => ({
             ...prev,
-            [field]: reader.result as string
+            [field]: compressedUrl
           }));
         }
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Error compressing image', err);
+    }
   };
 
   // Save/Update Jersey Handler
@@ -485,18 +488,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           {activeTab === 'inventory' && (
             <button
               onClick={() => {
+                const initialPrice = 60;
                 setEditingJersey({
                   name: '',
                   team: '',
                   league: 'LaLiga',
-                  price: 60,
+                  price: initialPrice,
                   originalPrice: 75,
-                  stock: 20,
+                  stock: 1,
                   yearSeason: '2024/2025',
                   type: 'Local',
-                  sizesAvailable: ['S', 'M', 'L', 'XL'],
+                  sizesAvailable: ['M'],
                   image: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=800'
                 });
+                setCrcInputValue(String(Math.round(initialPrice * 520)));
+                setUsdInputValue(String(initialPrice));
                 setIsNewModalOpen(true);
               }}
               className="shrink-0 bg-[#ccff00] hover:bg-white text-black px-4 py-2 flex items-center justify-center gap-2 font-black cursor-pointer shadow-xl skew-x-[-10deg] text-xs"
@@ -583,6 +589,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <button
                             onClick={() => {
                               setEditingJersey(jersey);
+                              const usd = jersey.price !== undefined && jersey.price !== null && !isNaN(Number(jersey.price)) ? String(jersey.price) : '';
+                              setUsdInputValue(usd);
+                              setCrcInputValue(
+                                jersey.price !== undefined && jersey.price !== null && !isNaN(Number(jersey.price))
+                                  ? String(Math.round(Number(jersey.price) * 520))
+                                  : ''
+                              );
                               setIsNewModalOpen(true);
                             }}
                             className="p-1.5 bg-white/10 hover:bg-[#ccff00] text-white hover:text-black transition cursor-pointer"
@@ -1416,56 +1429,73 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div>
                     <label className="block text-white font-black uppercase tracking-wider mb-1">PRECIO EN COLONES (₡ CRC):</label>
                     <div className="relative">
-                      <span className="absolute left-2.5 top-2.5 text-[#ccff00] font-black">₡</span>
+                      <span className="absolute left-3 top-2.5 text-[#ccff00] font-black z-10 pointer-events-none">₡</span>
                       <input
-                        type="number"
-                        step="any"
-                        min="0"
+                        type="text"
+                        inputMode="numeric"
                         required
-                        value={
-                          editingJersey.price === '' || editingJersey.price === undefined || editingJersey.price === null || isNaN(Number(editingJersey.price))
-                            ? ''
-                            : Math.round(Number(editingJersey.price) * 520)
-                        }
+                        placeholder="0"
+                        value={crcInputValue}
+                        onFocus={(e) => e.target.select()}
                         onChange={(e) => {
-                          const val = e.target.value;
-                          if (val === '') {
+                          let raw = e.target.value.replace(/[^0-9]/g, '');
+                          if (raw.length > 1 && raw.startsWith('0')) {
+                            raw = raw.replace(/^0+/, '');
+                          }
+                          setCrcInputValue(raw);
+                          if (raw === '') {
                             setEditingJersey({ ...editingJersey, price: '' as unknown as number });
+                            setUsdInputValue('');
                           } else {
-                            const crc = Number(val);
-                            setEditingJersey({ ...editingJersey, price: Number((crc / 520).toFixed(2)) });
+                            const crc = Number(raw);
+                            const usdCalc = Number((crc / 520).toFixed(2));
+                            setEditingJersey({ ...editingJersey, price: usdCalc });
+                            setUsdInputValue(String(usdCalc));
                           }
                         }}
-                        className="w-full bg-black border border-white/20 rounded-xl pl-6 pr-2.5 py-2.5 text-[#ccff00] font-mono font-black text-sm focus:border-[#ccff00]"
+                        className="w-full bg-black border border-white/20 rounded-xl pl-8 pr-2.5 py-2.5 text-[#ccff00] font-mono font-black text-sm focus:border-[#ccff00] outline-none"
                       />
                     </div>
                     <p className="text-[10px] text-white/50 mt-1">
-                      Equivalente: ${editingJersey.price !== '' && editingJersey.price !== undefined ? editingJersey.price : 0} USD
+                      Equivalente: ${editingJersey.price !== '' && editingJersey.price !== undefined && !isNaN(Number(editingJersey.price)) ? editingJersey.price : 0} USD
                     </p>
                   </div>
 
                   <div>
                     <label className="block text-white font-black uppercase tracking-wider mb-1">PRECIO EN DÓLARES ($ USD):</label>
                     <div className="relative">
-                      <span className="absolute left-2.5 top-2.5 text-[#ccff00] font-black">$</span>
+                      <span className="absolute left-3 top-2.5 text-[#ccff00] font-black z-10 pointer-events-none">$</span>
                       <input
-                        type="number"
-                        step="any"
-                        min="0"
+                        type="text"
+                        inputMode="decimal"
                         required
-                        value={
-                          editingJersey.price === '' || editingJersey.price === undefined || editingJersey.price === null
-                            ? ''
-                            : editingJersey.price
-                        }
+                        placeholder="0.00"
+                        value={usdInputValue}
+                        onFocus={(e) => e.target.select()}
                         onChange={(e) => {
-                          const val = e.target.value;
-                          setEditingJersey({
-                            ...editingJersey,
-                            price: val === '' ? ('' as unknown as number) : Number(val)
-                          });
+                          let raw = e.target.value.replace(/[^0-9.]/g, '');
+                          const parts = raw.split('.');
+                          if (parts.length > 2) {
+                            raw = parts[0] + '.' + parts.slice(1).join('');
+                          }
+                          if (raw.length > 1 && raw.startsWith('0') && raw[1] !== '.') {
+                            raw = raw.replace(/^0+/, '');
+                          }
+                          setUsdInputValue(raw);
+                          if (raw === '' || raw === '.') {
+                            setEditingJersey({ ...editingJersey, price: '' as unknown as number });
+                            setCrcInputValue('');
+                          } else {
+                            const usdNum = Number(raw);
+                            setEditingJersey({ ...editingJersey, price: usdNum });
+                            if (!isNaN(usdNum)) {
+                              setCrcInputValue(String(Math.round(usdNum * 520)));
+                            } else {
+                              setCrcInputValue('');
+                            }
+                          }
                         }}
-                        className="w-full bg-black border border-white/20 rounded-xl pl-6 pr-2.5 py-2.5 text-white font-mono font-bold focus:border-[#ccff00]"
+                        className="w-full bg-black border border-white/20 rounded-xl pl-8 pr-2.5 py-2.5 text-white font-mono font-bold focus:border-[#ccff00] outline-none"
                       />
                     </div>
                     <p className="text-[10px] text-white/50 mt-1">

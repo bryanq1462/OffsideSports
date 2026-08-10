@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   Star, 
@@ -35,7 +35,15 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
 }) => {
   if (!jersey) return null;
 
-  const [selectedSize, setSelectedSize] = useState<Size>(jersey.sizesAvailable[0] || 'M');
+  const [selectedSize, setSelectedSize] = useState<Size>(jersey?.sizesAvailable?.[0] || 'M');
+
+  useEffect(() => {
+    if (jersey?.sizesAvailable && jersey.sizesAvailable.length > 0) {
+      if (!jersey.sizesAvailable.includes(selectedSize)) {
+        setSelectedSize(jersey.sizesAvailable[0]);
+      }
+    }
+  }, [jersey]);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'front' | 'back'>('front');
   

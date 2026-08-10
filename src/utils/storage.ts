@@ -70,7 +70,17 @@ export function saveJerseys(jerseys: Jersey[]): void {
   try {
     localStorage.setItem(KEYS.JERSEYS, JSON.stringify(jerseys));
   } catch (e) {
-    console.error('Error saving jerseys', e);
+    console.warn('Quota exceeded when saving jerseys, attempting lightweight save...', e);
+    try {
+      // Strip extra galleries if quota exceeded
+      const sanitized = jerseys.map(j => ({
+        ...j,
+        images: (j.images || []).slice(0, 2)
+      }));
+      localStorage.setItem(KEYS.JERSEYS, JSON.stringify(sanitized));
+    } catch (err) {
+      console.error('Error saving jerseys to local storage', err);
+    }
   }
 }
 
@@ -86,9 +96,47 @@ export function getStoredCart(): CartItem[] {
 
 export function saveCart(cart: CartItem[]): void {
   try {
-    localStorage.setItem(KEYS.CART, JSON.stringify(cart));
+    // Sanitize cart items to avoid heavy gallery payloads in cart state
+    const sanitizedCart = cart.map(item => ({
+      ...item,
+      jersey: {
+        id: item.jersey.id,
+        name: item.jersey.name,
+        team: item.jersey.team,
+        league: item.jersey.league,
+        price: item.jersey.price,
+        discountPercent: item.jersey.discountPercent,
+        image: item.jersey.image,
+        backImage: item.jersey.backImage,
+        type: item.jersey.type,
+        sizesAvailable: item.jersey.sizesAvailable,
+        stock: item.jersey.stock,
+        rating: item.jersey.rating,
+        reviewsCount: item.jersey.reviewsCount
+      }
+    }));
+    localStorage.setItem(KEYS.CART, JSON.stringify(sanitizedCart));
   } catch (e) {
-    console.error('Error saving cart', e);
+    console.warn('Quota exceeded in saveCart, attempting lightweight fallback...', e);
+    try {
+      const lightweightCart = cart.map(item => ({
+        ...item,
+        jersey: {
+          id: item.jersey.id,
+          name: item.jersey.name,
+          team: item.jersey.team,
+          league: item.jersey.league,
+          price: item.jersey.price,
+          sizesAvailable: item.jersey.sizesAvailable,
+          stock: item.jersey.stock,
+          rating: item.jersey.rating,
+          reviewsCount: item.jersey.reviewsCount
+        }
+      }));
+      localStorage.setItem(KEYS.CART, JSON.stringify(lightweightCart));
+    } catch (err) {
+      console.error('Error saving cart to local storage', err);
+    }
   }
 }
 
