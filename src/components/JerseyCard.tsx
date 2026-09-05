@@ -12,6 +12,8 @@ interface JerseyCardProps {
   onOpenDetail: (jersey: Jersey) => void;
 }
 
+const ALL_SIZES: Size[] = ['S', 'M', 'L', 'XL', 'XXL'];
+
 export const JerseyCard: React.FC<JerseyCardProps> = ({
   jersey,
   currency,
@@ -19,10 +21,11 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
   onOpenDetail
 }) => {
   const sizes = jersey.sizesAvailable || [];
-  const [selectedSize, setSelectedSize] = useState<Size>(sizes[0] || 'M');
+  const availableSizes = sizes.filter(() => jersey.stock > 0);
+  const [selectedSize, setSelectedSize] = useState<Size>(availableSizes[0] || sizes[0] || 'M');
   const [added, setAdded] = useState(false);
 
-  const effectiveSize = sizes.includes(selectedSize) ? selectedSize : (sizes[0] || 'M');
+  const effectiveSize = availableSizes.includes(selectedSize) ? selectedSize : (availableSizes[0] || sizes[0] || 'M');
 
   const handleAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -127,14 +130,11 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
           {/* Price */}
           <div className="flex items-baseline gap-1.5 pt-0.5">
             <span className="text-base sm:text-2xl font-black text-[#00e652] tracking-tight">
-              {formatPrice(jersey.price, currency)}
+              {formatPrice(jersey.price, currency, jersey.priceCRC)}
             </span>
-            {(jersey.originalPrice || (jersey.discountPercent && jersey.discountPercent > 0)) && (
+            {jersey.originalPrice && jersey.originalPrice > jersey.price && (
               <span className="text-[10px] sm:text-xs text-white/40 line-through font-bold">
-                {formatPrice(
-                  jersey.originalPrice || Math.round((jersey.price / (1 - (jersey.discountPercent || 0) / 100)) * 10) / 10,
-                  currency
-                )}
+                {formatPrice(jersey.originalPrice, currency, jersey.originalPriceCRC)}
               </span>
             )}
           </div>
@@ -149,23 +149,36 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
         >
           <span className="text-[9px] sm:text-[10px] uppercase text-white/50 font-black tracking-widest">Talla:</span>
           <div className="flex gap-0.5 sm:gap-1">
-            {sizes.length > 0 ? (
-              sizes.map((size) => (
+            {ALL_SIZES.map((size) => {
+              const isAvailable = jersey.stock > 0 && sizes.includes(size);
+              const isSelected = effectiveSize === size && isAvailable;
+
+              return (
                 <button
                   key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`w-5 h-5 sm:w-7 sm:h-7 rounded-none text-[9px] sm:text-[11px] font-black transition-all cursor-pointer ${
-                    effectiveSize === size
-                      ? 'bg-[#00e652] text-black font-black'
-                      : 'bg-white/5 text-white/80 hover:bg-white/20 border border-white/10'
+                  type="button"
+                  disabled={!isAvailable}
+                  onClick={() => {
+                    if (isAvailable) setSelectedSize(size);
+                  }}
+                  title={isAvailable ? `Talla ${size} disponible` : `Talla ${size} agotada`}
+                  className={`relative w-5 h-5 sm:w-7 sm:h-7 rounded-none text-[9px] sm:text-[11px] font-black transition-all flex items-center justify-center overflow-hidden ${
+                    !isAvailable
+                      ? 'bg-white/5 text-white/20 border border-white/5 cursor-not-allowed opacity-50'
+                      : isSelected
+                      ? 'bg-[#00e652] text-black font-black cursor-pointer'
+                      : 'bg-white/5 text-white/80 hover:bg-white/20 border border-white/10 cursor-pointer'
                   }`}
                 >
-                  {size}
+                  <span className={!isAvailable ? 'line-through text-white/30' : ''}>{size}</span>
+                  {!isAvailable && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-[140%] h-[1.5px] bg-red-500/80 -rotate-45" />
+                    </div>
+                  )}
                 </button>
-              ))
-            ) : (
-              <span className="text-[9px] text-white/40 font-mono">Sin Tallas</span>
-            )}
+              );
+            })}
           </div>
         </div>
 

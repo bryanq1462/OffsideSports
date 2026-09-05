@@ -2,14 +2,27 @@ export interface StoreSettings {
   contactPhone: string;
   contactEmail: string;
   customizationPriceCRC: number;
-  customizationPriceUSD: number;
+  customizationPriceUSD?: number;
   shippingFeeCRC: number;
-  shippingFeeUSD: number;
+  shippingFeeUSD?: number;
   bankAccountHolder: string;
   bankAccountIBAN: string;
   bankName: string;
   sinpePhone: string;
   heroTagline?: string;
+  heroMainTitle?: string;
+  heroSubtitle?: string;
+  featuredBadge?: string;
+  featuredLeague?: string;
+  featuredTitle?: string;
+  featuredImage?: string;
+  featuredRatingText?: string;
+  featuredPromoText?: string;
+  featuredPromoBadge?: string;
+  featuredJerseyId?: string;
+  instagramHandle?: string;
+  instagramUrl?: string;
+  whatsappPhone?: string;
 }
 
 export interface DiscountCode {
@@ -62,8 +75,10 @@ export interface Jersey {
   team: string;
   league: League;
   sportCategory?: SportCategory;
-  price: number; // in USD or converted COP
+  price: number; // Base price in Costa Rican Colones (₡ CRC)
+  priceCRC?: number; // Exact price in Costa Rican Colones
   originalPrice?: number;
+  originalPriceCRC?: number; // Exact original crossed-out price in Colones
   discountPercent?: number;
   yearSeason: string;
   type: JerseyType;

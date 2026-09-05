@@ -23,6 +23,18 @@ export const DEFAULT_SETTINGS: StoreSettings = {
   bankName: 'BAC Credomatic Costa Rica',
   sinpePhone: '+506 8559 5192',
   heroTagline: 'NEW ARRIVAL / TEMPORADA 24-25',
+  heroMainTitle: 'PASIÓN EN CADA PIEL',
+  heroSubtitle: 'Consigue las camisetas oficiales de tus equipos favoritos, selecciones nacionales y ediciones históricas retro. Personaliza con tu nombre y dorsal oficial de cada liga.',
+  featuredBadge: 'EDICIÓN DESTACADA',
+  featuredLeague: 'LaLiga EA Sports',
+  featuredTitle: 'Real Madrid Local 2024/25',
+  featuredImage: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&q=80&w=800',
+  featuredRatingText: '(42 opiniones verificadas)',
+  featuredPromoText: 'Estampado Nombre & Dorsal',
+  featuredPromoBadge: '¡GRATIS! 🎁',
+  instagramHandle: '@OFFSIDE_SPORTS22',
+  instagramUrl: 'https://www.instagram.com/offside_sports22?igsh=MXZib2J3cjV2bnl1YQ==',
+  whatsappPhone: '+506 8559 5192'
 };
 
 export const DEFAULT_DISCOUNT_CODES: DiscountCode[] = [
@@ -35,16 +47,45 @@ export const DEFAULT_DISCOUNT_CODES: DiscountCode[] = [
 // Rate conversion: 1 USD = 520 CRC (Colones Costa Rica)
 export const CRC_RATE = 520;
 
-export function formatPrice(amountUSD: number, currency: 'CRC' | 'USD'): string {
-  if (currency === 'CRC') {
-    const crc = Math.round(amountUSD * CRC_RATE);
-    return `₡${crc.toLocaleString('es-CR')}`;
+/**
+ * Normalizes CRC prices from USD values by eliminating floating-point rounding errors
+ * (e.g. $48.08 -> 25001.6 rounded to 25002 instead of 25000, $38.46 -> 19999.2 instead of 20000).
+ */
+export function getCleanCRC(amountUSD: number): number {
+  if (isNaN(amountUSD) || amountUSD <= 0) return 0;
+  const rawCRC = amountUSD * CRC_RATE;
+  const roundedCRC = Math.round(rawCRC);
+
+  // Snap to clean 1000, 500, or 100 multiples if deviation is caused by 2-decimal USD rounding
+  const round1000 = Math.round(rawCRC / 1000) * 1000;
+  if (Math.abs(rawCRC - round1000) <= 2.8) return round1000;
+
+  const round500 = Math.round(rawCRC / 500) * 500;
+  if (Math.abs(rawCRC - round500) <= 2.8) return round500;
+
+  const round100 = Math.round(rawCRC / 100) * 100;
+  if (Math.abs(rawCRC - round100) <= 2.8) return round100;
+
+  return roundedCRC;
+}
+
+export function formatPrice(amount: number, currency: 'CRC' | 'USD' = 'CRC', exactCRC?: number): string {
+  // If exactCRC is provided, use it
+  let crc = typeof exactCRC === 'number' && !isNaN(exactCRC) && exactCRC > 0
+    ? exactCRC
+    : (amount >= 500 ? amount : getCleanCRC(amount));
+
+  if (currency === 'USD') {
+    const usd = Number((crc / CRC_RATE).toFixed(2));
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 2
+    }).format(usd);
   }
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 2
-  }).format(amountUSD);
+
+  // Format in Costa Rican Colones (₡)
+  return `₡${Math.round(crc).toLocaleString('es-CR')}`;
 }
 
 export function formatCRC(amountCRC: number): string {
@@ -59,7 +100,58 @@ export function getStoredJerseys(): Jersey[] {
       localStorage.setItem(KEYS.JERSEYS, JSON.stringify(INITIAL_JERSEYS));
       return INITIAL_JERSEYS;
     }
-    return JSON.parse(raw);
+    const parsed: Jersey[] = JSON.parse(raw);
+    let changed = false;
+    const sanitized = parsed.map(j => {
+      let item = { ...j };
+
+      // Convert any legacy USD prices (< 1000) directly to clean Costa Rican Colones
+      if (typeof item.price === 'number') {
+        if (item.price < 1000) {
+          if (item.priceCRC && item.priceCRC >= 1000) {
+            item.price = item.priceCRC;
+          } else {
+            const cleanVal = getCleanCRC(item.price);
+            item.price = cleanVal >= 10000 ? cleanVal : 25000;
+          }
+          changed = true;
+        }
+      } else {
+        item.price = 25000;
+        changed = true;
+      }
+      item.price = Math.round(item.price);
+      if (item.priceCRC !== item.price) {
+        item.priceCRC = item.price;
+        changed = true;
+      }
+
+      // Check original/crossed-out price
+      if (item.originalPrice) {
+        if (item.originalPrice < 1000) {
+          if (item.originalPriceCRC && item.originalPriceCRC >= 1000) {
+            item.originalPrice = item.originalPriceCRC;
+          } else {
+            const cleanOrig = getCleanCRC(item.originalPrice);
+            item.originalPrice = cleanOrig >= 10000 ? cleanOrig : Math.round(item.price * 1.25);
+          }
+          changed = true;
+        }
+        item.originalPrice = Math.round(item.originalPrice);
+        if (item.originalPriceCRC !== item.originalPrice) {
+          item.originalPriceCRC = item.originalPrice;
+          changed = true;
+        }
+      }
+
+      return item;
+    });
+    if (changed) {
+      try {
+        localStorage.setItem(KEYS.JERSEYS, JSON.stringify(sanitized));
+      } catch (ignore) {}
+    }
+    return sanitized;
   } catch (e) {
     console.error('Error reading jerseys from storage', e);
     return INITIAL_JERSEYS;

@@ -27,6 +27,19 @@ import {
   saveDiscountCodes,
   formatPrice 
 } from './utils/storage';
+import { 
+  subscribeToJerseys,
+  syncAllJerseysToCloud,
+  subscribeToSettings,
+  saveSettingsToCloud,
+  subscribeToOrders,
+  saveOrderToCloud,
+  updateOrderStatusInCloud,
+  subscribeToDiscountCodes,
+  saveDiscountCodesToCloud,
+  subscribeToReviews,
+  saveReviewToCloud
+} from './services/firebase';
 import { Instagram, MessageCircle } from 'lucide-react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -58,9 +71,10 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [adminInitialTab, setAdminInitialTab] = useState<'inventory' | 'settings' | 'orders' | 'stats' | 'coupons' | 'hero'>('hero');
   const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
   const [selectedJerseyDetail, setSelectedJerseyDetail] = useState<Jersey | null>(null);
-  const [appliedDiscountUSD, setAppliedDiscountUSD] = useState(0);
+  const [appliedDiscount, setAppliedDiscount] = useState(0);
 
   // Search & Filter State
   const [filters, setFilters] = useState<FilterState>({
@@ -75,30 +89,98 @@ export default function App() {
     sortBy: 'recommended'
   });
 
-  // Save changes to localStorage on updates
+  // Real-time synchronization with Cloud Firestore
+  useEffect(() => {
+    const unsubJerseys = subscribeToJerseys((cloudJerseys) => {
+      if (cloudJerseys && cloudJerseys.length > 0) {
+        setJerseys(cloudJerseys);
+        saveJerseys(cloudJerseys);
+      }
+    });
+
+    const unsubSettings = subscribeToSettings((cloudSettings) => {
+      if (cloudSettings) {
+        setSettingsState(cloudSettings);
+        saveSettings(cloudSettings);
+      }
+    });
+
+    const unsubOrders = subscribeToOrders((cloudOrders) => {
+      if (cloudOrders) {
+        setOrders(cloudOrders);
+        saveOrders(cloudOrders);
+      }
+    });
+
+    const unsubDiscounts = subscribeToDiscountCodes((cloudCodes) => {
+      if (cloudCodes && cloudCodes.length > 0) {
+        setDiscountCodesState(cloudCodes);
+        saveDiscountCodes(cloudCodes);
+      }
+    });
+
+    const unsubReviews = subscribeToReviews((cloudReviews) => {
+      if (cloudReviews && cloudReviews.length > 0) {
+        setReviews(cloudReviews);
+        saveReviews(cloudReviews);
+      }
+    });
+
+    return () => {
+      unsubJerseys();
+      unsubSettings();
+      unsubOrders();
+      unsubDiscounts();
+      unsubReviews();
+    };
+  }, []);
+
+  // Save changes to localStorage and Cloud Firestore
   const handleSetCurrency = (curr: 'CRC' | 'USD') => {
     setCurrencyState(curr);
     saveCurrency(curr);
   };
 
-  const handleUpdateSettings = (newSettings: StoreSettings) => {
+  const handleUpdateSettings = async (newSettings: StoreSettings) => {
     setSettingsState(newSettings);
     saveSettings(newSettings);
+    try {
+      await saveSettingsToCloud(newSettings);
+    } catch (e) {
+      console.warn('Could not sync settings to cloud:', e);
+    }
   };
 
-  const handleUpdateDiscountCodes = (newCodes: DiscountCode[]) => {
+  const handleUpdateDiscountCodes = async (newCodes: DiscountCode[]) => {
     setDiscountCodesState(newCodes);
     saveDiscountCodes(newCodes);
+    try {
+      await saveDiscountCodesToCloud(newCodes);
+    } catch (e) {
+      console.warn('Could not sync discount codes to cloud:', e);
+    }
   };
 
-  const handleUpdateJerseys = (newJerseys: Jersey[]) => {
+  const handleUpdateJerseys = async (newJerseys: Jersey[]) => {
     setJerseys(newJerseys);
     saveJerseys(newJerseys);
+    try {
+      await syncAllJerseysToCloud(newJerseys);
+    } catch (e) {
+      console.warn('Could not sync jerseys to cloud:', e);
+    }
   };
 
-  const handleUpdateOrders = (newOrders: Order[]) => {
+  const handleUpdateOrders = async (newOrders: Order[]) => {
     setOrders(newOrders);
     saveOrders(newOrders);
+    try {
+      for (const ord of newOrders) {
+        updateOrderStatusInCloud(ord.id, ord.status).catch(() => {});
+      }
+    } catch (e) {
+      console.warn('Could not sync order statuses to cloud:', e);
+    }
   };
 
   const handleUpdateCart = (newCart: CartItem[]) => {
@@ -106,10 +188,15 @@ export default function App() {
     saveCart(newCart);
   };
 
-  const handleAddReview = (newReview: Review) => {
+  const handleAddReview = async (newReview: Review) => {
     const updated = [newReview, ...reviews];
     setReviews(updated);
     saveReviews(updated);
+    try {
+      await saveReviewToCloud(newReview);
+    } catch (e) {
+      console.warn('Could not sync review to cloud:', e);
+    }
   };
 
   // Extract all available teams for filter dropdown
@@ -260,9 +347,14 @@ export default function App() {
     return sum + item.jersey.price * item.quantity;
   }, 0);
 
-  const handleOrderCompleted = (newOrder: Order) => {
+  const handleOrderCompleted = async (newOrder: Order) => {
     handleUpdateOrders([newOrder, ...orders]);
     handleUpdateCart([]); // Clear cart after order
+    try {
+      await saveOrderToCloud(newOrder);
+    } catch (e) {
+      console.warn('Could not save order to cloud:', e);
+    }
   };
 
   return (
@@ -299,6 +391,10 @@ export default function App() {
             onExploreClick={() => {
               const el = document.getElementById('catalog-grid');
               el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            onOpenAdminToHero={() => {
+              setAdminInitialTab('hero');
+              setIsAdminOpen(true);
             }}
           />
         )}
@@ -427,8 +523,8 @@ export default function App() {
         discountCodes={discountCodes}
         onUpdateQuantity={handleUpdateCartQuantity}
         onRemoveItem={handleRemoveCartItem}
-        onProceedToCheckout={(discountUSD) => {
-          setAppliedDiscountUSD(discountUSD);
+        onProceedToCheckout={(discountCRC) => {
+          setAppliedDiscount(discountCRC);
           setIsCartOpen(false);
           setIsCheckoutOpen(true);
         }}
@@ -454,7 +550,7 @@ export default function App() {
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         cart={cart}
-        discountUSD={appliedDiscountUSD}
+        discount={appliedDiscount}
         currency={currency}
         settings={settings}
         onOrderCompleted={handleOrderCompleted}

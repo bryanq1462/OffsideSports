@@ -21,7 +21,8 @@ interface CheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
   cart: CartItem[];
-  discountUSD: number;
+  discount?: number;
+  discountUSD?: number;
   currency: 'CRC' | 'USD';
   settings?: StoreSettings;
   onOrderCompleted: (newOrder: Order) => void;
@@ -31,6 +32,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   isOpen,
   onClose,
   cart,
+  discount: discountProp,
   discountUSD,
   currency,
   settings,
@@ -44,8 +46,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const bankAccountIBAN = settings?.bankAccountIBAN || 'CR05015202001026384920';
   const bankName = settings?.bankName || 'BAC Credomatic Costa Rica';
 
-  const stampFeeUSD = settings?.customizationPriceUSD ?? 0;
-  const shippingFeeUSD = settings?.shippingFeeUSD ?? 5;
+  const stampFee = settings?.customizationPriceCRC ?? 0;
+  const shippingFee = settings?.shippingFeeCRC ?? 2500;
+  const discount = typeof discountProp === 'number' ? discountProp : (discountUSD || 0); // Discount amount in CRC
 
   const [step, setStep] = useState<'shipping' | 'payment' | 'processing' | 'success'>('shipping');
 
@@ -69,15 +72,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
 
-  // Totals
-  const calculateItemPriceUSD = (item: CartItem) => {
-    const stampExtra = item.customStamping?.enabled ? stampFeeUSD : 0;
-    return (item.jersey.price + stampExtra) * item.quantity;
+  // Totals in CRC
+  const calculateItemPrice = (item: CartItem) => {
+    const itemPrice = item.jersey.priceCRC ?? item.jersey.price;
+    const stampExtra = item.customStamping?.enabled ? stampFee : 0;
+    return (itemPrice + stampExtra) * item.quantity;
   };
 
-  const subtotalUSD = cart.reduce((sum, item) => sum + calculateItemPriceUSD(item), 0);
-  const shippingUSD = subtotalUSD > 0 ? shippingFeeUSD : 0;
-  const totalUSD = subtotalUSD - discountUSD + shippingUSD;
+  const subtotal = cart.reduce((sum, item) => sum + calculateItemPrice(item), 0);
+  const shipping = subtotal > 0 ? shippingFee : 0;
+  const total = subtotal - discount + shipping;
 
   const handleShippingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,13 +101,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       const orderId = `OFF-${Math.floor(1000 + Math.random() * 9000)}`;
       const newOrder: Order = {
         id: orderId,
-        date: new Date().toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' }),
+        date: new Date().toLocaleString('es-CR', { dateStyle: 'short', timeStyle: 'short' }),
         customer,
         items: [...cart],
-        subtotal: subtotalUSD,
-        discount: discountUSD,
-        shipping: shippingUSD,
-        total: totalUSD,
+        subtotal: subtotal,
+        discount: discount,
+        shipping: shipping,
+        total: total,
         paymentMethod,
         paymentDetails: paymentMethod === 'card' ? {
           cardLast4: cardNumber.slice(-4) || '4242'
@@ -254,7 +258,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             {/* Order total preview */}
             <div className="p-3 bg-[#121212] border border-white/10 flex justify-between items-center text-xs">
               <span className="text-white/70 font-black uppercase tracking-wider">TOTAL A PAGAR ({cart.length} ÍTEMS):</span>
-              <span className="text-[#00e652] font-black text-base italic">{formatPrice(totalUSD, currency)}</span>
+              <span className="text-[#00e652] font-black text-base italic">{formatPrice(total, currency)}</span>
             </div>
 
             <div className="pt-2 flex justify-end">
@@ -283,7 +287,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
                 <span>VOLVER A ENVÍO</span>
               </button>
-              <span className="text-xs text-[#00e652] font-black uppercase italic">TOTAL: {formatPrice(totalUSD, currency)}</span>
+              <span className="text-xs text-[#00e652] font-black uppercase italic">TOTAL: {formatPrice(total, currency)}</span>
             </div>
 
             <div className="space-y-2">
@@ -435,7 +439,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-white/60 font-bold">MONTO TOTAL A PAGAR:</span>
-                    <strong className="text-[#00e652] font-mono font-black text-sm">{formatPrice(totalUSD, currency)}</strong>
+                    <strong className="text-[#00e652] font-mono font-black text-sm">{formatPrice(total, currency)}</strong>
                   </div>
                 </div>
 
@@ -481,7 +485,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </div>
                   <div className="flex justify-between items-center pt-0.5">
                     <span className="text-white/60 uppercase font-black text-[10px]">MONTO TOTAL PRODUCTO + ENVÍO:</span>
-                    <strong className="text-[#00e652] font-mono font-black text-sm">{formatPrice(totalUSD, currency)}</strong>
+                    <strong className="text-[#00e652] font-mono font-black text-sm">{formatPrice(total, currency)}</strong>
                   </div>
                 </div>
 
@@ -494,7 +498,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             {/* PayPal info */}
             {paymentMethod === 'paypal' && (
               <div className="p-4 bg-[#121212] border border-white/10 rounded-xl text-center text-xs text-white/80 font-semibold">
-                <p>Serás redirigido de forma segura al portal oficial de PayPal para autorizar los {formatPrice(totalUSD, currency)}.</p>
+                <p>Serás redirigido de forma segura al portal oficial de PayPal para autorizar los {formatPrice(total, currency)}.</p>
               </div>
             )}
 
@@ -512,7 +516,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             >
               <div className="skew-x-[10deg] flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
-                <span>PAGAR AHORA ({formatPrice(totalUSD, currency)})</span>
+                <span>PAGAR AHORA ({formatPrice(total, currency)})</span>
               </div>
             </button>
           </form>

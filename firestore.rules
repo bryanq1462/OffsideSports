@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper to validate document IDs
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // Catalog jerseys collection - public reading, validated writing
+    match /jerseys/{jerseyId} {
+      allow read: if true;
+      allow write: if isValidId(jerseyId);
+    }
+
+    // Customer orders
+    match /orders/{orderId} {
+      allow read: if true;
+      allow write: if isValidId(orderId);
+    }
+
+    // Store settings (contact info, SINPE, bank account, shipping)
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isValidId(settingId);
+    }
+
+    // Customer reviews
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow write: if isValidId(reviewId);
+    }
+
+    // Discount codes
+    match /discounts/{discountId} {
+      allow read: if true;
+      allow write: if isValidId(discountId);
+    }
+
+    // Connectivity verification document
+    match /test/{testId} {
+      allow read, write: if true;
+    }
+  }
+}

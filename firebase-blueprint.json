@@ -1,0 +1,119 @@
+{
+  "entities": {
+    "Jersey": {
+      "title": "Jersey",
+      "description": "A sports jersey product in the store catalog",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "team": { "type": "string" },
+        "league": { "type": "string" },
+        "sportCategory": { "type": "string" },
+        "price": { "type": "number" },
+        "priceCRC": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "originalPriceCRC": { "type": "number" },
+        "discountPercent": { "type": "number" },
+        "yearSeason": { "type": "string" },
+        "type": { "type": "string" },
+        "image": { "type": "string" },
+        "backImage": { "type": "string" },
+        "sizesAvailable": { "type": "array" },
+        "description": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "number" },
+        "isPopular": { "type": "boolean" },
+        "isNew": { "type": "boolean" },
+        "stock": { "type": "number" },
+        "badgeTags": { "type": "array" },
+        "fabricInfo": { "type": "string" }
+      },
+      "required": ["id", "name", "team", "price", "stock", "sizesAvailable"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A customer order submitted to the store",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customer": { "type": "object" },
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "totalAmountCRC": { "type": "number" },
+        "currency": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "shippingFee": { "type": "number" }
+      },
+      "required": ["id", "customer", "items", "totalAmount", "status", "createdAt"]
+    },
+    "StoreSettings": {
+      "title": "StoreSettings",
+      "description": "Store contact and banking settings",
+      "type": "object",
+      "properties": {
+        "contactPhone": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "shippingFeeCRC": { "type": "number" },
+        "shippingFeeUSD": { "type": "number" },
+        "bankAccountHolder": { "type": "string" },
+        "bankAccountIBAN": { "type": "string" },
+        "bankName": { "type": "string" },
+        "sinpePhone": { "type": "string" },
+        "heroTagline": { "type": "string" }
+      }
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Customer product reviews",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "jerseyId": { "type": "string" },
+        "author": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "date": { "type": "string" },
+        "verified": { "type": "boolean" }
+      },
+      "required": ["id", "jerseyId", "author", "rating", "comment", "date"]
+    },
+    "DiscountCode": {
+      "title": "DiscountCode",
+      "description": "Discount codes for checkout",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "discountPercent": { "type": "number" },
+        "description": { "type": "string" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["id", "code", "discountPercent", "active"]
+    }
+  },
+  "firestore": {
+    "/jerseys/{jerseyId}": {
+      "schema": "Jersey",
+      "description": "Store products available in catalog"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Orders submitted by customers"
+    },
+    "/settings/{settingId}": {
+      "schema": "StoreSettings",
+      "description": "Store configuration document"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Customer reviews"
+    },
+    "/discounts/{discountId}": {
+      "schema": "DiscountCode",
+      "description": "Store discount coupons"
+    }
+  }
+}

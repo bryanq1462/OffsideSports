@@ -23,7 +23,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { Jersey, Order, OrderStatus, League, JerseyType, JerseyVersion, GenderCategory, Size, StoreSettings, SportCategory, DiscountCode } from '../types';
-import { formatPrice } from '../utils/storage';
+import { formatPrice, getCleanCRC } from '../utils/storage';
 import { handleImageError, compressImageFile } from '../utils/imageUtils';
 import { INITIAL_LEAGUES, LEAGUE_FLAGS, SPORTS_LIST } from '../data/mockData';
 
@@ -87,6 +87,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [editingJersey, setEditingJersey] = useState<Partial<Jersey> | null>(null);
   const [crcInputValue, setCrcInputValue] = useState<string>('');
   const [usdInputValue, setUsdInputValue] = useState<string>('');
+  const [showOriginalPrice, setShowOriginalPrice] = useState<boolean>(false);
+  const [originalCrcInputValue, setOriginalCrcInputValue] = useState<string>('');
+  const [originalUsdInputValue, setOriginalUsdInputValue] = useState<string>('');
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
 
   // Selected Order Detail Modal
@@ -225,16 +228,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     e.preventDefault();
     if (!editingJersey || !editingJersey.name || !editingJersey.team) return;
 
-    const priceNum = typeof editingJersey.price === 'number' && !isNaN(editingJersey.price) ? editingJersey.price : (Number(editingJersey.price) || 60);
-    const stockNum = typeof editingJersey.stock === 'number' && !isNaN(editingJersey.stock) ? editingJersey.stock : (Number(editingJersey.stock) ?? 20);
+    const enteredCrc = crcInputValue ? Number(crcInputValue) : (typeof editingJersey.price === 'number' && !isNaN(editingJersey.price) ? editingJersey.price : 25000);
+    const finalPriceCRC = enteredCrc >= 500 ? enteredCrc : Math.round(enteredCrc * 520);
+    const stockNum = typeof editingJersey.stock === 'number' && !isNaN(editingJersey.stock) ? editingJersey.stock : (Number(editingJersey.stock) ?? 15);
+
+    // Strikethrough original price in Colones: only set if user actively enabled and provided it
+    let finalOriginalPriceCRC: number | undefined = undefined;
+    if (showOriginalPrice && originalCrcInputValue && Number(originalCrcInputValue) > 0) {
+      finalOriginalPriceCRC = Number(originalCrcInputValue);
+    }
 
     if (editingJersey.id) {
       // Edit existing
       const updated = jerseys.map(j => j.id === editingJersey.id ? ({
         ...j,
         ...editingJersey,
-        price: priceNum,
-        originalPrice: Number(editingJersey.originalPrice) || (priceNum ? Math.round(priceNum * 1.2) : j.originalPrice),
+        price: finalPriceCRC,
+        priceCRC: finalPriceCRC,
+        originalPrice: finalOriginalPriceCRC,
+        originalPriceCRC: finalOriginalPriceCRC,
         stock: stockNum
       } as Jersey) : j);
       onUpdateJerseys(updated);
@@ -247,8 +259,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         league: (editingJersey.league as League) || 'Liga Promerica (CR)',
         version: editingJersey.version || 'Versión Jugador (Player Issue)',
         genderCategory: editingJersey.genderCategory || 'Unisex (Adulto)',
-        price: priceNum,
-        originalPrice: Math.round(priceNum * 1.2),
+        price: finalPriceCRC,
+        priceCRC: finalPriceCRC,
+        originalPrice: finalOriginalPriceCRC,
+        originalPriceCRC: finalOriginalPriceCRC,
         yearSeason: editingJersey.yearSeason || '2025/2026',
         type: (editingJersey.type as JerseyType) || 'Local',
         image: editingJersey.image || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=800',
@@ -388,13 +402,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <ShieldCheck className="w-6 h-6 stroke-[2.5] skew-x-[10deg]" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-xl font-black italic uppercase text-white tracking-wider">PANEL ADMINISTRATIVO</h2>
                 <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2 py-0.5 tracking-widest">
                   OFFSIDE ADMIN
                 </span>
+                <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Cloud Firestore Activo
+                </span>
               </div>
-              <p className="text-xs text-white/60 font-semibold mt-0.5">Control total de inventario de camisetas y gestión de pedidos</p>
+              <p className="text-xs text-white/60 font-semibold mt-0.5">Control total de inventario, pedidos y sincronización en la nube en tiempo real</p>
             </div>
           </div>
 
@@ -488,21 +506,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           {activeTab === 'inventory' && (
             <button
               onClick={() => {
-                const initialPrice = 60;
                 setEditingJersey({
                   name: '',
                   team: '',
-                  league: 'LaLiga',
-                  price: initialPrice,
-                  originalPrice: 75,
-                  stock: 1,
+                  league: 'Liga Promerica (CR)',
+                  price: 25000,
+                  priceCRC: 25000,
+                  originalPrice: undefined,
+                  originalPriceCRC: undefined,
+                  stock: 15,
                   yearSeason: '2024/2025',
                   type: 'Local',
-                  sizesAvailable: ['M'],
+                  sizesAvailable: ['S', 'M', 'L', 'XL', 'XXL'],
                   image: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=800'
                 });
-                setCrcInputValue(String(Math.round(initialPrice * 520)));
-                setUsdInputValue(String(initialPrice));
+                setCrcInputValue('25000');
+                setUsdInputValue('');
+                setShowOriginalPrice(false);
+                setOriginalCrcInputValue('');
+                setOriginalUsdInputValue('');
                 setIsNewModalOpen(true);
               }}
               className="shrink-0 bg-[#00e652] hover:bg-white text-black px-4 py-2 flex items-center justify-center gap-2 font-black cursor-pointer shadow-xl skew-x-[-10deg] text-xs"
@@ -567,8 +589,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <p className="text-[10px] text-white/60">{jersey.league}</p>
                         </td>
 
-                        <td className="p-3 font-black text-[#00e652] text-sm italic">
-                          {formatPrice(jersey.price, currency)}
+                        <td className="p-3">
+                          <div className="font-black text-[#00e652] text-sm italic">
+                            {formatPrice(jersey.price, currency, jersey.priceCRC)}
+                          </div>
+                          {jersey.originalPrice && jersey.originalPrice > jersey.price ? (
+                            <div className="text-[10px] text-white/40 line-through font-bold">
+                              {formatPrice(jersey.originalPrice, currency, jersey.originalPriceCRC)}
+                            </div>
+                          ) : null}
                         </td>
 
                         <td className="p-3">
@@ -589,13 +618,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <button
                             onClick={() => {
                               setEditingJersey(jersey);
-                              const usd = jersey.price !== undefined && jersey.price !== null && !isNaN(Number(jersey.price)) ? String(jersey.price) : '';
-                              setUsdInputValue(usd);
-                              setCrcInputValue(
-                                jersey.price !== undefined && jersey.price !== null && !isNaN(Number(jersey.price))
-                                  ? String(Math.round(Number(jersey.price) * 520))
-                                  : ''
-                              );
+                              const crcVal = jersey.priceCRC || (jersey.price && jersey.price >= 500 ? jersey.price : (jersey.price ? Math.round(jersey.price * 520) : 25000));
+                              setCrcInputValue(crcVal ? String(crcVal) : '');
+                              setUsdInputValue('');
+
+                              // Initialize original/strikethrough price
+                              const hasOrig = !!(jersey.originalPrice && jersey.originalPrice > (jersey.price || 0));
+                              setShowOriginalPrice(hasOrig);
+                              if (hasOrig && jersey.originalPrice) {
+                                const origCrc = jersey.originalPriceCRC || (jersey.originalPrice >= 500 ? jersey.originalPrice : Math.round(jersey.originalPrice * 520));
+                                setOriginalCrcInputValue(origCrc ? String(origCrc) : '');
+                              } else {
+                                setOriginalCrcInputValue('');
+                              }
+                              setOriginalUsdInputValue('');
                               setIsNewModalOpen(true);
                             }}
                             className="p-1.5 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer"
@@ -649,10 +685,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
                       <DollarSign className="w-4 h-4 stroke-[2.5]" />
-                      <span>CONFIGURACIÓN DE MONTOS Y TARIFAS (COLONES ₡ & USD)</span>
+                      <span>TARIFAS DE LA TIENDA (EN COLONES ₡ CRC)</span>
                     </h4>
                     <span className="text-[10px] bg-[#00e652]/10 text-[#00e652] px-2 py-0.5 border border-[#00e652]/30 font-black uppercase">
-                      1 USD = ₡520 CRC
+                      COSTA RICA (₡ CRC)
                     </span>
                   </div>
 
@@ -660,108 +696,54 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     {/* Estampado / Personalización */}
                     <div className="space-y-2 bg-black/60 p-3.5 border border-white/10 rounded-xl">
                       <label className="block font-black uppercase text-white tracking-wider text-xs">
-                        PRECIO DE ESTAMPADO / PERSONALIZACIÓN:
+                        PRECIO DE ESTAMPADO / PERSONALIZACIÓN (₡ CRC):
                       </label>
-                      <div className="space-y-2">
-                        <div>
-                          <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN COLONES (₡ CRC):</span>
-                          <div className="relative">
-                            <span className="absolute left-3 top-2.5 text-[#00e652] font-black">₡</span>
-                            <input
-                              type="number"
-                              step="any"
-                              min="0"
-                              required
-                              value={localSettings.customizationPriceCRC ?? Math.round((localSettings.customizationPriceUSD || 10) * 520)}
-                              onChange={(e) => {
-                                const crc = Number(e.target.value);
-                                setLocalSettings({
-                                  ...localSettings,
-                                  customizationPriceCRC: crc,
-                                  customizationPriceUSD: Number((crc / 520).toFixed(2))
-                                });
-                              }}
-                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white font-mono font-black text-sm focus:border-[#00e652]"
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN DÓLARES ($ USD):</span>
-                          <div className="relative">
-                            <span className="absolute left-3 top-2.5 text-[#00e652] font-black">$</span>
-                            <input
-                              type="number"
-                              step="any"
-                              min="0"
-                              required
-                              value={localSettings.customizationPriceUSD}
-                              onChange={(e) => {
-                                const usd = Number(e.target.value);
-                                setLocalSettings({
-                                  ...localSettings,
-                                  customizationPriceUSD: usd,
-                                  customizationPriceCRC: Math.round(usd * 520)
-                                });
-                              }}
-                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white/80 font-mono font-bold text-sm focus:border-[#00e652]"
-                            />
-                          </div>
-                        </div>
+                      <p className="text-[10px] text-white/50">Costo adicional si el cliente solicita nombre y número (0 para gratis)</p>
+                      <div className="relative">
+                        <span className="absolute left-3 top-2.5 text-[#00e652] font-black">₡</span>
+                        <input
+                          type="number"
+                          step="100"
+                          min="0"
+                          required
+                          value={localSettings.customizationPriceCRC ?? Math.round((localSettings.customizationPriceUSD || 10) * 520)}
+                          onChange={(e) => {
+                            const crc = Number(e.target.value);
+                            setLocalSettings({
+                              ...localSettings,
+                              customizationPriceCRC: crc,
+                              customizationPriceUSD: Number((crc / 520).toFixed(2))
+                            });
+                          }}
+                          className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-[#00e652] font-mono font-black text-sm focus:border-[#00e652]"
+                        />
                       </div>
                     </div>
 
                     {/* Envío Estándar */}
                     <div className="space-y-2 bg-black/60 p-3.5 border border-white/10 rounded-xl">
                       <label className="block font-black uppercase text-white tracking-wider text-xs">
-                        TARIFA DE ENVÍO ESTÁNDAR (CORREOS DE CR / MENSAJERÍA):
+                        TARIFA DE ENVÍO ESTÁNDAR (₡ CRC):
                       </label>
-                      <div className="space-y-2">
-                        <div>
-                          <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN COLONES (₡ CRC):</span>
-                          <div className="relative">
-                            <span className="absolute left-3 top-2.5 text-[#00e652] font-black">₡</span>
-                            <input
-                              type="number"
-                              step="any"
-                              min="0"
-                              required
-                              value={localSettings.shippingFeeCRC ?? Math.round((localSettings.shippingFeeUSD || 5) * 520)}
-                              onChange={(e) => {
-                                const crc = Number(e.target.value);
-                                setLocalSettings({
-                                  ...localSettings,
-                                  shippingFeeCRC: crc,
-                                  shippingFeeUSD: Number((crc / 520).toFixed(2))
-                                });
-                              }}
-                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white font-mono font-black text-sm focus:border-[#00e652]"
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <span className="text-[10px] text-white/60 font-bold uppercase block mb-0.5">MONTO EN DÓLARES ($ USD):</span>
-                          <div className="relative">
-                            <span className="absolute left-3 top-2.5 text-[#00e652] font-black">$</span>
-                            <input
-                              type="number"
-                              step="any"
-                              min="0"
-                              required
-                              value={localSettings.shippingFeeUSD}
-                              onChange={(e) => {
-                                const usd = Number(e.target.value);
-                                setLocalSettings({
-                                  ...localSettings,
-                                  shippingFeeUSD: usd,
-                                  shippingFeeCRC: Math.round(usd * 520)
-                                });
-                              }}
-                              className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-white/80 font-mono font-bold text-sm focus:border-[#00e652]"
-                            />
-                          </div>
-                        </div>
+                      <p className="text-[10px] text-white/50">Costo de envío a todo el país vía Correos de Costa Rica</p>
+                      <div className="relative">
+                        <span className="absolute left-3 top-2.5 text-[#00e652] font-black">₡</span>
+                        <input
+                          type="number"
+                          step="100"
+                          min="0"
+                          required
+                          value={localSettings.shippingFeeCRC ?? Math.round((localSettings.shippingFeeUSD || 5) * 520)}
+                          onChange={(e) => {
+                            const crc = Number(e.target.value);
+                            setLocalSettings({
+                              ...localSettings,
+                              shippingFeeCRC: crc,
+                              shippingFeeUSD: Number((crc / 520).toFixed(2))
+                            });
+                          }}
+                          className="w-full bg-black border border-white/20 rounded-xl pl-7 pr-3 py-2 text-[#00e652] font-mono font-black text-sm focus:border-[#00e652]"
+                        />
                       </div>
                     </div>
                   </div>
@@ -1422,19 +1404,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <div className="space-y-3 bg-[#121212] p-4 border border-white/10 rounded-2xl">
                 <h4 className="text-xs font-black uppercase text-[#00e652] tracking-wider flex items-center gap-2">
                   <DollarSign className="w-3.5 h-3.5 text-[#00e652]" />
-                  <span>PRECIOS EN COLONES (₡ CRC) / DÓLARES ($ USD) & INVENTARIO</span>
+                  <span>PRECIO DE VENTA EN COLONES (₡ CRC) & INVENTARIO</span>
                 </h4>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-white font-black uppercase tracking-wider mb-1">PRECIO EN COLONES (₡ CRC):</label>
+                    <label className="block text-white font-black uppercase tracking-wider mb-1">
+                      PRECIO DE VENTA (₡ CRC):
+                    </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-2.5 text-[#00e652] font-black z-10 pointer-events-none">₡</span>
+                      <span className="absolute left-3 top-2.5 text-[#00e652] font-black z-10 pointer-events-none text-base">₡</span>
                       <input
                         type="text"
                         inputMode="numeric"
                         required
-                        placeholder="0"
+                        placeholder="Ej: 25000"
                         value={crcInputValue}
                         onFocus={(e) => e.target.select()}
                         onChange={(e) => {
@@ -1444,62 +1428,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           }
                           setCrcInputValue(raw);
                           if (raw === '') {
-                            setEditingJersey({ ...editingJersey, price: '' as unknown as number });
-                            setUsdInputValue('');
+                            setEditingJersey({ ...editingJersey, price: '' as unknown as number, priceCRC: undefined });
                           } else {
                             const crc = Number(raw);
-                            const usdCalc = Number((crc / 520).toFixed(2));
-                            setEditingJersey({ ...editingJersey, price: usdCalc });
-                            setUsdInputValue(String(usdCalc));
+                            setEditingJersey({ ...editingJersey, price: crc, priceCRC: crc });
                           }
                         }}
-                        className="w-full bg-black border border-white/20 rounded-xl pl-8 pr-2.5 py-2.5 text-[#00e652] font-mono font-black text-sm focus:border-[#00e652] outline-none"
+                        className="w-full bg-black border border-white/20 rounded-xl pl-9 pr-3 py-2.5 text-[#00e652] font-mono font-black text-base focus:border-[#00e652] outline-none"
                       />
                     </div>
                     <p className="text-[10px] text-white/50 mt-1">
-                      Equivalente: ${editingJersey.price !== '' && editingJersey.price !== undefined && !isNaN(Number(editingJersey.price)) ? editingJersey.price : 0} USD
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-white font-black uppercase tracking-wider mb-1">PRECIO EN DÓLARES ($ USD):</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-2.5 text-[#00e652] font-black z-10 pointer-events-none">$</span>
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        required
-                        placeholder="0.00"
-                        value={usdInputValue}
-                        onFocus={(e) => e.target.select()}
-                        onChange={(e) => {
-                          let raw = e.target.value.replace(/[^0-9.]/g, '');
-                          const parts = raw.split('.');
-                          if (parts.length > 2) {
-                            raw = parts[0] + '.' + parts.slice(1).join('');
-                          }
-                          if (raw.length > 1 && raw.startsWith('0') && raw[1] !== '.') {
-                            raw = raw.replace(/^0+/, '');
-                          }
-                          setUsdInputValue(raw);
-                          if (raw === '' || raw === '.') {
-                            setEditingJersey({ ...editingJersey, price: '' as unknown as number });
-                            setCrcInputValue('');
-                          } else {
-                            const usdNum = Number(raw);
-                            setEditingJersey({ ...editingJersey, price: usdNum });
-                            if (!isNaN(usdNum)) {
-                              setCrcInputValue(String(Math.round(usdNum * 520)));
-                            } else {
-                              setCrcInputValue('');
-                            }
-                          }
-                        }}
-                        className="w-full bg-black border border-white/20 rounded-xl pl-8 pr-2.5 py-2.5 text-white font-mono font-bold focus:border-[#00e652] outline-none"
-                      />
-                    </div>
-                    <p className="text-[10px] text-white/50 mt-1">
-                      En Colones: {editingJersey.price !== '' && editingJersey.price !== undefined && !isNaN(Number(editingJersey.price)) ? formatPrice(Number(editingJersey.price), 'CRC') : '₡0'}
+                      {crcInputValue ? `Precio fijado: ₡${Number(crcInputValue).toLocaleString('es-CR')} exactos` : 'Ingresa el monto en Colones (Ej: 25000, 20000)'}
                     </p>
                   </div>
 
@@ -1523,8 +1462,110 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       }}
                       className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     />
-                    <p className="text-[10px] text-white/50 mt-1">Unidades físicas en bodega</p>
+                    <p className="text-[10px] text-white/50 mt-1">Unidades físicas disponibles en bodega</p>
                   </div>
+                </div>
+
+                {/* PRECIO ANTERIOR TACHADO (OFERTA / REBAJA) */}
+                <div className="bg-black/50 p-3.5 border border-white/10 rounded-xl space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <span className="text-xs font-black uppercase text-white flex items-center gap-1.5">
+                        <Tag className="w-3.5 h-3.5 text-[#00e652]" />
+                        <span>PRECIO ANTERIOR TACHADO (OFERTA)</span>
+                      </span>
+                      <p className="text-[10px] text-white/50 mt-0.5">
+                        {showOriginalPrice
+                          ? 'Aparece tachado al lado del precio de venta para indicar rebaja'
+                          : 'Desactivado: sólo se mostrará el precio real de venta'}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = !showOriginalPrice;
+                        setShowOriginalPrice(next);
+                        if (!next) {
+                          setEditingJersey({ ...editingJersey, originalPrice: undefined, originalPriceCRC: undefined });
+                          setOriginalCrcInputValue('');
+                          setOriginalUsdInputValue('');
+                        } else {
+                          const currentCRC = Number(crcInputValue) || 25000;
+                          const suggestedCRC = Math.round((currentCRC * 1.2) / 1000) * 1000;
+                          setEditingJersey({ ...editingJersey, originalPrice: suggestedCRC, originalPriceCRC: suggestedCRC });
+                          setOriginalCrcInputValue(String(suggestedCRC));
+                          setOriginalUsdInputValue('');
+                        }
+                      }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition cursor-pointer self-start sm:self-auto ${
+                        showOriginalPrice
+                          ? 'bg-[#00e652] text-black shadow-md'
+                          : 'bg-white/10 text-white/70 hover:bg-white/20'
+                      }`}
+                    >
+                      {showOriginalPrice ? '✓ Con Precio Tachado' : '✕ Sin Precio Tachado (Solo Precio Real)'}
+                    </button>
+                  </div>
+
+                  {showOriginalPrice && (
+                    <div className="pt-2 border-t border-white/10 space-y-2.5">
+                      <div>
+                        <label className="block text-white/80 text-[10px] font-bold uppercase mb-1">
+                          PRECIO ANTERIOR TACHADO EN COLONES (₡ CRC):
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-2 text-white/40 font-black z-10 pointer-events-none">₡</span>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            placeholder="Ej: 30000"
+                            value={originalCrcInputValue}
+                            onFocus={(e) => e.target.select()}
+                            onChange={(e) => {
+                              let raw = e.target.value.replace(/[^0-9]/g, '');
+                              if (raw.length > 1 && raw.startsWith('0')) raw = raw.replace(/^0+/, '');
+                              setOriginalCrcInputValue(raw);
+                              if (raw === '') {
+                                setEditingJersey({ ...editingJersey, originalPrice: undefined, originalPriceCRC: undefined });
+                              } else {
+                                const origCrc = Number(raw);
+                                setEditingJersey({ ...editingJersey, originalPrice: origCrc, originalPriceCRC: origCrc });
+                              }
+                            }}
+                            className="w-full bg-[#181818] border border-white/20 rounded-xl pl-7 pr-2.5 py-2 text-white font-mono text-sm focus:border-[#00e652] outline-none"
+                          />
+                        </div>
+                        <p className="text-[10px] text-white/40 mt-1">
+                          Debe ser mayor al precio de venta para que se muestre como rebaja.
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] bg-white/5 px-2.5 py-1.5 rounded-lg">
+                        <span className="text-white/70">
+                          Vista previa:{' '}
+                          <span className="text-[#00e652] font-black">{crcInputValue ? `₡${Number(crcInputValue).toLocaleString('es-CR')}` : '₡0'}</span>{' '}
+                          {originalCrcInputValue ? (
+                            <span className="line-through text-white/40 font-bold ml-1">
+                              ₡{Number(originalCrcInputValue).toLocaleString('es-CR')}
+                            </span>
+                          ) : null}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowOriginalPrice(false);
+                            setEditingJersey({ ...editingJersey, originalPrice: undefined, originalPriceCRC: undefined });
+                            setOriginalCrcInputValue('');
+                            setOriginalUsdInputValue('');
+                          }}
+                          className="text-rose-400 hover:text-rose-300 font-bold underline cursor-pointer text-[10px]"
+                        >
+                          Quitar precio tachado
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Individual Product Discount & Badge Tags */}

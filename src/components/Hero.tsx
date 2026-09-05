@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, Flame, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { Trophy, ArrowRight, CheckCircle2, Sparkles, Edit3 } from 'lucide-react';
 import { StoreSettings } from '../types';
 import { handleImageError } from '../utils/imageUtils';
 
@@ -8,13 +8,15 @@ interface HeroProps {
   selectedLeague: string;
   onExploreClick: () => void;
   settings?: StoreSettings;
+  onOpenAdminToHero?: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
   onSelectLeague,
   selectedLeague,
   onExploreClick,
-  settings
+  settings,
+  onOpenAdminToHero
 }) => {
   const leagueBadges: { id: string; name: string; icon: string }[] = [
     { id: 'all', name: 'Todas', icon: '🏆' },
@@ -31,6 +33,18 @@ export const Hero: React.FC<HeroProps> = ({
     { id: 'Selecciones', name: 'Selecciones', icon: '🌍' },
     { id: 'Clásicos Retro', name: 'Leyendas Retro', icon: '🏛️' }
   ];
+
+  const featuredBadge = settings?.featuredBadge || 'EDICIÓN DESTACADA';
+  const featuredImage = settings?.featuredImage || 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&q=80&w=800';
+  const featuredLeague = settings?.featuredLeague || 'LaLiga EA Sports';
+  const featuredTitle = settings?.featuredTitle || 'Real Madrid Local 2024/25';
+  const featuredRatingText = settings?.featuredRatingText || '(42 opiniones verificadas)';
+  const featuredPromoText = settings?.featuredPromoText || 'Estampado Nombre & Dorsal';
+  const featuredPromoBadge = settings?.featuredPromoBadge || '¡GRATIS! 🎁';
+
+  const heroTagline = settings?.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25';
+  const heroMainTitle = settings?.heroMainTitle || 'PASIÓN EN CADA PIEL';
+  const heroSubtitle = settings?.heroSubtitle || 'Consigue las camisetas oficiales de tus equipos favoritos, selecciones nacionales y ediciones históricas retro. Personaliza con tu nombre y dorsal oficial de cada liga.';
 
   return (
     <section className="relative bg-[#0a0a0a] text-white overflow-hidden border-b border-white/10 py-12 md:py-20">
@@ -62,17 +76,25 @@ export const Hero: React.FC<HeroProps> = ({
             {/* Top Tag */}
             <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-black tracking-[0.2em] uppercase">
               <span className="w-2 h-2 rounded-full bg-[#00e652] animate-ping" />
-              <span className="text-[#00e652]">{settings?.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25'}</span>
+              <span className="text-[#00e652]">{heroTagline}</span>
             </div>
 
             {/* Main Bold Headline */}
             <h1 className="text-4xl sm:text-7xl lg:text-8xl font-black italic uppercase tracking-tighter leading-[0.9] sm:leading-[0.85] text-white">
-              PASIÓN EN <br />
-              <span className="text-[#00e652] underline decoration-[#00e652]/40 decoration-wavy">CADA PIEL</span>
+              {heroMainTitle.includes('EN') ? (
+                <>
+                  {heroMainTitle.split('EN')[0]} EN <br />
+                  <span className="text-[#00e652] underline decoration-[#00e652]/40 decoration-wavy">
+                    {heroMainTitle.split('EN').slice(1).join('EN').trim()}
+                  </span>
+                </>
+              ) : (
+                <span className="text-white">{heroMainTitle}</span>
+              )}
             </h1>
 
             <p className="text-white/70 text-xs sm:text-base max-w-xl font-medium leading-relaxed">
-              Consigue las camisetas oficiales de tus equipos favoritos, selecciones nacionales y ediciones históricas retro. <strong className="text-[#00e652] font-extrabold">Personaliza con tu nombre y dorsal oficial</strong> de cada liga.
+              {heroSubtitle}
             </p>
 
             {/* Value Props Checklist */}
@@ -110,6 +132,17 @@ export const Hero: React.FC<HeroProps> = ({
                 <Trophy className="w-4 h-4 text-[#00e652]" />
                 <span>Colección Retro</span>
               </button>
+
+              {onOpenAdminToHero && (
+                <button
+                  onClick={onOpenAdminToHero}
+                  className="bg-white/5 hover:bg-[#00e652] text-white/70 hover:text-black border border-white/10 px-3.5 py-3.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
+                  title="Editar textos e imagen de este banner desde el Panel Admin"
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Editar Portada</span>
+                </button>
+              )}
             </div>
 
           </div>
@@ -117,15 +150,34 @@ export const Hero: React.FC<HeroProps> = ({
           {/* Right Showcase Card */}
           <div className="lg:col-span-5 flex justify-center">
             <div className="relative w-full max-w-md bg-[#121212] border border-white/10 p-4 sm:p-6 rounded-3xl shadow-2xl overflow-hidden group">
+              
+              {/* Quick Admin Edit Button on top left */}
+              {onOpenAdminToHero && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenAdminToHero();
+                  }}
+                  className="absolute top-4 left-4 z-20 bg-black/80 hover:bg-[#00e652] text-white hover:text-black border border-white/20 text-[10px] font-black uppercase px-2.5 py-1 rounded-md flex items-center gap-1 transition-all cursor-pointer shadow-lg backdrop-blur-sm"
+                  title="Editar imagen, título y detalles de esta tarjeta"
+                >
+                  <Edit3 className="w-3 h-3" />
+                  <span>Editar</span>
+                </button>
+              )}
+
               <div className="absolute top-4 right-4 bg-[#00e652] text-black font-black text-[10px] uppercase px-3 py-1 rounded-sm z-10 tracking-widest">
-                EDICIÓN DESTACADA
+                {featuredBadge}
               </div>
 
               {/* Jersey Image Showcase */}
-              <div className="relative h-64 sm:h-80 w-full overflow-hidden rounded-2xl bg-black flex items-center justify-center border border-white/10">
+              <div 
+                onClick={onExploreClick}
+                className="relative h-64 sm:h-80 w-full overflow-hidden rounded-2xl bg-black flex items-center justify-center border border-white/10 cursor-pointer"
+              >
                 <img
-                  src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=800"
-                  alt="Real Madrid 2024/25"
+                  src={featuredImage}
+                  alt={featuredTitle}
                   referrerPolicy="no-referrer"
                   onError={handleImageError}
                   className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -133,11 +185,11 @@ export const Hero: React.FC<HeroProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-90" />
                 
                 <div className="absolute bottom-4 left-4 right-4 text-left">
-                  <p className="text-[#00e652] text-xs font-black uppercase tracking-widest">LaLiga EA Sports</p>
-                  <h3 className="text-xl font-black italic uppercase text-white tracking-tight">Real Madrid Local 2024/25</h3>
+                  <p className="text-[#00e652] text-xs font-black uppercase tracking-widest">{featuredLeague}</p>
+                  <h3 className="text-xl font-black italic uppercase text-white tracking-tight">{featuredTitle}</h3>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-amber-400 text-xs">★★★★★</span>
-                    <span className="text-xs text-white/60 font-bold">(42 opiniones verificadas)</span>
+                    <span className="text-xs text-white/60 font-bold">{featuredRatingText}</span>
                   </div>
                 </div>
               </div>
@@ -146,10 +198,10 @@ export const Hero: React.FC<HeroProps> = ({
               <div className="mt-4 p-3.5 bg-black rounded-xl border border-white/10 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#00e652]" />
-                  <span className="text-white/80 font-bold text-[11px] sm:text-xs">Estampado Nombre & Dorsal</span>
+                  <span className="text-white/80 font-bold text-[11px] sm:text-xs">{featuredPromoText}</span>
                 </div>
                 <span className="text-[#00e652] font-black uppercase text-[10px] bg-[#00e652]/10 border border-[#00e652]/40 px-2.5 py-1 rounded whitespace-nowrap">
-                  ¡GRATIS! 🎁
+                  {featuredPromoBadge}
                 </span>
               </div>
             </div>

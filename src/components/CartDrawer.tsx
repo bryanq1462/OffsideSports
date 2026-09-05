@@ -44,20 +44,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [couponApplied, setCouponApplied] = useState<{ code: string; percent: number } | null>(null);
   const [couponError, setCouponError] = useState('');
 
-  const stampFeeUSD = settings?.customizationPriceUSD ?? 0;
-  const shippingFeeUSD = settings?.shippingFeeUSD ?? 5;
+  const stampFee = settings?.customizationPriceCRC ?? 0;
+  const shippingFee = settings?.shippingFeeCRC ?? 2500;
 
-  // Calculate Subtotal (base price + stamp)
-  const calculateItemPriceUSD = (item: CartItem) => {
-    const stampExtra = item.customStamping?.enabled ? stampFeeUSD : 0;
-    return (item.jersey.price + stampExtra) * item.quantity;
+  // Calculate Subtotal in CRC (base price + stamp)
+  const calculateItemPrice = (item: CartItem) => {
+    const itemPrice = item.jersey.priceCRC ?? item.jersey.price;
+    const stampExtra = item.customStamping?.enabled ? stampFee : 0;
+    return (itemPrice + stampExtra) * item.quantity;
   };
 
-  const subtotalUSD = cart.reduce((sum, item) => sum + calculateItemPriceUSD(item), 0);
+  const subtotal = cart.reduce((sum, item) => sum + calculateItemPrice(item), 0);
   const discountPercent = couponApplied ? couponApplied.percent : 0;
-  const discountUSD = subtotalUSD * (discountPercent / 100);
-  const shippingUSD = subtotalUSD > 0 ? shippingFeeUSD : 0;
-  const totalUSD = subtotalUSD - discountUSD + shippingUSD;
+  const discount = Math.round(subtotal * (discountPercent / 100));
+  const shipping = subtotal > 0 ? shippingFee : 0;
+  const total = subtotal - discount + shipping;
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,7 +141,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
             ) : (
               cart.map((item) => {
-                const itemTotalUSD = calculateItemPriceUSD(item);
+                const itemTotal = calculateItemPrice(item);
                 return (
                   <div 
                     key={item.cartItemId}
@@ -204,7 +205,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           </div>
 
                           <span className="text-xs font-black text-white">
-                            {formatPrice(itemTotalUSD, currency)}
+                            {formatPrice(itemTotal, currency)}
                           </span>
                         </div>
                       </div>
@@ -254,33 +255,33 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <div className="space-y-1.5 text-xs text-white/70 border-t border-white/10 pt-3 font-semibold">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
-                  <span className="font-bold text-white">{formatPrice(subtotalUSD, currency)}</span>
+                  <span className="font-bold text-white">{formatPrice(subtotal, currency)}</span>
                 </div>
                 
                 {couponApplied && (
                   <div className="flex justify-between text-[#00e652]">
                     <span>Descuento ({couponApplied.percent}%):</span>
-                    <span className="font-bold">-{formatPrice(discountUSD, currency)}</span>
+                    <span className="font-bold">-{formatPrice(discount, currency)}</span>
                   </div>
                 )}
 
                 <div className="flex justify-between">
                   <span>Envío a todo el país:</span>
                   <span className="font-bold text-white">
-                    {formatPrice(shippingUSD, currency)}
+                    {formatPrice(shipping, currency)}
                   </span>
                 </div>
 
                 <div className="flex justify-between text-base font-black text-white pt-2 border-t border-white/10 uppercase italic">
                   <span>TOTAL A PAGAR:</span>
-                  <span className="text-[#00e652]">{formatPrice(totalUSD, currency)}</span>
+                  <span className="text-[#00e652]">{formatPrice(total, currency)}</span>
                 </div>
               </div>
 
               {/* Action buttons */}
               <div className="space-y-2 pt-1">
                 <button
-                  onClick={() => onProceedToCheckout(discountUSD)}
+                  onClick={() => onProceedToCheckout(discount)}
                   className="w-full py-4 bg-[#00e652] hover:bg-white text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-2xl cursor-pointer skew-x-[-10deg]"
                 >
                   <div className="skew-x-[10deg] flex items-center gap-2">

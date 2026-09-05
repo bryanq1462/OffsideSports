@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, 
-  Star, 
   ShoppingBag, 
   MessageCircle, 
-  Sparkles, 
   Check, 
   Ruler, 
   Truck, 
-  ShieldCheck, 
-  Flame,
-  Info
+  ShieldCheck 
 } from 'lucide-react';
 import { Jersey, Size, CustomStamping, StoreSettings } from '../types';
 import { formatPrice } from '../utils/storage';
@@ -25,6 +21,8 @@ interface JerseyDetailModalProps {
   onBuyWhatsApp: (jersey: Jersey, size: Size, customStamping?: CustomStamping) => void;
 }
 
+const ALL_SIZES: Size[] = ['S', 'M', 'L', 'XL', 'XXL'];
+
 export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
   jersey,
   currency,
@@ -35,39 +33,36 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
 }) => {
   if (!jersey) return null;
 
-  const [selectedSize, setSelectedSize] = useState<Size>(jersey?.sizesAvailable?.[0] || 'M');
+  const availableSizes = (jersey?.sizesAvailable || []).filter(() => jersey.stock > 0);
+  const initialSize = availableSizes.length > 0 
+    ? availableSizes[0] 
+    : (jersey?.sizesAvailable?.[0] || 'M');
+
+  const [selectedSize, setSelectedSize] = useState<Size>(initialSize);
 
   useEffect(() => {
-    if (jersey?.sizesAvailable && jersey.sizesAvailable.length > 0) {
-      if (!jersey.sizesAvailable.includes(selectedSize)) {
-        setSelectedSize(jersey.sizesAvailable[0]);
+    if (jersey) {
+      const currentAvailable = (jersey.sizesAvailable || []).filter(() => jersey.stock > 0);
+      if (currentAvailable.length > 0) {
+        if (!currentAvailable.includes(selectedSize)) {
+          setSelectedSize(currentAvailable[0]);
+        }
       }
     }
   }, [jersey]);
+
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'front' | 'back'>('front');
-  
-  // Custom Stamping State
-  const [stampEnabled, setStampEnabled] = useState(false);
-  const [stampName, setStampName] = useState('');
-  const [stampNumber, setStampNumber] = useState('');
-  const [selectedPatch, setSelectedPatch] = useState('Sin Parche');
   
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [added, setAdded] = useState(false);
 
-  const STAMP_PRICE_USD = settings?.customizationPriceUSD ?? 0;
-  const totalPriceUSD = jersey.price * quantity;
+  const unitCRC = jersey.priceCRC || jersey.price;
+  const totalPriceCRC = unitCRC * quantity;
+  const totalPrice = jersey.price * quantity;
 
   const handleAddToCart = () => {
-    const custom: CustomStamping | undefined = stampEnabled ? {
-      enabled: true,
-      name: stampName.trim().toUpperCase() || 'JUGADOR',
-      number: stampNumber.trim() || '10',
-      patch: selectedPatch !== 'Sin Parche' ? selectedPatch : undefined
-    } : undefined;
-
-    onAddToCart(jersey, selectedSize, quantity, custom);
+    onAddToCart(jersey, selectedSize, quantity, undefined);
     setAdded(true);
     setTimeout(() => {
       setAdded(false);
@@ -76,14 +71,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
   };
 
   const handleWhatsApp = () => {
-    const custom: CustomStamping | undefined = stampEnabled ? {
-      enabled: true,
-      name: stampName.trim().toUpperCase() || 'JUGADOR',
-      number: stampNumber.trim() || '10',
-      patch: selectedPatch !== 'Sin Parche' ? selectedPatch : undefined
-    } : undefined;
-
-    onBuyWhatsApp(jersey, selectedSize, custom);
+    onBuyWhatsApp(jersey, selectedSize, undefined);
   };
 
   return (
@@ -95,7 +83,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
         {/* Header bar */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/60 sticky top-0 z-20">
           <div className="flex items-center gap-2">
-            <span className="bg-emerald-500 text-slate-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded">
+            <span className="bg-[#00e652] text-slate-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded">
               {jersey.league}
             </span>
             <span className="text-xs text-slate-400 font-bold">{jersey.yearSeason}</span>
@@ -111,16 +99,16 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
         {/* Modal Scroll Content */}
         <div className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-12 gap-8">
           
-          {/* Left Column: Image & Back Live Preview */}
+          {/* Left Column: Image & Back View */}
           <div className="md:col-span-6 space-y-4">
             
             {/* View Switcher Tabs */}
             <div className="flex gap-2 justify-center bg-slate-950 p-1 rounded-xl border border-slate-800 max-w-xs mx-auto text-xs">
               <button
                 onClick={() => setActiveTab('front')}
-                className={`flex-1 py-1.5 rounded-lg font-bold transition ${
+                className={`flex-1 py-1.5 rounded-lg font-bold transition cursor-pointer ${
                   activeTab === 'front'
-                    ? 'bg-emerald-500 text-slate-950'
+                    ? 'bg-[#00e652] text-slate-950'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -128,13 +116,13 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
               </button>
               <button
                 onClick={() => setActiveTab('back')}
-                className={`flex-1 py-1.5 rounded-lg font-bold transition ${
+                className={`flex-1 py-1.5 rounded-lg font-bold transition cursor-pointer ${
                   activeTab === 'back'
-                    ? 'bg-emerald-500 text-slate-950'
+                    ? 'bg-[#00e652] text-slate-950'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                Dorsal (Espalda)
+                Espalda / Reverso
               </button>
             </div>
 
@@ -149,41 +137,25 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                   className="h-full object-contain rounded-lg"
                 />
               ) : (
-                <div className="relative h-full w-full flex items-center justify-center bg-gradient-to-b from-slate-950 to-slate-900 rounded-lg overflow-hidden">
-                  <img
-                    src={jersey.backImage || jersey.image}
-                    alt="Jersey Back"
-                    referrerPolicy="no-referrer"
-                    onError={handleImageError}
-                    className="h-full object-contain opacity-80"
-                  />
-                  {/* Live Stamp overlay */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 pointer-events-none">
-                    <p className="text-amber-300 font-black tracking-widest text-xl sm:text-2xl uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] font-mono">
-                      {stampEnabled && stampName ? stampName.toUpperCase() : (stampEnabled ? 'TU NOMBRE' : '')}
-                    </p>
-                    <p className="text-amber-400 font-black text-6xl sm:text-7xl tracking-tighter drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] font-mono mt-1">
-                      {stampEnabled && stampNumber ? stampNumber : (stampEnabled ? '10' : '')}
-                    </p>
-                    {!stampEnabled && (
-                      <div className="bg-slate-950/90 text-emerald-400 text-xs px-3 py-1.5 rounded-lg border border-emerald-500/30 font-semibold backdrop-blur">
-                        💡 Activa el estampado abajo para personalizar
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <img
+                  src={jersey.backImage || jersey.image}
+                  alt={`${jersey.name} Espalda`}
+                  referrerPolicy="no-referrer"
+                  onError={handleImageError}
+                  className="h-full object-contain rounded-lg"
+                />
               )}
             </div>
 
             {/* Product Guarantee highlights */}
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="flex items-center gap-2 p-2.5 bg-slate-950 rounded-xl border border-slate-800 text-slate-300">
-                <Truck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <Truck className="w-4 h-4 text-[#00e652] flex-shrink-0" />
                 <span>Envío asegurado a todo el país</span>
               </div>
               <div className="flex items-center gap-2 p-2.5 bg-slate-950 rounded-xl border border-slate-800 text-slate-300">
-                <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Garantía de calidad 100%</span>
+                <ShieldCheck className="w-4 h-4 text-[#00e652] flex-shrink-0" />
+                <span>Prenda física 100% original en stock</span>
               </div>
             </div>
 
@@ -193,7 +165,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
           <div className="md:col-span-6 space-y-5">
             
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#00e652] uppercase tracking-wider mb-1">
                 <span>{jersey.team}</span>
                 <span>•</span>
                 <span>{jersey.type}</span>
@@ -210,12 +182,16 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
             <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex items-baseline justify-between">
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-black text-emerald-400">
-                    {formatPrice(totalPriceUSD, currency)}
+                  <span className="text-2xl font-black text-[#00e652]">
+                    {formatPrice(totalPriceCRC, currency)}
                   </span>
-                  {(jersey.originalPrice || (jersey.discountPercent && jersey.discountPercent > 0)) && (
+                  {jersey.originalPrice && jersey.originalPrice > jersey.price && (
                     <span className="text-xs text-white/40 line-through font-bold">
-                      {formatPrice((jersey.originalPrice || Math.round((jersey.price / (1 - (jersey.discountPercent || 0) / 100)) * 10) / 10) * quantity, currency)}
+                      {formatPrice(
+                        jersey.originalPrice * quantity,
+                        currency,
+                        jersey.originalPriceCRC ? jersey.originalPriceCRC * quantity : undefined
+                      )}
                     </span>
                   )}
                   {jersey.discountPercent && jersey.discountPercent > 0 ? (
@@ -224,14 +200,9 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                     </span>
                   ) : null}
                 </div>
-                {stampEnabled && (
-                  <p className="text-[11px] text-[#00e652] font-bold mt-1">
-                    🎁 Personalización de nombre y número incluida sin costo adicional
-                  </p>
-                )}
               </div>
               {jersey.stock > 0 ? (
-                <span className="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-md font-bold border border-emerald-500/30">
+                <span className="bg-[#00e652]/20 text-[#00e652] text-xs px-2.5 py-1 rounded-md font-bold border border-[#00e652]/30">
                   Disponible ({jersey.stock} en stock)
                 </span>
               ) : (
@@ -241,38 +212,83 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
               )}
             </div>
 
-            {/* Size Selector */}
-            <div className="space-y-2">
+            {/* Size Selector with Strikethrough for unavailable sizes */}
+            <div className="space-y-2.5">
               <div className="flex justify-between items-center text-xs">
-                <span className="font-extrabold text-slate-200 uppercase">1. Selecciona tu Talla:</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-slate-200 uppercase">TALLAS EN BODEGA:</span>
+                  {selectedSize && (jersey.sizesAvailable || []).includes(selectedSize) && jersey.stock > 0 && (
+                    <span className="bg-[#00e652]/10 text-[#00e652] text-[11px] font-black px-2 py-0.5 rounded border border-[#00e652]/30 uppercase">
+                      Talla Seleccionada: {selectedSize}
+                    </span>
+                  )}
+                </div>
                 <button
+                  type="button"
                   onClick={() => setShowSizeGuide(!showSizeGuide)}
-                  className="text-emerald-400 hover:underline flex items-center gap-1 font-bold cursor-pointer"
+                  className="text-[#00e652] hover:underline flex items-center gap-1 font-bold cursor-pointer"
                 >
                   <Ruler className="w-3.5 h-3.5" />
                   <span>Guía de Tallas</span>
                 </button>
               </div>
 
-              <div className="flex gap-2">
-                {jersey.sizesAvailable.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                      selectedSize === size
-                        ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                        : 'bg-slate-950 text-slate-300 border border-slate-800 hover:bg-slate-800'
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+              {/* Grid of all standard sizes */}
+              <div className="grid grid-cols-5 gap-2">
+                {ALL_SIZES.map((size) => {
+                  const isAvailable = jersey.stock > 0 && (jersey.sizesAvailable || []).includes(size);
+                  const isSelected = selectedSize === size && isAvailable;
+
+                  return (
+                    <button
+                      key={size}
+                      type="button"
+                      disabled={!isAvailable}
+                      onClick={() => {
+                        if (isAvailable) setSelectedSize(size);
+                      }}
+                      title={isAvailable ? `Talla ${size} disponible para entrega inmediata` : `Talla ${size} agotada / no disponible`}
+                      className={`relative py-3 rounded-xl text-xs font-black transition-all flex items-center justify-center overflow-hidden select-none ${
+                        !isAvailable
+                          ? 'bg-slate-950/40 text-slate-600 border border-slate-800/80 cursor-not-allowed opacity-50'
+                          : isSelected
+                          ? 'bg-[#00e652] text-slate-950 shadow-lg shadow-[#00e652]/20 border border-[#00e652] cursor-pointer'
+                          : 'bg-slate-950 text-slate-200 border border-slate-800 hover:border-white/40 hover:bg-slate-800 cursor-pointer'
+                      }`}
+                    >
+                      {/* Size text */}
+                      <span className={`relative z-10 ${!isAvailable ? 'line-through text-slate-600' : ''}`}>
+                        {size}
+                      </span>
+
+                      {/* Rayita diagonal roja que indica que no está disponible */}
+                      {!isAvailable && (
+                        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                          <div className="w-[140%] h-[2px] bg-red-500/90 -rotate-45 transform origin-center shadow-[0_0_2px_rgba(239,68,68,0.9)]" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Legend explaining the rayita */}
+              <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#00e652] inline-block" />
+                  <span className="text-slate-300">Talla Disponible</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-slate-400">
+                  <span className="relative w-3.5 h-3.5 rounded bg-slate-950 border border-slate-800 inline-flex items-center justify-center overflow-hidden">
+                    <span className="w-full h-[2px] bg-red-500 -rotate-45 block" />
+                  </span>
+                  <span className="text-red-400/90 font-medium">Rayita: Talla no disponible</span>
+                </div>
               </div>
 
               {showSizeGuide && (
                 <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1 animate-in fade-in">
-                  <p className="font-bold text-emerald-400">Medidas Aproximadas (Pecho x Largo):</p>
+                  <p className="font-bold text-[#00e652]">Medidas Aproximadas (Pecho x Largo):</p>
                   <p>• S: 50 cm x 70 cm (Estatura 1.65m - 1.72m)</p>
                   <p>• M: 52 cm x 72 cm (Estatura 1.72m - 1.78m)</p>
                   <p>• L: 54 cm x 74 cm (Estatura 1.78m - 1.83m)</p>
@@ -282,94 +298,29 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
               )}
             </div>
 
-            {/* Custom Stamping Customizer */}
-            <div className="p-4 bg-slate-950/80 border border-[#00e652]/30 rounded-2xl space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={stampEnabled}
-                    onChange={(e) => {
-                      setStampEnabled(e.target.checked);
-                      if (e.target.checked) setActiveTab('back');
-                    }}
-                    className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-500 bg-slate-900 border-slate-700"
-                  />
-                  <span className="text-xs font-black uppercase text-white flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-[#00e652]" />
-                    2. Personalizar Nombre & Dorsal <span className="text-[#00e652] font-black">(¡TOTALMENTE GRATIS! 🎁)</span>
-                  </span>
-                </label>
-              </div>
-
-              {stampEnabled && (
-                <div className="space-y-3 pt-2 animate-in fade-in">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <div className="sm:col-span-2">
-                      <label className="block text-[10px] text-slate-400 uppercase font-bold mb-1">
-                        Nombre / Apellido:
-                      </label>
-                      <input
-                        type="text"
-                        maxLength={14}
-                        placeholder="ej: MBAPPÉ / JAMES / TU NOMBRE"
-                        value={stampName}
-                        onChange={(e) => setStampName(e.target.value.toUpperCase())}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono font-bold text-amber-300 placeholder-slate-500 focus:border-emerald-500 uppercase"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] text-slate-400 uppercase font-bold mb-1">
-                        Número (Dorsal):
-                      </label>
-                      <input
-                        type="text"
-                        maxLength={2}
-                        placeholder="10"
-                        value={stampNumber}
-                        onChange={(e) => setStampNumber(e.target.value.replace(/\D/g, ''))}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono font-bold text-amber-400 placeholder-slate-500 focus:border-emerald-500 text-center"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] text-slate-400 uppercase font-bold mb-1">
-                      Parches Oficiales de Torneo:
-                    </label>
-                    <select
-                      value={selectedPatch}
-                      onChange={(e) => setSelectedPatch(e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:border-emerald-500"
-                    >
-                      <option value="Sin Parche">Sin Parches Adicionales</option>
-                      <option value="Parche Champions League + Foundation">Parche UEFA Champions League</option>
-                      <option value="Parche Campeón del Mundo FIFA">Parche Campeón del Mundo FIFA</option>
-                      <option value="Parche Liga Local EA Sports / Premier">Parche Oficial de Liga Local</option>
-                    </select>
-                  </div>
-                </div>
-              )}
-            </div>
-
             {/* Quantity Selector */}
             <div className="flex items-center gap-4">
               <span className="text-xs font-extrabold uppercase text-slate-300">Cantidad:</span>
               <div className="flex items-center bg-slate-950 border border-slate-800 rounded-xl">
                 <button
+                  type="button"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-3 py-1.5 text-slate-300 hover:text-white font-bold"
+                  className="px-3 py-1.5 text-slate-300 hover:text-white font-bold cursor-pointer"
                 >
                   -
                 </button>
-                <span className="px-3 text-xs font-black text-emerald-400">{quantity}</span>
+                <span className="px-3 text-xs font-black text-[#00e652]">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="px-3 py-1.5 text-slate-300 hover:text-white font-bold"
+                  type="button"
+                  onClick={() => setQuantity(Math.min(jersey.stock || 10, quantity + 1))}
+                  className="px-3 py-1.5 text-slate-300 hover:text-white font-bold cursor-pointer"
                 >
                   +
                 </button>
               </div>
+              <span className="text-[11px] text-slate-500">
+                Máximo {jersey.stock} unidad{jersey.stock === 1 ? '' : 'es'} en bodega
+              </span>
             </div>
 
             {/* Action Buttons */}
@@ -391,7 +342,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                 ) : (
                   <>
                     <ShoppingBag className="w-5 h-5" />
-                    <span>Agregar al Carrito ({formatPrice(totalPriceUSD, currency)})</span>
+                    <span>Agregar al Carrito ({formatPrice(totalPriceCRC, currency)})</span>
                   </>
                 )}
               </button>
