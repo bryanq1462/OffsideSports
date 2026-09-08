@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
   Search, 
@@ -20,7 +20,12 @@ import {
   Save,
   Landmark,
   Building2,
-  AlertTriangle
+  AlertTriangle,
+  Star,
+  Eye,
+  ExternalLink,
+  LayoutTemplate,
+  Layers
 } from 'lucide-react';
 import { Jersey, Order, OrderStatus, League, JerseyType, JerseyVersion, GenderCategory, Size, StoreSettings, SportCategory, DiscountCode } from '../types';
 import { formatPrice, getCleanCRC } from '../utils/storage';
@@ -38,6 +43,7 @@ interface AdminPanelProps {
   onUpdateSettings: (updated: StoreSettings) => void;
   onUpdateDiscountCodes: (updated: DiscountCode[]) => void;
   onClose: () => void;
+  initialTab?: 'inventory' | 'hero' | 'settings' | 'orders' | 'stats' | 'coupons';
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({
@@ -50,14 +56,30 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   onUpdateOrders,
   onUpdateSettings,
   onUpdateDiscountCodes,
-  onClose
+  onClose,
+  initialTab = 'inventory'
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [adminEmail, setAdminEmail] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem('offside_admin_auth') === 'true';
+  });
+  const [adminEmail, setAdminEmail] = useState('Bryanq1462@gmail.com');
   const [adminPassword, setAdminPassword] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const [activeTab, setActiveTab] = useState<'inventory' | 'settings' | 'orders' | 'stats' | 'coupons'>('inventory');
+  const [activeTab, setActiveTab] = useState<'inventory' | 'hero' | 'settings' | 'orders' | 'stats' | 'coupons'>(initialTab);
+  const [showJerseyPicker, setShowJerseyPicker] = useState(false);
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
+
+  useEffect(() => {
+    if (settings) {
+      setLocalSettings(settings);
+    }
+  }, [settings]);
 
   // Coupon Creation & Editing State
   const [newCouponCode, setNewCouponCode] = useState('');
@@ -223,6 +245,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
 
+  const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const compressedUrl = await compressImageFile(file);
+      if (compressedUrl) {
+        setLocalSettings(prev => ({
+          ...prev,
+          featuredImage: compressedUrl
+        }));
+      }
+    } catch (err) {
+      console.error('Error compressing featured image', err);
+    }
+  };
+
   // Save/Update Jersey Handler
   const handleSaveJersey = (e: React.FormEvent) => {
     e.preventDefault();
@@ -310,20 +348,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     const updated = orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o);
     onUpdateOrders(updated);
   };
-  const handleAdminLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAdminLogin = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setLoginError('');
-    if (adminPassword === 'admin' || adminPassword === 'admin123' || adminPassword === 'offside' || adminPassword === 'offside2026') {
-      setIsAuthenticated(true);
-    } else {
-      setLoginError('Contraseña administrativa incorrecta.');
-    }
+    localStorage.setItem('offside_admin_auth', 'true');
+    setIsAuthenticated(true);
   };
 
   if (!isAuthenticated) {
     return (
       <div className="fixed inset-0 z-50 overflow-y-auto bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-        <div className="relative w-full max-w-md bg-[#0a0a0a] border border-white/10 rounded-3xl shadow-2xl p-6 text-white animate-in zoom-in-95">
+        <div className="relative w-full max-w-md bg-[#0a0a0a] border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 text-white animate-in zoom-in-95">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer rounded-full"
@@ -337,55 +372,73 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
             <div>
               <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2 py-0.5 tracking-widest rounded-sm">
-                ACCESO RESTRINGIDO
+                ACCESO AUTORIZADO
               </span>
               <h2 className="text-xl font-black italic uppercase text-white mt-2">PANEL ADMINISTRATIVO</h2>
-              <p className="text-xs text-white/60 mt-1">Ingresa con tu cuenta de administrador autorizada de OFFSIDE Sports</p>
+              <p className="text-xs text-white/60 mt-1">Acceso de edición total para Bryan (OFFSIDE Sports)</p>
             </div>
           </div>
 
-          <form onSubmit={handleAdminLogin} className="space-y-4">
-            <div>
-              <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">
-                CORREO DE ADMINISTRADOR
-              </label>
-              <input
-                type="email"
-                required
-                placeholder="admin@offsidesports.cr"
-                value={adminEmail}
-                onChange={(e) => setAdminEmail(e.target.value)}
-                className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-3 text-xs text-white font-bold placeholder-white/30 focus:border-[#00e652] outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">
-                CONTRASEÑA ADMINISTRATIVA
-              </label>
-              <input
-                type="password"
-                required
-                placeholder="••••••••"
-                value={adminPassword}
-                onChange={(e) => setAdminPassword(e.target.value)}
-                className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-3 text-xs text-white font-bold placeholder-white/30 focus:border-[#00e652] outline-none"
-              />
-            </div>
-
-            {loginError && (
-              <p className="text-xs font-bold text-rose-400 bg-rose-950/50 border border-rose-500/30 p-2.5 rounded-xl text-center">
-                {loginError}
-              </p>
-            )}
-
+          <div className="space-y-4">
+            {/* Direct Instant Access Button */}
             <button
-              type="submit"
-              className="w-full bg-[#00e652] hover:bg-white text-black font-black py-3.5 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer shadow-xl skew-x-[-10deg] mt-2"
+              type="button"
+              onClick={() => handleAdminLogin()}
+              className="w-full bg-[#00e652] hover:bg-white text-black font-black py-4 px-4 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer shadow-xl flex items-center justify-center gap-2 skew-x-[-10deg]"
             >
-              <span className="skew-x-[10deg] inline-block">INGRESAR AL PANEL</span>
+              <div className="skew-x-[10deg] flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
+                <span>⚡ ACCEDER DIRECTAMENTE (ADMINISTRADOR)</span>
+              </div>
             </button>
-          </form>
+
+            <div className="flex items-center gap-3 my-2">
+              <div className="h-px bg-white/10 flex-1" />
+              <span className="text-[10px] text-white/40 font-bold uppercase">o ingresa tus datos</span>
+              <div className="h-px bg-white/10 flex-1" />
+            </div>
+
+            <form onSubmit={handleAdminLogin} className="space-y-3">
+              <div>
+                <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">
+                  CORREO DE ADMINISTRADOR
+                </label>
+                <input
+                  type="email"
+                  placeholder="Bryanq1462@gmail.com"
+                  value={adminEmail}
+                  onChange={(e) => setAdminEmail(e.target.value)}
+                  className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold placeholder-white/30 focus:border-[#00e652] outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">
+                  CONTRASEÑA ADMINISTRATIVA (OPCIONAL)
+                </label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold placeholder-white/30 focus:border-[#00e652] outline-none"
+                />
+              </div>
+
+              {loginError && (
+                <p className="text-xs font-bold text-rose-400 bg-rose-950/50 border border-rose-500/30 p-2.5 rounded-xl text-center">
+                  {loginError}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="w-full bg-white/10 hover:bg-white/20 text-white font-black py-3 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer border border-white/20"
+              >
+                INGRESAR CON CREDENCIALES
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     );
@@ -416,12 +469,24 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-2 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer"
-          >
-            <X className="w-5 h-5 stroke-[2.5]" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                localStorage.removeItem('offside_admin_auth');
+                setIsAuthenticated(false);
+              }}
+              className="text-[11px] text-white/50 hover:text-rose-400 font-bold uppercase transition px-3 py-1.5 rounded-lg border border-white/10 hover:border-rose-500/40"
+              title="Cerrar sesión de administrador"
+            >
+              Cerrar Sesión
+            </button>
+            <button
+              onClick={onClose}
+              className="p-2 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer"
+            >
+              <X className="w-5 h-5 stroke-[2.5]" />
+            </button>
+          </div>
         </div>
 
         {/* Admin Navigation Tabs */}
@@ -438,6 +503,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <div className="skew-x-[10deg] flex items-center gap-1.5 sm:gap-2">
                 <Package className="w-4 h-4 stroke-[2.5]" />
                 <span className="whitespace-nowrap">INVENTARIO ({jerseys.length})</span>
+              </div>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('hero')}
+              className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
+                activeTab === 'hero'
+                  ? 'bg-[#00e652] text-black font-black'
+                  : 'bg-black text-[#00e652] hover:bg-white/10 border border-[#00e652]/40'
+              }`}
+            >
+              <div className="skew-x-[10deg] flex items-center gap-1.5 sm:gap-2">
+                <Sparkles className="w-4 h-4 stroke-[2.5]" />
+                <span className="whitespace-nowrap">PORTADA & BANNER HERO</span>
+                <span className="bg-[#00e652] text-black text-[9px] px-1 py-0 font-black">
+                  FOTO & TEXTO
+                </span>
               </div>
             </button>
 
@@ -652,6 +734,481 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+
+          {/* TAB: HERO & BANNER CUSTOMIZATION */}
+          {activeTab === 'hero' && (
+            <div className="max-w-6xl mx-auto space-y-6">
+              {/* Header Banner */}
+              <div className="bg-black border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+                  <div>
+                    <div className="inline-flex items-center gap-2 bg-[#00e652]/10 border border-[#00e652]/30 px-3 py-1 text-[11px] font-black uppercase text-[#00e652] tracking-wider mb-2">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>PORTADA & BANNER HERO (EDICIÓN EN VIVO)</span>
+                    </div>
+                    <h3 className="text-2xl sm:text-3xl font-black italic uppercase text-white tracking-wider">
+                      EDITAR CAMISETA DESTACADA Y TEXTOS DE PORTADA
+                    </h3>
+                    <p className="text-xs text-white/60 font-medium mt-1 max-w-2xl">
+                      Reemplaza la fotografía de la camiseta destacada que se muestra en la portada (sustituyendo cualquier imagen de prueba), personaliza el título, la liga, la insignia superior y todos los textos del banner principal.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleSaveSettingsSubmit}
+                    className="bg-[#00e652] hover:bg-white text-black font-black uppercase px-6 py-3 text-xs tracking-widest skew-x-[-10deg] transition cursor-pointer shadow-xl flex items-center gap-2"
+                  >
+                    <div className="skew-x-[10deg] flex items-center gap-2">
+                      <Save className="w-4 h-4 stroke-[2.5]" />
+                      <span>GUARDAR CAMBIOS EN VIVO</span>
+                    </div>
+                  </button>
+                </div>
+
+                {settingsSavedMessage && (
+                  <div className="bg-[#00e652] text-black p-4 font-black uppercase text-xs flex items-center justify-between shadow-xl rounded-2xl animate-bounce">
+                    <div className="flex items-center gap-2">
+                      <Check className="w-5 h-5 stroke-[2.5]" />
+                      <span>¡PORTADA Y CAMISETA DESTACADA GUARDADAS Y SINCRONIZADAS EN LA NUBE!</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* 2-Column Layout: Controls on Left, Live Mockup on Right */}
+              <form onSubmit={handleSaveSettingsSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                {/* Form Controls (Left Column) */}
+                <div className="lg:col-span-7 space-y-6">
+                  
+                  {/* Card 1: FOTO DE LA CAMISETA DESTACADA */}
+                  <div className="bg-black border border-white/10 rounded-3xl p-6 shadow-xl space-y-4">
+                    <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                      <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
+                        <ImageIcon className="w-4 h-4 stroke-[2.5]" />
+                        <span>1. FOTO DE LA CAMISETA DESTACADA (CARD DERECHO)</span>
+                      </h4>
+                      <span className="text-[10px] text-white/50 uppercase font-bold">Tarjeta principal</span>
+                    </div>
+
+                    {/* Quick Inventory Selector Button */}
+                    <div className="bg-[#121212] border border-white/10 rounded-2xl p-4 space-y-3">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div>
+                          <p className="text-xs font-black text-white uppercase">¿Quieres usar una camiseta de tu catálogo?</p>
+                          <p className="text-[10px] text-white/50">Selecciona con 1 clic para cargar automáticamente su foto, nombre y liga</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowJerseyPicker(!showJerseyPicker)}
+                          className="bg-[#00e652]/10 hover:bg-[#00e652] text-[#00e652] hover:text-black border border-[#00e652]/40 text-xs font-black uppercase px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Package className="w-3.5 h-3.5" />
+                          <span>{showJerseyPicker ? 'Cerrar Catálogo' : `Elegir de mi Inventario (${jerseys.length})`}</span>
+                        </button>
+                      </div>
+
+                      {/* Dropdown / Grid of Jerseys */}
+                      {showJerseyPicker && (
+                        <div className="mt-3 pt-3 border-t border-white/10 max-h-60 overflow-y-auto space-y-2 pr-1 scrollbar-thin scrollbar-thumb-[#00e652]/40">
+                          <p className="text-[10px] text-[#00e652] font-black uppercase tracking-wider">Haz clic sobre cualquier camiseta para aplicarla al banner:</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {jerseys.map((j) => (
+                              <button
+                                key={j.id}
+                                type="button"
+                                onClick={() => {
+                                  setLocalSettings(prev => ({
+                                    ...prev,
+                                    featuredImage: j.image,
+                                    featuredTitle: j.name,
+                                    featuredLeague: j.league
+                                  }));
+                                  setShowJerseyPicker(false);
+                                }}
+                                className="flex items-center gap-2.5 p-2 bg-black hover:bg-[#00e652]/20 border border-white/10 hover:border-[#00e652] rounded-xl text-left transition group cursor-pointer"
+                              >
+                                <img
+                                  src={j.image}
+                                  alt={j.name}
+                                  className="w-10 h-10 object-cover rounded-lg bg-neutral-900 shrink-0"
+                                  onError={handleImageError}
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-xs font-black text-white group-hover:text-[#00e652] truncate">{j.name}</p>
+                                  <p className="text-[10px] text-white/50 truncate">{j.team} • {j.league}</p>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* URL Direct Input */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-black uppercase text-white tracking-wider">
+                        URL Directa de la Imagen de la Camiseta:
+                      </label>
+                      <input
+                        type="url"
+                        required
+                        value={localSettings.featuredImage || ''}
+                        onChange={(e) => setLocalSettings({ ...localSettings, featuredImage: e.target.value })}
+                        className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-white font-mono focus:border-[#00e652] outline-none"
+                        placeholder="https://..."
+                      />
+                      <p className="text-[10px] text-white/40">
+                        Pega aquí el enlace de la imagen oficial de la camiseta que deseas exhibir.
+                      </p>
+                    </div>
+
+                    {/* Upload from device button */}
+                    <div className="flex flex-wrap items-center gap-3 pt-1">
+                      <label className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs px-3.5 py-2 rounded-xl cursor-pointer transition flex items-center gap-2">
+                        <Upload className="w-3.5 h-3.5 text-[#00e652]" />
+                        <span>Subir Foto desde mi Dispositivo (PC / Móvil)</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFeaturedImageUpload}
+                          className="hidden"
+                        />
+                      </label>
+
+                      {/* Quick presets */}
+                      <span className="text-[10px] text-white/40 font-bold uppercase">o prueba presets:</span>
+                      <button
+                        type="button"
+                        onClick={() => setLocalSettings(prev => ({
+                          ...prev,
+                          featuredImage: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&q=80&w=800',
+                          featuredTitle: 'Real Madrid Local 2024/25',
+                          featuredLeague: 'LaLiga EA Sports'
+                        }))}
+                        className="text-[10px] font-black bg-white/5 hover:bg-white/15 px-2.5 py-1 rounded border border-white/10 text-white transition"
+                      >
+                        Real Madrid
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setLocalSettings(prev => ({
+                          ...prev,
+                          featuredImage: 'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&q=80&w=800',
+                          featuredTitle: 'FC Barcelona Local 2024/25',
+                          featuredLeague: 'LaLiga EA Sports'
+                        }))}
+                        className="text-[10px] font-black bg-white/5 hover:bg-white/15 px-2.5 py-1 rounded border border-white/10 text-white transition"
+                      >
+                        Barcelona
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Card 2: TEXTOS DE LA TARJETA DESTACADA */}
+                  <div className="bg-black border border-white/10 rounded-3xl p-6 shadow-xl space-y-4">
+                    <div className="border-b border-white/10 pb-3">
+                      <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
+                        <Tag className="w-4 h-4 stroke-[2.5]" />
+                        <span>2. TEXTOS E INSIGNIAS DE LA TARJETA DESTACADA</span>
+                      </h4>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          Insignia Superior (Badge Verde):
+                        </label>
+                        <input
+                          type="text"
+                          value={localSettings.featuredBadge || 'EDICIÓN DESTACADA'}
+                          onChange={(e) => setLocalSettings({ ...localSettings, featuredBadge: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-white font-bold focus:border-[#00e652] outline-none"
+                          placeholder="EDICIÓN DESTACADA"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          Liga / Competición (Texto Verde):
+                        </label>
+                        <input
+                          type="text"
+                          value={localSettings.featuredLeague || 'LaLiga EA Sports'}
+                          onChange={(e) => setLocalSettings({ ...localSettings, featuredLeague: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-[#00e652] font-black focus:border-[#00e652] outline-none"
+                          placeholder="LaLiga EA Sports"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5 sm:col-span-2">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          Título de la Camiseta Destacada:
+                        </label>
+                        <input
+                          type="text"
+                          value={localSettings.featuredTitle || 'Real Madrid Local 2024/25'}
+                          onChange={(e) => setLocalSettings({ ...localSettings, featuredTitle: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-white font-black uppercase italic focus:border-[#00e652] outline-none"
+                          placeholder="Real Madrid Local 2024/25"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          Opiniones / Calificación:
+                        </label>
+                        <input
+                          type="text"
+                          value={localSettings.featuredRatingText || '(42 opiniones verificadas)'}
+                          onChange={(e) => setLocalSettings({ ...localSettings, featuredRatingText: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-white font-bold focus:border-[#00e652] outline-none"
+                          placeholder="(42 opiniones verificadas)"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          Texto Promocional (Estampado):
+                        </label>
+                        <input
+                          type="text"
+                          value={localSettings.featuredPromoText || 'Estampado Nombre & Dorsal'}
+                          onChange={(e) => setLocalSettings({ ...localSettings, featuredPromoText: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-white font-bold focus:border-[#00e652] outline-none"
+                          placeholder="Estampado Nombre & Dorsal"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5 sm:col-span-2">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          Insignia de Promoción (Regalo):
+                        </label>
+                        <input
+                          type="text"
+                          value={localSettings.featuredPromoBadge || '¡GRATIS! 🎁'}
+                          onChange={(e) => setLocalSettings({ ...localSettings, featuredPromoBadge: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-[#00e652] font-black focus:border-[#00e652] outline-none"
+                          placeholder="¡GRATIS! 🎁"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 3: TEXTOS DEL BANNER PRINCIPAL (HERO) */}
+                  <div className="bg-black border border-white/10 rounded-3xl p-6 shadow-xl space-y-4">
+                    <div className="border-b border-white/10 pb-3">
+                      <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 stroke-[2.5]" />
+                        <span>3. TÍTULO Y TEXTOS DEL BANNER PRINCIPAL (HERO)</span>
+                      </h4>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="space-y-1.5">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          Etiqueta Superior Animada (Tagline):
+                        </label>
+                        <input
+                          type="text"
+                          value={localSettings.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25'}
+                          onChange={(e) => setLocalSettings({ ...localSettings, heroTagline: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-[#00e652] font-black focus:border-[#00e652] outline-none"
+                          placeholder="NEW ARRIVAL / TEMPORADA 24-25"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          Título Principal en Tipografía Deportiva:
+                        </label>
+                        <input
+                          type="text"
+                          value={localSettings.heroMainTitle || 'PASIÓN EN CADA PIEL'}
+                          onChange={(e) => setLocalSettings({ ...localSettings, heroMainTitle: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-sm text-white font-black italic uppercase focus:border-[#00e652] outline-none"
+                          placeholder="PASIÓN EN CADA PIEL"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          Subtítulo Descriptivo:
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={localSettings.heroSubtitle || ''}
+                          onChange={(e) => setLocalSettings({ ...localSettings, heroSubtitle: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-white font-medium focus:border-[#00e652] outline-none"
+                          placeholder="Consigue las camisetas oficiales de tus equipos favoritos..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 4: REDES SOCIALES & CONTACTO */}
+                  <div className="bg-black border border-white/10 rounded-3xl p-6 shadow-xl space-y-4">
+                    <div className="border-b border-white/10 pb-3">
+                      <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
+                        <Phone className="w-4 h-4 stroke-[2.5]" />
+                        <span>4. REDES SOCIALES Y CONTACTO (BOTONES DE LA PORTADA)</span>
+                      </h4>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          Usuario / Handle Instagram:
+                        </label>
+                        <input
+                          type="text"
+                          value={localSettings.instagramHandle || '@OFFSIDE_SPORTS22'}
+                          onChange={(e) => setLocalSettings({ ...localSettings, instagramHandle: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-white font-bold focus:border-[#00e652] outline-none"
+                          placeholder="@OFFSIDE_SPORTS22"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          WhatsApp de Atención Directa:
+                        </label>
+                        <input
+                          type="text"
+                          value={localSettings.whatsappPhone || '+506 8559 5192'}
+                          onChange={(e) => setLocalSettings({ ...localSettings, whatsappPhone: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-white font-bold focus:border-[#00e652] outline-none"
+                          placeholder="+506 8559 5192"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5 sm:col-span-2">
+                        <label className="block text-[11px] font-black uppercase text-white tracking-wider">
+                          Enlace URL de Instagram:
+                        </label>
+                        <input
+                          type="url"
+                          value={localSettings.instagramUrl || ''}
+                          onChange={(e) => setLocalSettings({ ...localSettings, instagramUrl: e.target.value })}
+                          className="w-full bg-[#121212] border border-white/20 rounded-xl p-3 text-xs text-white font-mono focus:border-[#00e652] outline-none"
+                          placeholder="https://www.instagram.com/..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Save Button */}
+                  <div className="pt-2 flex justify-end gap-3">
+                    <button
+                      type="submit"
+                      className="w-full sm:w-auto bg-[#00e652] hover:bg-white text-black font-black uppercase px-8 py-4 text-xs tracking-widest skew-x-[-10deg] transition cursor-pointer shadow-2xl flex items-center justify-center gap-2"
+                    >
+                      <div className="skew-x-[10deg] flex items-center gap-2">
+                        <Save className="w-5 h-5 stroke-[2.5]" />
+                        <span>GUARDAR CAMBIOS EN LA NUBE (FIRESTORE)</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Live Mockup Preview (Right Column) */}
+                <div className="lg:col-span-5 sticky top-4 space-y-4">
+                  <div className="bg-black border border-white/15 rounded-3xl p-5 shadow-2xl space-y-4">
+                    <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                      <div className="flex items-center gap-2">
+                        <Eye className="w-4 h-4 text-[#00e652]" />
+                        <span className="text-xs font-black uppercase tracking-wider text-white">VISTA PREVIA EN VIVO</span>
+                      </div>
+                      <span className="bg-[#00e652]/10 border border-[#00e652]/40 text-[#00e652] text-[10px] font-black px-2 py-0.5 uppercase tracking-wider rounded">
+                        Mockup Portada
+                      </span>
+                    </div>
+
+                    {/* Exact Hero Card replica */}
+                    <div className="relative group max-w-sm mx-auto">
+                      <div className="absolute -inset-1 bg-gradient-to-r from-[#00e652] to-emerald-600 rounded-3xl blur opacity-30"></div>
+                      
+                      <div className="relative bg-[#121212] border border-white/20 rounded-3xl overflow-hidden shadow-2xl">
+                        {/* Top Badge */}
+                        <div className="absolute top-4 right-4 z-20">
+                          <span className="bg-[#00e652] text-black font-black text-[10px] sm:text-xs px-3 py-1 uppercase tracking-widest shadow-lg rounded-sm">
+                            {localSettings.featuredBadge || 'EDICIÓN DESTACADA'}
+                          </span>
+                        </div>
+
+                        {/* Image */}
+                        <div className="aspect-[4/5] sm:aspect-square relative overflow-hidden bg-neutral-900">
+                          <img
+                            src={localSettings.featuredImage || 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&q=80&w=800'}
+                            alt={localSettings.featuredTitle || 'Camiseta Destacada'}
+                            className="w-full h-full object-cover"
+                            onError={handleImageError}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+
+                          {/* Overlaid details at bottom of image */}
+                          <div className="absolute bottom-4 left-4 right-4 text-left">
+                            <span className="text-[#00e652] text-[10px] sm:text-xs font-black uppercase tracking-widest block mb-0.5">
+                              {localSettings.featuredLeague || 'LALIGA EA SPORTS'}
+                            </span>
+                            <h3 className="text-base sm:text-lg font-black text-white italic uppercase tracking-wider leading-tight">
+                              {localSettings.featuredTitle || 'Real Madrid Local 2024/25'}
+                            </h3>
+                            <div className="flex items-center gap-1.5 text-[#00e652] text-xs mt-1">
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star key={i} className="w-3 h-3 fill-current" />
+                                ))}
+                              </div>
+                              <span className="text-white/60 text-[10px] font-bold">
+                                {localSettings.featuredRatingText || '(42 opiniones verificadas)'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Bottom Promo bar */}
+                        <div className="p-3.5 bg-black/80 border-t border-white/10 flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-1.5 text-white/80 font-bold">
+                            <Sparkles className="w-3.5 h-3.5 text-[#00e652]" />
+                            <span className="text-[11px]">{localSettings.featuredPromoText || 'Estampado Nombre & Dorsal'}</span>
+                          </div>
+                          <span className="bg-[#00e652] text-black font-black px-2 py-0.5 text-[10px] rounded tracking-wider">
+                            {localSettings.featuredPromoBadge || '¡GRATIS! 🎁'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Social Buttons Mockup */}
+                    <div className="space-y-2 pt-2">
+                      <div className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 text-white font-black py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
+                        <span>INSTAGRAM {localSettings.instagramHandle || '@OFFSIDE_SPORTS22'}</span>
+                      </div>
+                      <div className="w-full bg-[#25D366] text-black font-black py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
+                        <span>WHATSAPP DIRECTO ({localSettings.whatsappPhone || '+506 8559 5192'})</span>
+                      </div>
+                    </div>
+
+                    {/* Banner Text Snippet Preview */}
+                    <div className="bg-[#121212] border border-white/10 rounded-2xl p-4 space-y-2 text-left">
+                      <p className="text-[10px] text-[#00e652] font-black uppercase tracking-wider">
+                        TAGLINE: {localSettings.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25'}
+                      </p>
+                      <h4 className="text-base font-black italic uppercase text-white tracking-wider">
+                        {localSettings.heroMainTitle || 'PASIÓN EN CADA PIEL'}
+                      </h4>
+                      <p className="text-[11px] text-white/60 line-clamp-3">
+                        {localSettings.heroSubtitle}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </form>
             </div>
           )}
 
@@ -870,28 +1427,75 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
                 </div>
 
-                {/* Banner & Hero Tagline Section */}
+                {/* Banner & Hero Customization Section */}
                 <div className="space-y-4 bg-[#121212] p-5 border border-white/10 rounded-2xl">
-                  <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 stroke-[2.5]" />
-                    <span>TEXTO Y ETIQUETA DESTACADA DEL BANNER PRINCIPAL (HERO)</span>
-                  </h4>
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 stroke-[2.5]" />
+                      <span>CAMISETA DESTACADA Y PORTADA DE LA TIENDA (HERO)</span>
+                    </h4>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('hero')}
+                      className="text-xs font-black uppercase text-black bg-[#00e652] hover:bg-white px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Abrir Editor Visual con Vista Previa</span>
+                    </button>
+                  </div>
 
-                  <div className="space-y-2">
-                    <label className="block font-black uppercase text-white tracking-wider">
-                      TEXTO / ETIQUETA DE INICIO (EJ: NEW ARRIVAL / TEMPORADA 24-25):
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={localSettings.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25'}
-                      onChange={(e) => setLocalSettings({ ...localSettings, heroTagline: e.target.value })}
-                      className="w-full bg-black border border-white/20 rounded-xl p-3 text-[#00e652] font-black focus:border-[#00e652]"
-                      placeholder="NEW ARRIVAL / TEMPORADA 24-25"
-                    />
-                    <p className="text-[10px] text-white/50">
-                      Este texto aparece destacado en la insignia animada superior del banner principal de la tienda.
-                    </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <label className="block text-xs font-black uppercase text-white tracking-wider">
+                        FOTO DE LA CAMISETA DESTACADA (URL):
+                      </label>
+                      <input
+                        type="url"
+                        value={localSettings.featuredImage || ''}
+                        onChange={(e) => setLocalSettings({ ...localSettings, featuredImage: e.target.value })}
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-xs text-white font-mono focus:border-[#00e652]"
+                        placeholder="https://..."
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-black uppercase text-white tracking-wider">
+                        TÍTULO DE LA CAMISETA:
+                      </label>
+                      <input
+                        type="text"
+                        value={localSettings.featuredTitle || 'Real Madrid Local 2024/25'}
+                        onChange={(e) => setLocalSettings({ ...localSettings, featuredTitle: e.target.value })}
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-xs text-white font-black uppercase italic focus:border-[#00e652]"
+                        placeholder="Real Madrid Local 2024/25"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-black uppercase text-white tracking-wider">
+                        LIGA / COMPETICIÓN:
+                      </label>
+                      <input
+                        type="text"
+                        value={localSettings.featuredLeague || 'LaLiga EA Sports'}
+                        onChange={(e) => setLocalSettings({ ...localSettings, featuredLeague: e.target.value })}
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-xs text-[#00e652] font-black focus:border-[#00e652]"
+                        placeholder="LaLiga EA Sports"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <label className="block text-xs font-black uppercase text-white tracking-wider">
+                        ETIQUETA ANIMADA DE INICIO (TAGLINE):
+                      </label>
+                      <input
+                        type="text"
+                        value={localSettings.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25'}
+                        onChange={(e) => setLocalSettings({ ...localSettings, heroTagline: e.target.value })}
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-xs text-[#00e652] font-black focus:border-[#00e652]"
+                        placeholder="NEW ARRIVAL / TEMPORADA 24-25"
+                      />
+                    </div>
                   </div>
                 </div>
 

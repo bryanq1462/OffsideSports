@@ -96,10 +96,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
             <button 
               onClick={onOpenAdmin}
-              className="hover:text-[#00e652] transition flex items-center gap-1 font-black cursor-pointer text-white/80"
+              className="bg-[#00e652]/10 hover:bg-[#00e652] text-[#00e652] hover:text-black border border-[#00e652]/40 transition flex items-center gap-1.5 font-black cursor-pointer px-2.5 py-1 rounded-sm text-[11px] uppercase tracking-wider shadow-sm"
+              title="Panel Administrativo"
             >
-              <ShieldCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#00e652]" />
-              <span className="hidden md:inline">ADMIN</span>
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>ADMIN</span>
             </button>
           </div>
         </div>

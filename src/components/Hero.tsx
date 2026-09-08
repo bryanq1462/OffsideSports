@@ -35,7 +35,9 @@ export const Hero: React.FC<HeroProps> = ({
   ];
 
   const featuredBadge = settings?.featuredBadge || 'EDICIÓN DESTACADA';
-  const featuredImage = settings?.featuredImage || 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&q=80&w=800';
+  const featuredImage = (!settings?.featuredImage || settings.featuredImage.includes('photo-1522778119026'))
+    ? 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&q=80&w=800'
+    : settings.featuredImage;
   const featuredLeague = settings?.featuredLeague || 'LaLiga EA Sports';
   const featuredTitle = settings?.featuredTitle || 'Real Madrid Local 2024/25';
   const featuredRatingText = settings?.featuredRatingText || '(42 opiniones verificadas)';
@@ -158,11 +160,11 @@ export const Hero: React.FC<HeroProps> = ({
                     e.stopPropagation();
                     onOpenAdminToHero();
                   }}
-                  className="absolute top-4 left-4 z-20 bg-black/80 hover:bg-[#00e652] text-white hover:text-black border border-white/20 text-[10px] font-black uppercase px-2.5 py-1 rounded-md flex items-center gap-1 transition-all cursor-pointer shadow-lg backdrop-blur-sm"
-                  title="Editar imagen, título y detalles de esta tarjeta"
+                  className="absolute top-4 left-4 z-20 bg-black/90 hover:bg-[#00e652] text-[#00e652] hover:text-black border border-[#00e652]/50 text-[11px] font-black uppercase px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer shadow-xl backdrop-blur-md hover:scale-105"
+                  title="Editar imagen, títulos y contenido de esta tarjeta en el panel administrativo"
                 >
-                  <Edit3 className="w-3 h-3" />
-                  <span>Editar</span>
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span>EDITAR PORTADA</span>
                 </button>
               )}
 

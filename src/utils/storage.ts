@@ -28,7 +28,7 @@ export const DEFAULT_SETTINGS: StoreSettings = {
   featuredBadge: 'EDICIÓN DESTACADA',
   featuredLeague: 'LaLiga EA Sports',
   featuredTitle: 'Real Madrid Local 2024/25',
-  featuredImage: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&q=80&w=800',
+  featuredImage: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&q=80&w=800',
   featuredRatingText: '(42 opiniones verificadas)',
   featuredPromoText: 'Estampado Nombre & Dorsal',
   featuredPromoBadge: '¡GRATIS! 🎁',

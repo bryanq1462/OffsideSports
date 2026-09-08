@@ -569,6 +569,7 @@ export default function App() {
           onUpdateSettings={handleUpdateSettings}
           onUpdateDiscountCodes={handleUpdateDiscountCodes}
           onClose={() => setIsAdminOpen(false)}
+          initialTab={adminInitialTab}
         />
       )}
 
