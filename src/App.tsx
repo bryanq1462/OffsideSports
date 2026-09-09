@@ -30,6 +30,8 @@ import {
 import { 
   subscribeToJerseys,
   syncAllJerseysToCloud,
+  saveJerseyToCloud,
+  deleteJerseyFromCloud,
   subscribeToSettings,
   saveSettingsToCloud,
   subscribeToOrders,
@@ -169,6 +171,25 @@ export default function App() {
     } catch (e) {
       console.warn('Could not sync jerseys to cloud:', e);
     }
+  };
+
+  const handleSaveSingleJersey = async (jersey: Jersey) => {
+    setJerseys(prev => {
+      const exists = prev.some(j => j.id === jersey.id);
+      const updated = exists ? prev.map(j => j.id === jersey.id ? jersey : j) : [jersey, ...prev];
+      saveJerseys(updated);
+      return updated;
+    });
+    await saveJerseyToCloud(jersey);
+  };
+
+  const handleDeleteSingleJersey = async (jerseyId: string) => {
+    setJerseys(prev => {
+      const updated = prev.filter(j => j.id !== jerseyId);
+      saveJerseys(updated);
+      return updated;
+    });
+    await deleteJerseyFromCloud(jerseyId);
   };
 
   const handleUpdateOrders = async (newOrders: Order[]) => {
@@ -565,6 +586,8 @@ export default function App() {
           settings={settings}
           discountCodes={discountCodes}
           onUpdateJerseys={handleUpdateJerseys}
+          onSaveJersey={handleSaveSingleJersey}
+          onDeleteJersey={handleDeleteSingleJersey}
           onUpdateOrders={handleUpdateOrders}
           onUpdateSettings={handleUpdateSettings}
           onUpdateDiscountCodes={handleUpdateDiscountCodes}

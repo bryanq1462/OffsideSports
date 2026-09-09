@@ -70,6 +70,33 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   throw new Error(JSON.stringify(errInfo));
 }
 
+// Clean data before sending to Firestore (removes undefined values which Firestore strictly rejects)
+export function cleanForFirestore<T>(data: T): T {
+  if (data === null || data === undefined) {
+    return null as unknown as T;
+  }
+  if (Array.isArray(data)) {
+    return data
+      .filter((item) => item !== undefined)
+      .map((item) => (typeof item === 'object' && item !== null ? cleanForFirestore(item) : item)) as unknown as T;
+  }
+  if (typeof data === 'object') {
+    const cleaned: Record<string, any> = {};
+    for (const [key, value] of Object.entries(data)) {
+      if (value === undefined) {
+        continue;
+      }
+      if (value !== null && typeof value === 'object') {
+        cleaned[key] = cleanForFirestore(value);
+      } else {
+        cleaned[key] = value;
+      }
+    }
+    return cleaned as T;
+  }
+  return data;
+}
+
 // Connection Validation as required by guidelines
 async function testConnection() {
   try {
@@ -134,8 +161,10 @@ export function subscribeToJerseys(callback: (jerseys: Jersey[]) => void): () =>
 export async function saveJerseyToCloud(jersey: Jersey): Promise<void> {
   const path = `jerseys/${jersey.id}`;
   try {
+    const cleaned = cleanForFirestore(jersey);
     const jerseyDoc = doc(db, 'jerseys', jersey.id);
-    await setDoc(jerseyDoc, jersey, { merge: true });
+    await setDoc(jerseyDoc, cleaned, { merge: true });
+    console.log(`[Firestore] Successfully saved jersey: ${jersey.id}`);
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, path);
   }
@@ -146,6 +175,7 @@ export async function deleteJerseyFromCloud(jerseyId: string): Promise<void> {
   try {
     const jerseyDoc = doc(db, 'jerseys', jerseyId);
     await deleteDoc(jerseyDoc);
+    console.log(`[Firestore] Successfully deleted jersey: ${jerseyId}`);
   } catch (error) {
     handleFirestoreError(error, OperationType.DELETE, path);
   }
@@ -155,10 +185,12 @@ export async function syncAllJerseysToCloud(jerseys: Jersey[]): Promise<void> {
   try {
     const batch = writeBatch(db);
     jerseys.forEach((jersey) => {
+      const cleaned = cleanForFirestore(jersey);
       const jDoc = doc(db, 'jerseys', jersey.id);
-      batch.set(jDoc, jersey, { merge: true });
+      batch.set(jDoc, cleaned, { merge: true });
     });
     await batch.commit();
+    console.log(`[Firestore] Successfully synced ${jerseys.length} jerseys`);
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, 'jerseys');
   }
@@ -180,7 +212,8 @@ export function subscribeToSettings(callback: (settings: StoreSettings) => void)
       } else {
         // Seed default store settings if not yet set in Firestore
         try {
-          await setDoc(settingsDocRef, DEFAULT_SETTINGS, { merge: true });
+          const cleanedDefault = cleanForFirestore(DEFAULT_SETTINGS);
+          await setDoc(settingsDocRef, cleanedDefault, { merge: true });
           callback(DEFAULT_SETTINGS);
         } catch (e) {
           callback(DEFAULT_SETTINGS);
@@ -199,8 +232,9 @@ export function subscribeToSettings(callback: (settings: StoreSettings) => void)
 export async function saveSettingsToCloud(settings: StoreSettings): Promise<void> {
   const path = 'settings/store';
   try {
+    const cleaned = cleanForFirestore(settings);
     const settingsDocRef = doc(db, 'settings', 'store');
-    await setDoc(settingsDocRef, settings, { merge: true });
+    await setDoc(settingsDocRef, cleaned, { merge: true });
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, path);
   }
@@ -237,8 +271,9 @@ export function subscribeToOrders(callback: (orders: Order[]) => void): () => vo
 export async function saveOrderToCloud(order: Order): Promise<void> {
   const path = `orders/${order.id}`;
   try {
+    const cleaned = cleanForFirestore(order);
     const orderDocRef = doc(db, 'orders', order.id);
-    await setDoc(orderDocRef, order);
+    await setDoc(orderDocRef, cleaned);
   } catch (error) {
     handleFirestoreError(error, OperationType.CREATE, path);
   }
@@ -269,8 +304,9 @@ export function subscribeToDiscountCodes(callback: (codes: DiscountCode[]) => vo
         try {
           const batch = writeBatch(db);
           DEFAULT_DISCOUNT_CODES.forEach((code) => {
+            const cleaned = cleanForFirestore(code);
             const dDoc = doc(db, 'discounts', code.id);
-            batch.set(dDoc, code);
+            batch.set(dDoc, cleaned);
           });
           await batch.commit();
           callback(DEFAULT_DISCOUNT_CODES);
@@ -299,8 +335,9 @@ export async function saveDiscountCodesToCloud(codes: DiscountCode[]): Promise<v
   try {
     const batch = writeBatch(db);
     codes.forEach((code) => {
+      const cleaned = cleanForFirestore(code);
       const dDoc = doc(db, 'discounts', code.id);
-      batch.set(dDoc, code, { merge: true });
+      batch.set(dDoc, cleaned, { merge: true });
     });
     await batch.commit();
   } catch (error) {
@@ -323,8 +360,9 @@ export function subscribeToReviews(callback: (reviews: Review[]) => void): () =>
         try {
           const batch = writeBatch(db);
           INITIAL_REVIEWS.forEach((rev) => {
+            const cleaned = cleanForFirestore(rev);
             const rDoc = doc(db, 'reviews', rev.id);
-            batch.set(rDoc, rev);
+            batch.set(rDoc, cleaned);
           });
           await batch.commit();
           callback(INITIAL_REVIEWS);
@@ -353,8 +391,9 @@ export function subscribeToReviews(callback: (reviews: Review[]) => void): () =>
 export async function saveReviewToCloud(review: Review): Promise<void> {
   const path = `reviews/${review.id}`;
   try {
+    const cleaned = cleanForFirestore(review);
     const rDoc = doc(db, 'reviews', review.id);
-    await setDoc(rDoc, review);
+    await setDoc(rDoc, cleaned);
   } catch (error) {
     handleFirestoreError(error, OperationType.CREATE, path);
   }

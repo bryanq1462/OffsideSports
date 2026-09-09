@@ -39,6 +39,8 @@ interface AdminPanelProps {
   settings: StoreSettings;
   discountCodes: DiscountCode[];
   onUpdateJerseys: (updated: Jersey[]) => void;
+  onSaveJersey?: (jersey: Jersey) => Promise<void>;
+  onDeleteJersey?: (jerseyId: string) => Promise<void>;
   onUpdateOrders: (updated: Order[]) => void;
   onUpdateSettings: (updated: StoreSettings) => void;
   onUpdateDiscountCodes: (updated: DiscountCode[]) => void;
@@ -53,6 +55,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   settings,
   discountCodes,
   onUpdateJerseys,
+  onSaveJersey,
+  onDeleteJersey,
   onUpdateOrders,
   onUpdateSettings,
   onUpdateDiscountCodes,
@@ -113,6 +117,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [originalCrcInputValue, setOriginalCrcInputValue] = useState<string>('');
   const [originalUsdInputValue, setOriginalUsdInputValue] = useState<string>('');
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
+  const [isSavingJersey, setIsSavingJersey] = useState(false);
+  const [jerseySaveStatus, setJerseySaveStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // Selected Order Detail Modal
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -262,9 +268,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   };
 
   // Save/Update Jersey Handler
-  const handleSaveJersey = (e: React.FormEvent) => {
+  const handleSaveJersey = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingJersey || !editingJersey.name || !editingJersey.team) return;
+    if (!editingJersey || !editingJersey.name?.trim() || !editingJersey.team?.trim()) {
+      setJerseySaveStatus({ type: 'error', message: 'Por favor ingresa al menos el Nombre de la camiseta y el Equipo.' });
+      return;
+    }
+
+    setIsSavingJersey(true);
+    setJerseySaveStatus(null);
 
     const enteredCrc = crcInputValue ? Number(crcInputValue) : (typeof editingJersey.price === 'number' && !isNaN(editingJersey.price) ? editingJersey.price : 25000);
     const finalPriceCRC = enteredCrc >= 500 ? enteredCrc : Math.round(enteredCrc * 520);
@@ -276,49 +288,106 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       finalOriginalPriceCRC = Number(originalCrcInputValue);
     }
 
-    if (editingJersey.id) {
-      // Edit existing
-      const updated = jerseys.map(j => j.id === editingJersey.id ? ({
-        ...j,
-        ...editingJersey,
-        price: finalPriceCRC,
-        priceCRC: finalPriceCRC,
-        originalPrice: finalOriginalPriceCRC,
-        originalPriceCRC: finalOriginalPriceCRC,
-        stock: stockNum
-      } as Jersey) : j);
-      onUpdateJerseys(updated);
-    } else {
-      // Create new
-      const newJersey: Jersey = {
-        id: `off-custom-${Date.now()}`,
-        name: editingJersey.name || 'Nueva Camiseta',
-        team: editingJersey.team || 'Equipo',
-        league: (editingJersey.league as League) || 'Liga Promerica (CR)',
-        version: editingJersey.version || 'Versión Jugador (Player Issue)',
-        genderCategory: editingJersey.genderCategory || 'Unisex (Adulto)',
-        price: finalPriceCRC,
-        priceCRC: finalPriceCRC,
-        originalPrice: finalOriginalPriceCRC,
-        originalPriceCRC: finalOriginalPriceCRC,
-        yearSeason: editingJersey.yearSeason || '2025/2026',
-        type: (editingJersey.type as JerseyType) || 'Local',
-        image: editingJersey.image || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=800',
-        backImage: editingJersey.backImage,
-        images: editingJersey.images || [],
-        sizesAvailable: editingJersey.sizesAvailable || ['S', 'M', 'L', 'XL', 'XXL'],
-        description: editingJersey.description || 'Camiseta oficial versión jugador con tela de alta definición.',
-        fabricInfo: editingJersey.fabricInfo || '100% Poliéster Reciclado Dri-FIT ADV',
-        rating: 5.0,
-        reviewsCount: 1,
-        stock: stockNum,
-        badgeTags: editingJersey.badgeTags || ['Nuevo Lanzamiento']
-      };
-      onUpdateJerseys([newJersey, ...jerseys]);
-    }
+    try {
+      if (editingJersey.id) {
+        // Edit existing jersey
+        const updatedJersey: Jersey = {
+          ...editingJersey,
+          id: editingJersey.id,
+          name: editingJersey.name.trim(),
+          team: editingJersey.team.trim(),
+          league: (editingJersey.league as League) || 'Liga Promerica (CR)',
+          version: editingJersey.version || 'Versión Jugador (Player Issue)',
+          genderCategory: editingJersey.genderCategory || 'Unisex (Adulto)',
+          price: finalPriceCRC,
+          priceCRC: finalPriceCRC,
+          yearSeason: editingJersey.yearSeason || '2025/2026',
+          type: (editingJersey.type as JerseyType) || 'Local',
+          image: editingJersey.image || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=800',
+          images: editingJersey.images || [],
+          sizesAvailable: editingJersey.sizesAvailable || ['S', 'M', 'L', 'XL', 'XXL'],
+          description: editingJersey.description || 'Camiseta oficial versión jugador con tela de alta definición.',
+          fabricInfo: editingJersey.fabricInfo || '100% Poliéster Reciclado Dri-FIT ADV',
+          rating: editingJersey.rating || 5.0,
+          reviewsCount: editingJersey.reviewsCount || 1,
+          stock: stockNum,
+          badgeTags: editingJersey.badgeTags || ['Nuevo Lanzamiento']
+        };
 
-    setEditingJersey(null);
-    setIsNewModalOpen(false);
+        if (finalOriginalPriceCRC && finalOriginalPriceCRC > 0) {
+          updatedJersey.originalPrice = finalOriginalPriceCRC;
+          updatedJersey.originalPriceCRC = finalOriginalPriceCRC;
+        } else {
+          delete updatedJersey.originalPrice;
+          delete updatedJersey.originalPriceCRC;
+        }
+
+        if (editingJersey.backImage && editingJersey.backImage.trim()) {
+          updatedJersey.backImage = editingJersey.backImage;
+        } else {
+          delete updatedJersey.backImage;
+        }
+
+        if (onSaveJersey) {
+          await onSaveJersey(updatedJersey);
+        } else {
+          const updated = jerseys.map(j => j.id === updatedJersey.id ? updatedJersey : j);
+          onUpdateJerseys(updated);
+        }
+      } else {
+        // Create new jersey
+        const newJerseyId = `off-custom-${Date.now()}`;
+        const newJersey: Jersey = {
+          id: newJerseyId,
+          name: editingJersey.name.trim() || 'Nueva Camiseta',
+          team: editingJersey.team.trim() || 'Equipo',
+          league: (editingJersey.league as League) || 'Liga Promerica (CR)',
+          version: editingJersey.version || 'Versión Jugador (Player Issue)',
+          genderCategory: editingJersey.genderCategory || 'Unisex (Adulto)',
+          price: finalPriceCRC,
+          priceCRC: finalPriceCRC,
+          yearSeason: editingJersey.yearSeason || '2025/2026',
+          type: (editingJersey.type as JerseyType) || 'Local',
+          image: editingJersey.image || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=800',
+          images: editingJersey.images || [],
+          sizesAvailable: editingJersey.sizesAvailable || ['S', 'M', 'L', 'XL', 'XXL'],
+          description: editingJersey.description || 'Camiseta oficial versión jugador con tela de alta definición.',
+          fabricInfo: editingJersey.fabricInfo || '100% Poliéster Reciclado Dri-FIT ADV',
+          rating: 5.0,
+          reviewsCount: 1,
+          stock: stockNum,
+          isNew: true,
+          badgeTags: editingJersey.badgeTags || ['Nuevo Lanzamiento']
+        };
+
+        if (finalOriginalPriceCRC && finalOriginalPriceCRC > 0) {
+          newJersey.originalPrice = finalOriginalPriceCRC;
+          newJersey.originalPriceCRC = finalOriginalPriceCRC;
+        }
+
+        if (editingJersey.backImage && editingJersey.backImage.trim()) {
+          newJersey.backImage = editingJersey.backImage;
+        }
+
+        if (onSaveJersey) {
+          await onSaveJersey(newJersey);
+        } else {
+          onUpdateJerseys([newJersey, ...jerseys]);
+        }
+      }
+
+      setJerseySaveStatus({ type: 'success', message: '¡Camiseta guardada permanentemente en la nube y catálogo!' });
+      setTimeout(() => {
+        setIsSavingJersey(false);
+        setEditingJersey(null);
+        setIsNewModalOpen(false);
+        setJerseySaveStatus(null);
+      }, 700);
+    } catch (err: any) {
+      console.error('Error saving jersey:', err);
+      setIsSavingJersey(false);
+      setJerseySaveStatus({ type: 'error', message: `Error al guardar: ${err.message || 'Verifica la conexión con Firestore'}` });
+    }
   };
 
   // Delete Jersey
@@ -333,10 +402,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
 
-  const confirmDeleteAction = () => {
+  const confirmDeleteAction = async () => {
     if (!deleteTarget) return;
     if (deleteTarget.type === 'jersey') {
-      onUpdateJerseys(jerseys.filter(j => j.id !== deleteTarget.id));
+      if (onDeleteJersey) {
+        await onDeleteJersey(deleteTarget.id);
+      } else {
+        onUpdateJerseys(jerseys.filter(j => j.id !== deleteTarget.id));
+      }
     } else if (deleteTarget.type === 'coupon') {
       onUpdateDiscountCodes(discountCodes.filter(d => d.id !== deleteTarget.id));
     }
@@ -2456,20 +2529,55 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
               </div>
 
+              {/* Feedback and Alert Banners */}
+              {jerseySaveStatus && (
+                <div
+                  className={`p-3 rounded-xl text-xs font-black flex items-center gap-2 ${
+                    jerseySaveStatus.type === 'success'
+                      ? 'bg-emerald-950/80 border border-emerald-500/50 text-[#00e652]'
+                      : 'bg-rose-950/80 border border-rose-500/50 text-rose-300'
+                  }`}
+                >
+                  {jerseySaveStatus.type === 'success' ? (
+                    <Check className="w-4 h-4 stroke-[3]" />
+                  ) : (
+                    <AlertTriangle className="w-4 h-4 stroke-[2.5]" />
+                  )}
+                  <span>{jerseySaveStatus.message}</span>
+                </div>
+              )}
+
               {/* Action Buttons */}
-              <div className="pt-2 flex justify-end gap-3">
+              <div className="pt-2 flex justify-end gap-3 items-center">
                 <button
                   type="button"
-                  onClick={() => setIsNewModalOpen(false)}
-                  className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-black uppercase tracking-wider rounded-xl transition cursor-pointer"
+                  disabled={isSavingJersey}
+                  onClick={() => {
+                    setJerseySaveStatus(null);
+                    setIsNewModalOpen(false);
+                  }}
+                  className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-black uppercase tracking-wider rounded-xl transition cursor-pointer disabled:opacity-50"
                 >
                   CANCELAR
                 </button>
                 <button
                   type="submit"
-                  className="px-8 py-2.5 bg-[#00e652] hover:bg-white text-black font-black uppercase tracking-widest cursor-pointer skew-x-[-10deg] transition shadow-2xl"
+                  disabled={isSavingJersey}
+                  className="px-8 py-2.5 bg-[#00e652] hover:bg-white text-black font-black uppercase tracking-widest cursor-pointer skew-x-[-10deg] transition shadow-2xl disabled:opacity-60 flex items-center gap-2"
                 >
-                  <span className="skew-x-[10deg] inline-block">GUARDAR PUBLICACIÓN EN INVENTARIO</span>
+                  <span className="skew-x-[10deg] inline-flex items-center gap-2">
+                    {isSavingJersey ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                        <span>GUARDANDO EN LA NUBE...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4 stroke-[2.5]" />
+                        <span>GUARDAR PUBLICACIÓN EN INVENTARIO</span>
+                      </>
+                    )}
+                  </span>
                 </button>
               </div>
 
