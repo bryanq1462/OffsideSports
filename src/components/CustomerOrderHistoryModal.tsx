@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X, Search, PackageCheck, Clock, Truck, CheckCircle2, AlertCircle, ShoppingBag, MessageCircle, ExternalLink } from 'lucide-react';
 import { Order, OrderStatus, StoreSettings } from '../types';
 import { formatPrice } from '../utils/storage';
-import { handleImageError } from '../utils/imageUtils';
+import { handleImageError, DEFAULT_JERSEY_FALLBACK_IMAGE } from '../utils/imageUtils';
 
 interface CustomerOrderHistoryModalProps {
   isOpen: boolean;
@@ -225,7 +225,7 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
                             <div key={idx} className="py-2 flex items-center justify-between gap-3 text-xs">
                               <div className="flex items-center gap-3">
                                 <img
-                                  src={item.jersey.image}
+                                  src={item.jersey.image || DEFAULT_JERSEY_FALLBACK_IMAGE}
                                   alt={item.jersey.name}
                                   referrerPolicy="no-referrer"
                                   onError={handleImageError}
@@ -235,8 +235,13 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
                                   <p className="font-bold text-white leading-tight">
                                     {item.jersey.name}
                                   </p>
-                                  <div className="flex flex-wrap gap-2 text-[11px] text-white/60 mt-0.5">
+                                  <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-white/60 mt-0.5">
                                     <span>Talla: <strong className="text-[#00e652]">{item.size}</strong></span>
+                                    {item.jersey.version && (
+                                      <span className="text-[#00e652] bg-[#00e652]/10 border border-[#00e652]/20 px-1.5 py-0.2 rounded text-[10px] font-bold">
+                                        {item.jersey.version}
+                                      </span>
+                                    )}
                                     <span>• Cant: {item.quantity}</span>
                                     {item.customStamping?.enabled && (
                                       <span className="text-amber-300 font-bold">
@@ -258,7 +263,15 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
                       <div className="bg-white/5 rounded-lg p-3 flex flex-wrap justify-between items-center gap-3 border border-white/10">
                         <div className="text-xs space-y-0.5">
                           <p className="text-white/60">
-                            Método de Pago: <strong className="text-white uppercase">{order.paymentMethod.replace('_', ' ')}</strong>
+                            Método: <strong className="text-white">
+                              {order.paymentMethod === 'sinpe_movil' 
+                                ? 'SINPE Móvil' 
+                                : order.paymentMethod === 'bank_transfer' 
+                                ? 'Transferencia IBAN' 
+                                : order.paymentMethod === 'cash' 
+                                ? 'Contra Entrega' 
+                                : order.paymentMethod}
+                            </strong>
                           </p>
                           <p className="text-white/60">
                             Dirección de Envío: <strong className="text-white">{order.customer.address}, {order.customer.city}</strong>

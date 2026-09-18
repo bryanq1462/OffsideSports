@@ -85,6 +85,7 @@ export default function App() {
     selectedLeague: 'all',
     selectedTeam: 'all',
     selectedType: 'all',
+    selectedVersion: 'all',
     selectedSize: 'all',
     minPrice: 0,
     maxPrice: 200,
@@ -238,7 +239,9 @@ export default function App() {
         const matchesLeague = j.league.toLowerCase().includes(query);
         const matchesYear = j.yearSeason.toLowerCase().includes(query);
         const matchesType = j.type.toLowerCase().includes(query);
-        if (!matchesName && !matchesTeam && !matchesLeague && !matchesYear && !matchesType) {
+        const matchesVersion = (j.version || '').toLowerCase().includes(query);
+        const matchesGender = (j.genderCategory || '').toLowerCase().includes(query);
+        if (!matchesName && !matchesTeam && !matchesLeague && !matchesYear && !matchesType && !matchesVersion && !matchesGender) {
           return false;
         }
       }
@@ -256,17 +259,25 @@ export default function App() {
         return false;
       }
 
-      // 3. Team
+      // 4. Team
       if (filters.selectedTeam !== 'all' && j.team !== filters.selectedTeam) {
         return false;
       }
 
-      // 4. Type
+      // 5. Type
       if (filters.selectedType !== 'all' && j.type !== filters.selectedType) {
         return false;
       }
 
-      // 5. Size
+      // 6. Version
+      if (filters.selectedVersion && filters.selectedVersion !== 'all') {
+        const jerseyVersion = j.version || 'Versión Jugador (Player Issue)';
+        if (jerseyVersion !== filters.selectedVersion) {
+          return false;
+        }
+      }
+
+      // 7. Size
       if (filters.selectedSize !== 'all' && !j.sizesAvailable.includes(filters.selectedSize as Size)) {
         return false;
       }
@@ -433,9 +444,11 @@ export default function App() {
               totalResults={filteredJerseys.length}
               onReset={() => setFilters({
                 searchQuery: '',
+                selectedSport: 'all',
                 selectedLeague: 'all',
                 selectedTeam: 'all',
                 selectedType: 'all',
+                selectedVersion: 'all',
                 selectedSize: 'all',
                 minPrice: 0,
                 maxPrice: 200,
@@ -457,9 +470,11 @@ export default function App() {
                   <button
                     onClick={() => setFilters({
                       searchQuery: '',
+                      selectedSport: 'all',
                       selectedLeague: 'all',
                       selectedTeam: 'all',
                       selectedType: 'all',
+                      selectedVersion: 'all',
                       selectedSize: 'all',
                       minPrice: 0,
                       maxPrice: 200,

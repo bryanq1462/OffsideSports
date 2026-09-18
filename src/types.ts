@@ -141,6 +141,10 @@ export interface Order {
   paymentDetails?: {
     cardLast4?: string;
     referenceCode?: string;
+    phone?: string;
+    iban?: string;
+    bank?: string;
+    type?: string;
   };
   status: OrderStatus;
   currency: 'CRC' | 'USD';
@@ -166,6 +170,7 @@ export interface FilterState {
   selectedLeague: string; // 'all' or specific League
   selectedTeam: string; // 'all' or specific team
   selectedType: string; // 'all' or JerseyType
+  selectedVersion?: string; // 'all' or JerseyVersion
   selectedSize: string; // 'all' or Size
   minPrice: number;
   maxPrice: number;

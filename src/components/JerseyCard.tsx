@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { ShoppingBag, Star, Check, Eye } from 'lucide-react';
 import { Jersey, Size } from '../types';
 import { formatPrice } from '../utils/storage';
-
 import { handleImageError } from '../utils/imageUtils';
+import { getJerseyVersionInfo } from '../utils/jerseyUtils';
 
 interface JerseyCardProps {
   jersey: Jersey;
@@ -25,6 +25,8 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
   const [selectedSize, setSelectedSize] = useState<Size>(availableSizes[0] || sizes[0] || 'M');
   const [added, setAdded] = useState(false);
 
+  const versionInfo = getJerseyVersionInfo(jersey.version);
+
   const effectiveSize = availableSizes.includes(selectedSize) ? selectedSize : (availableSizes[0] || sizes[0] || 'M');
 
   const handleAdd = (e: React.MouseEvent) => {
@@ -42,6 +44,12 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
     >
       {/* Badges Overlay */}
       <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 flex flex-col gap-1 items-start pointer-events-none">
+        {/* Version Badge on Card */}
+        <span className={`text-[8px] sm:text-[9.5px] uppercase px-1.5 sm:px-2 py-0.5 rounded-sm shadow-md flex items-center gap-1 ${versionInfo.badgeClass}`}>
+          <span>{versionInfo.icon}</span>
+          <span>{versionInfo.shortLabel}</span>
+        </span>
+
         {jersey.discountPercent && jersey.discountPercent > 0 ? (
           <span className="bg-rose-600 text-white font-black text-[8px] sm:text-[10px] uppercase px-1.5 sm:px-2.5 py-0.5 rounded-sm shadow-md animate-pulse flex items-center gap-1">
             🔥 -{jersey.discountPercent}% OFF
@@ -109,7 +117,7 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
         <div className="p-2.5 sm:p-4 space-y-1.5 sm:space-y-2">
           {/* League & Season */}
           <div className="flex items-center justify-between text-[9px] sm:text-[11px] font-black uppercase tracking-wider">
-            <span className="text-[#00e652] truncate max-w-[100px] sm:max-w-none">{jersey.league}</span>
+            <span className="text-[#00e652] truncate max-w-[110px] sm:max-w-none">{jersey.league}</span>
             <span className="bg-white/10 px-1.5 py-0.5 rounded text-white/80 font-mono text-[9px] sm:text-[10px]">{jersey.yearSeason}</span>
           </div>
 
@@ -118,13 +126,26 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
             {jersey.name}
           </h3>
 
+          {/* Version & Category Pill Tag */}
+          <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+            <span className={`text-[9px] sm:text-[10px] font-black uppercase px-2 py-0.5 rounded flex items-center gap-1 ${versionInfo.pillClass}`}>
+              <span>{versionInfo.icon}</span>
+              <span>{versionInfo.label}</span>
+            </span>
+            {jersey.genderCategory && jersey.genderCategory !== 'Unisex (Adulto)' && (
+              <span className="text-[9px] sm:text-[10px] bg-white/5 border border-white/15 text-white/70 px-1.5 py-0.5 rounded font-bold">
+                {jersey.genderCategory}
+              </span>
+            )}
+          </div>
+
           {/* Rating */}
           <div className="flex items-center gap-1 text-[10px] sm:text-xs">
             <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-400 text-amber-400" />
             <span className="font-black text-amber-400">{jersey.rating.toFixed(1)}</span>
             <span className="text-white/40 text-[9px] sm:text-[11px] font-bold">({jersey.reviewsCount})</span>
-            <span className="hidden sm:inline mx-1 text-white/20">•</span>
-            <span className="hidden sm:inline text-white/60 text-[11px] uppercase font-bold">{jersey.type}</span>
+            <span className="mx-1 text-white/20">•</span>
+            <span className="text-white/70 text-[10px] sm:text-[11px] uppercase font-bold">{jersey.type}</span>
           </div>
 
           {/* Price */}

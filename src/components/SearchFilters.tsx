@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, RotateCcw, SlidersHorizontal, Trophy, Shield, Activity } from 'lucide-react';
+import { Search, RotateCcw, SlidersHorizontal, Trophy, Shield, Activity, Sparkles } from 'lucide-react';
 import { FilterState, League, JerseyType, SportCategory } from '../types';
 import { TEAMS_BY_LEAGUE, LEAGUE_FLAGS, SPORTS_LIST } from '../data/mockData';
 
@@ -129,8 +129,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
       </div>
 
-      {/* Secondary Row: Liga & Equipo Selectors */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Secondary Row: Liga, Equipo, Edición, Versión & Talla */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5">
         
         {/* League Selector */}
         <div>
@@ -191,6 +191,26 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             {types.map(t => (
               <option key={t} value={t}>{t}</option>
             ))}
+          </select>
+        </div>
+
+        {/* Jersey Version Filter */}
+        <div>
+          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5 flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-[#00e652]" />
+            <span>VERSIÓN:</span>
+          </label>
+          <select
+            value={filters.selectedVersion || 'all'}
+            onChange={(e) => setFilters(prev => ({ ...prev, selectedVersion: e.target.value }))}
+            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#00e652]"
+          >
+            <option value="all">Todas las Versiones</option>
+            <option value="Versión Jugador (Player Issue)">⚡ Versión Jugador</option>
+            <option value="Versión Fan (Aficionado)">🧢 Versión Fan</option>
+            <option value="Manga Larga">🧥 Manga Larga</option>
+            <option value="Chaqueta / Rompevientos">🌪️ Chaqueta</option>
+            <option value="Conjunto Completo">⚽ Conjunto</option>
           </select>
         </div>
 

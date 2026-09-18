@@ -735,7 +735,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           />
                           <div>
                             <p className="font-black italic uppercase text-white line-clamp-1">{jersey.name}</p>
-                            <p className="text-[10px] text-[#00e652] font-mono">{jersey.type} • {jersey.yearSeason}</p>
+                            <div className="flex items-center gap-1.5 flex-wrap text-[10px] text-[#00e652] font-mono mt-0.5">
+                              <span>{jersey.type}</span>
+                              <span>•</span>
+                              <span>{jersey.yearSeason}</span>
+                              <span className="bg-[#00e652]/15 border border-[#00e652]/40 text-[#00e652] px-1.5 py-0.2 rounded font-sans font-black text-[9px] uppercase">
+                                {jersey.version || 'Versión Jugador (Player Issue)'}
+                              </span>
+                              {jersey.genderCategory && (
+                                <span className="bg-white/10 text-white/80 px-1 py-0.2 rounded font-sans font-bold text-[9px]">
+                                  {jersey.genderCategory}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </td>
 

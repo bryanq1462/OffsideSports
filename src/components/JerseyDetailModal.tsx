@@ -11,6 +11,7 @@ import {
 import { Jersey, Size, CustomStamping, StoreSettings } from '../types';
 import { formatPrice } from '../utils/storage';
 import { handleImageError } from '../utils/imageUtils';
+import { getJerseyVersionInfo } from '../utils/jerseyUtils';
 
 interface JerseyDetailModalProps {
   jersey: Jersey | null;
@@ -32,6 +33,8 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
   onBuyWhatsApp
 }) => {
   if (!jersey) return null;
+
+  const versionInfo = getJerseyVersionInfo(jersey.version);
 
   const availableSizes = (jersey?.sizesAvailable || []).filter(() => jersey.stock > 0);
   const initialSize = availableSizes.length > 0 
@@ -82,11 +85,16 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
       >
         {/* Header bar */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/60 sticky top-0 z-20">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="bg-[#00e652] text-slate-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded">
               {jersey.league}
             </span>
             <span className="text-xs text-slate-400 font-bold">{jersey.yearSeason}</span>
+            <span className="text-white/20">•</span>
+            <span className={`text-[10px] uppercase font-black px-2 py-0.5 rounded flex items-center gap-1 ${versionInfo.badgeClass}`}>
+              <span>{versionInfo.icon}</span>
+              <span>{versionInfo.label}</span>
+            </span>
           </div>
           <button
             onClick={onClose}
@@ -165,10 +173,23 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
           <div className="md:col-span-6 space-y-5">
             
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-[#00e652] uppercase tracking-wider mb-1">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#00e652] uppercase tracking-wider mb-1 flex-wrap">
                 <span>{jersey.team}</span>
-                <span>•</span>
+                <span className="text-slate-600">•</span>
                 <span>{jersey.type}</span>
+                <span className="text-slate-600">•</span>
+                <span className={`text-[10px] px-2 py-0.5 rounded uppercase font-black inline-flex items-center gap-1 ${versionInfo.pillClass}`}>
+                  <span>{versionInfo.icon}</span>
+                  <span>{versionInfo.label}</span>
+                </span>
+                {jersey.genderCategory && (
+                  <>
+                    <span className="text-slate-600">•</span>
+                    <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-bold">
+                      {jersey.genderCategory}
+                    </span>
+                  </>
+                )}
               </div>
               <h2 className="text-xl sm:text-2xl font-black text-white">{jersey.name}</h2>
               <div className="flex items-center gap-2 mt-2">
@@ -176,6 +197,21 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                 <span className="text-xs text-slate-300 font-bold">{jersey.rating.toFixed(1)}</span>
                 <span className="text-xs text-slate-500">({jersey.reviewsCount} reseñas verificadas)</span>
               </div>
+            </div>
+
+            {/* Version Information Card */}
+            <div className="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-black tracking-widest text-[#00e652] flex items-center gap-1.5">
+                  <span>{versionInfo.icon}</span>
+                  <span>VERSIÓN DE FABRICACIÓN</span>
+                </span>
+                <span className={`text-[9px] uppercase px-2 py-0.5 rounded font-black ${versionInfo.badgeClass}`}>
+                  {versionInfo.shortLabel}
+                </span>
+              </div>
+              <p className="text-sm font-black text-white">{versionInfo.label}</p>
+              <p className="text-[11px] text-slate-400 leading-relaxed">{versionInfo.description}</p>
             </div>
 
             {/* Price display */}

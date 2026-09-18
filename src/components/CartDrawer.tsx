@@ -11,7 +11,8 @@ import {
 } from 'lucide-react';
 import { CartItem, StoreSettings, DiscountCode } from '../types';
 import { formatPrice } from '../utils/storage';
-import { handleImageError } from '../utils/imageUtils';
+import { handleImageError, DEFAULT_JERSEY_FALLBACK_IMAGE } from '../utils/imageUtils';
+import { getJerseyVersionInfo } from '../utils/jerseyUtils';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -150,7 +151,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <div className="flex gap-3">
                       {/* Image */}
                       <img
-                        src={item.jersey.image}
+                        src={item.jersey.image || DEFAULT_JERSEY_FALLBACK_IMAGE}
                         alt={item.jersey.name}
                         referrerPolicy="no-referrer"
                         onError={handleImageError}
@@ -172,9 +173,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           </button>
                         </div>
 
-                        <p className="text-[11px] text-[#00e652] font-black uppercase mt-0.5 tracking-wider">
-                          TALLA: <span className="text-white bg-black border border-white/20 px-1.5 py-0.5 rounded ml-1">{item.size}</span>
-                        </p>
+                        <div className="flex items-center gap-1.5 flex-wrap mt-1">
+                          <span className="text-[10px] text-[#00e652] font-black uppercase tracking-wider">
+                            TALLA: <span className="text-white bg-black border border-white/20 px-1.5 py-0.2 rounded ml-0.5">{item.size}</span>
+                          </span>
+                          <span className={`text-[9px] px-1.5 py-0.2 rounded border inline-flex items-center gap-1 uppercase font-black ${getJerseyVersionInfo(item.jersey.version).pillClass}`}>
+                            <span>{getJerseyVersionInfo(item.jersey.version).icon}</span>
+                            <span>{getJerseyVersionInfo(item.jersey.version).shortLabel}</span>
+                          </span>
+                        </div>
 
                         {/* Stamping details badge */}
                         {item.customStamping?.enabled && (

@@ -162,16 +162,16 @@ export function saveJerseys(jerseys: Jersey[]): void {
   try {
     localStorage.setItem(KEYS.JERSEYS, JSON.stringify(jerseys));
   } catch (e) {
-    console.warn('Quota exceeded when saving jerseys, attempting lightweight save...', e);
+    console.warn('Quota warning when saving jerseys, attempting lightweight save...', e);
     try {
       // Strip extra galleries if quota exceeded
       const sanitized = jerseys.map(j => ({
         ...j,
-        images: (j.images || []).slice(0, 2)
+        images: (j.images || []).filter(img => !img.startsWith('data:image') || img.length < 15000).slice(0, 2)
       }));
       localStorage.setItem(KEYS.JERSEYS, JSON.stringify(sanitized));
     } catch (err) {
-      console.error('Error saving jerseys to local storage', err);
+      console.warn('Jerseys cached in memory and safely persisted in Firestore', err);
     }
   }
 }
@@ -198,8 +198,7 @@ export function saveCart(cart: CartItem[]): void {
         league: item.jersey.league,
         price: item.jersey.price,
         discountPercent: item.jersey.discountPercent,
-        image: item.jersey.image,
-        backImage: item.jersey.backImage,
+        image: item.jersey.image?.startsWith('data:image') && item.jersey.image.length > 25000 ? '' : item.jersey.image,
         type: item.jersey.type,
         sizesAvailable: item.jersey.sizesAvailable,
         stock: item.jersey.stock,
@@ -227,9 +226,70 @@ export function saveCart(cart: CartItem[]): void {
       }));
       localStorage.setItem(KEYS.CART, JSON.stringify(lightweightCart));
     } catch (err) {
-      console.error('Error saving cart to local storage', err);
+      console.warn('Cart cached in memory', err);
     }
   }
+}
+
+/**
+ * Sanitizes orders specifically for local browser storage cache to prevent quota exceeded errors.
+ * Retains all critical business fields (id, customer, totals, status, items with details)
+ * while pruning redundant galleries, heavy descriptions, and oversized data URIs.
+ */
+function sanitizeOrdersForStorage(orders: Order[], maxOrders = 25, stripAllBase64 = false): Order[] {
+  if (!Array.isArray(orders)) return [];
+  const list = orders.slice(0, maxOrders);
+
+  return list.map(order => ({
+    id: order.id || '',
+    date: order.date || '',
+    customer: {
+      fullName: order.customer?.fullName || '',
+      email: order.customer?.email || '',
+      phone: order.customer?.phone || '',
+      address: order.customer?.address || '',
+      city: order.customer?.city || '',
+      notes: order.customer?.notes
+    },
+    subtotal: order.subtotal || 0,
+    discount: order.discount || 0,
+    shipping: order.shipping || 0,
+    total: order.total || 0,
+    paymentMethod: order.paymentMethod || 'sinpe_movil',
+    paymentDetails: order.paymentDetails,
+    status: order.status || 'Pendiente',
+    currency: order.currency || 'CRC',
+    items: (order.items || []).map(it => {
+      let img = it.jersey?.image || '';
+      if (stripAllBase64 && img.startsWith('data:image')) {
+        img = '';
+      } else if (img.startsWith('data:image') && img.length > 20000) {
+        img = '';
+      }
+
+      return {
+        cartItemId: it.cartItemId || 'item',
+        size: it.size || 'M',
+        quantity: it.quantity || 1,
+        customStamping: it.customStamping,
+        jersey: {
+          id: it.jersey?.id || '',
+          name: it.jersey?.name || 'Camiseta',
+          team: it.jersey?.team || '',
+          league: it.jersey?.league || '',
+          price: it.jersey?.price || 0,
+          priceCRC: it.jersey?.priceCRC ?? it.jersey?.price ?? 0,
+          image: img,
+          type: it.jersey?.type || 'Local',
+          yearSeason: it.jersey?.yearSeason || '2024/25',
+          stock: it.jersey?.stock ?? 1,
+          rating: it.jersey?.rating ?? 5,
+          reviewsCount: it.jersey?.reviewsCount ?? 1,
+          sizesAvailable: []
+        } as Jersey
+      };
+    })
+  }));
 }
 
 // ORDERS PERSISTENCE - Clean with no sample orders
@@ -237,11 +297,20 @@ export function getStoredOrders(): Order[] {
   try {
     const raw = localStorage.getItem(KEYS.ORDERS);
     if (!raw) {
-      // Empty by default as requested (no mock orders)
-      localStorage.setItem(KEYS.ORDERS, JSON.stringify([]));
       return [];
     }
-    return JSON.parse(raw);
+    const parsed: Order[] = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+
+    // If legacy stored orders string is excessively large (> 40KB), compact it immediately to free quota
+    if (raw.length > 40000 && parsed.length > 0) {
+      try {
+        const compacted = sanitizeOrdersForStorage(parsed, 20, true);
+        localStorage.setItem(KEYS.ORDERS, JSON.stringify(compacted));
+        return compacted;
+      } catch (ignore) {}
+    }
+    return parsed;
   } catch (e) {
     return [];
   }
@@ -249,9 +318,29 @@ export function getStoredOrders(): Order[] {
 
 export function saveOrders(orders: Order[]): void {
   try {
-    localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders));
-  } catch (e) {
-    console.error('Error saving orders', e);
+    // Level 1: Sanitize orders (strips unnecessary metadata, keeps at most 25 orders, removes heavy base64 strings)
+    const sanitized = sanitizeOrdersForStorage(orders, 25, false);
+    localStorage.setItem(KEYS.ORDERS, JSON.stringify(sanitized));
+  } catch (e: any) {
+    console.warn('Storage quota notice in saveOrders, trying fallback sanitization...', e?.message || e);
+    try {
+      // Level 2: Strip ALL base64 images from order items and keep last 15 orders
+      const level2 = sanitizeOrdersForStorage(orders, 15, true);
+      localStorage.setItem(KEYS.ORDERS, JSON.stringify(level2));
+    } catch (err2: any) {
+      console.warn('Storage quota still tight, trying minimal order snapshot...', err2?.message || err2);
+      try {
+        // Level 3: Keep last 5 orders only with minimal footprint
+        const level3 = sanitizeOrdersForStorage(orders, 5, true);
+        localStorage.setItem(KEYS.ORDERS, JSON.stringify(level3));
+      } catch (err3) {
+        // Level 4: Orders are safe in Firestore; clear local storage orders key so it doesn't block other operations
+        console.warn('LocalStorage quota limit reached; orders are safely persisted in Firestore database.');
+        try {
+          localStorage.removeItem(KEYS.ORDERS);
+        } catch (ignore) {}
+      }
+    }
   }
 }
 
@@ -273,7 +362,7 @@ export function saveReviews(reviews: Review[]): void {
   try {
     localStorage.setItem(KEYS.REVIEWS, JSON.stringify(reviews));
   } catch (e) {
-    console.error('Error saving reviews', e);
+    console.warn('Warning saving reviews to local storage', e);
   }
 }
 
@@ -291,7 +380,7 @@ export function saveCurrency(currency: 'CRC' | 'USD'): void {
   try {
     localStorage.setItem(KEYS.CURRENCY, currency);
   } catch (e) {
-    console.error('Error saving currency', e);
+    console.warn('Warning saving currency preference', e);
   }
 }
 
@@ -313,7 +402,7 @@ export function saveSettings(settings: StoreSettings): void {
   try {
     localStorage.setItem(KEYS.SETTINGS, JSON.stringify(settings));
   } catch (e) {
-    console.error('Error saving settings', e);
+    console.warn('Warning saving settings to local storage', e);
   }
 }
 
@@ -335,6 +424,6 @@ export function saveDiscountCodes(codes: DiscountCode[]): void {
   try {
     localStorage.setItem(KEYS.DISCOUNT_CODES, JSON.stringify(codes));
   } catch (e) {
-    console.error('Error saving discount codes', e);
+    console.warn('Warning saving discount codes to local storage', e);
   }
 }
