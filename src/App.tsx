@@ -57,6 +57,7 @@ import { Footer } from './components/Footer';
 import { WhatsAppFloatingButton } from './components/WhatsAppFloatingButton';
 import { CustomerOrderHistoryModal } from './components/CustomerOrderHistoryModal';
 import { INITIAL_LEAGUES } from './data/mockData';
+import { getJerseyVersionInfo } from './utils/jerseyUtils';
 
 export default function App() {
   // Primary States with Persistence
@@ -271,7 +272,7 @@ export default function App() {
 
       // 6. Version
       if (filters.selectedVersion && filters.selectedVersion !== 'all') {
-        const jerseyVersion = j.version || 'Versión Jugador (Player Issue)';
+        const jerseyVersion = getJerseyVersionInfo(j.version).label;
         if (jerseyVersion !== filters.selectedVersion) {
           return false;
         }

@@ -10,12 +10,12 @@ export interface VersionInfo {
 }
 
 export function getJerseyVersionInfo(version?: string): VersionInfo {
-  const v = version || 'Versión Jugador (Player Issue)';
+  const v = version || 'Versión Jugador';
   const lower = v.toLowerCase();
 
   if (lower.includes('jugador') || lower.includes('player')) {
     return {
-      label: 'Versión Jugador (Player Issue)',
+      label: 'Versión Jugador',
       shortLabel: 'Versión Jugador',
       icon: '⚡',
       badgeClass: 'bg-[#00e652] text-black border border-[#00e652] font-black',
@@ -26,7 +26,7 @@ export function getJerseyVersionInfo(version?: string): VersionInfo {
 
   if (lower.includes('fan') || lower.includes('aficionado') || lower.includes('stadium')) {
     return {
-      label: 'Versión Fan (Aficionado)',
+      label: 'Versión Fan',
       shortLabel: 'Versión Fan',
       icon: '🧢',
       badgeClass: 'bg-sky-400 text-black border border-sky-400 font-black',
@@ -37,7 +37,7 @@ export function getJerseyVersionInfo(version?: string): VersionInfo {
 
   if (lower.includes('manga larga') || lower.includes('long sleeve')) {
     return {
-      label: 'Manga Larga (Long Sleeve)',
+      label: 'Manga Larga',
       shortLabel: 'Manga Larga',
       icon: '🧥',
       badgeClass: 'bg-indigo-400 text-black border border-indigo-400 font-black',
@@ -48,8 +48,8 @@ export function getJerseyVersionInfo(version?: string): VersionInfo {
 
   if (lower.includes('chaqueta') || lower.includes('rompevientos')) {
     return {
-      label: 'Chaqueta / Rompevientos',
-      shortLabel: 'Chaqueta',
+      label: 'Chaqueta Rompevientos',
+      shortLabel: 'Chaqueta Rompevientos',
       icon: '🌪️',
       badgeClass: 'bg-teal-400 text-black border border-teal-400 font-black',
       pillClass: 'bg-teal-400/10 text-teal-300 border border-teal-400/30 font-black',
@@ -59,7 +59,7 @@ export function getJerseyVersionInfo(version?: string): VersionInfo {
 
   if (lower.includes('conjunto')) {
     return {
-      label: 'Conjunto Completo (Camiseta + Short)',
+      label: 'Conjunto Completo',
       shortLabel: 'Conjunto Completo',
       icon: '⚽',
       badgeClass: 'bg-amber-400 text-black border border-amber-400 font-black',

@@ -3,6 +3,7 @@ import { X, Search, PackageCheck, Clock, Truck, CheckCircle2, AlertCircle, Shopp
 import { Order, OrderStatus, StoreSettings } from '../types';
 import { formatPrice } from '../utils/storage';
 import { handleImageError, DEFAULT_JERSEY_FALLBACK_IMAGE } from '../utils/imageUtils';
+import { getJerseyVersionInfo } from '../utils/jerseyUtils';
 
 interface CustomerOrderHistoryModalProps {
   isOpen: boolean;
@@ -239,7 +240,7 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
                                     <span>Talla: <strong className="text-[#00e652]">{item.size}</strong></span>
                                     {item.jersey.version && (
                                       <span className="text-[#00e652] bg-[#00e652]/10 border border-[#00e652]/20 px-1.5 py-0.2 rounded text-[10px] font-bold">
-                                        {item.jersey.version}
+                                        {getJerseyVersionInfo(item.jersey.version).label}
                                       </span>
                                     )}
                                     <span>• Cant: {item.quantity}</span>

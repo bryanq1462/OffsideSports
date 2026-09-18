@@ -56,7 +56,15 @@ export type League =
 
 export type JerseyType = 'Local' | 'Visitante' | 'Tercera' | 'Edición Especial' | 'Retro';
 
-export type JerseyVersion = 'Versión Jugador (Player Issue)' | 'Versión Fan (Aficionado)' | 'Manga Larga' | 'Chaqueta / Rompevientos' | 'Conjunto Completo';
+export type JerseyVersion = 
+  | 'Versión Jugador'
+  | 'Versión Fan'
+  | 'Manga Larga'
+  | 'Chaqueta Rompevientos'
+  | 'Conjunto Completo'
+  | 'Versión Jugador (Player Issue)'
+  | 'Versión Fan (Aficionado)'
+  | 'Chaqueta / Rompevientos';
 
 export type GenderCategory = 'Unisex (Adulto)' | 'Femenina (Mujer)' | 'Niños / Infantil';
 

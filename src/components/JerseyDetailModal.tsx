@@ -206,11 +206,14 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                   <span>{versionInfo.icon}</span>
                   <span>VERSIÓN DE FABRICACIÓN</span>
                 </span>
-                <span className={`text-[9px] uppercase px-2 py-0.5 rounded font-black ${versionInfo.badgeClass}`}>
-                  {versionInfo.shortLabel}
+                <span className="text-[9px] uppercase px-2 py-0.5 rounded font-black bg-[#00e652]/15 text-[#00e652] border border-[#00e652]/30">
+                  OFICIAL
                 </span>
               </div>
-              <p className="text-sm font-black text-white">{versionInfo.label}</p>
+              <p className="text-sm font-black text-white flex items-center gap-2">
+                <span>{versionInfo.icon}</span>
+                <span>{versionInfo.label}</span>
+              </p>
               <p className="text-[11px] text-slate-400 leading-relaxed">{versionInfo.description}</p>
             </div>
 

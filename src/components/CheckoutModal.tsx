@@ -14,6 +14,7 @@ import {
 import confetti from 'canvas-confetti';
 import { CartItem, CustomerInfo, PaymentMethod, Order, StoreSettings, Jersey } from '../types';
 import { formatPrice } from '../utils/storage';
+import { getJerseyVersionInfo } from '../utils/jerseyUtils';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -111,7 +112,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             image: it.jersey.image || '',
             type: it.jersey.type || 'Local',
             yearSeason: it.jersey.yearSeason || '2024/25',
-            version: it.jersey.version || 'Versión Jugador (Player Issue)',
+            version: it.jersey.version ? getJerseyVersionInfo(it.jersey.version).label : 'Versión Jugador',
             genderCategory: it.jersey.genderCategory,
             stock: it.jersey.stock ?? 1,
             rating: it.jersey.rating ?? 5,
@@ -286,7 +287,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <div key={item.cartItemId} className="flex justify-between items-center text-[11px]">
                     <span className="text-white/80 truncate max-w-[200px] sm:max-w-xs">{item.quantity}x {item.jersey.name}</span>
                     <span className="text-[#00e652] font-mono text-[10px] shrink-0">
-                      Talla {item.size} {item.jersey.version ? `• ${item.jersey.version.replace(/\s*\(.*\)/, '')}` : ''}
+                      Talla {item.size} • {getJerseyVersionInfo(item.jersey.version).label}
                     </span>
                   </div>
                 ))}
@@ -575,7 +576,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 href={`https://wa.me/${(settings?.contactPhone || '+506 8559 5192').replace(/[^0-9]/g, '') || '50685595192'}?text=${encodeURIComponent(
                   `Hola OFFSIDE Sports! ⚽ Acabo de registrar el pedido ${completedOrder.id} a nombre de ${completedOrder.customer.fullName}.\n\n` +
                   `📦 ÍTEMS SOLICITADOS:\n` +
-                  completedOrder.items.map(it => `• ${it.quantity}x ${it.jersey.name} (Talla: ${it.size}${it.jersey.version ? ` - ${it.jersey.version}` : ''})`).join('\n') +
+                  completedOrder.items.map(it => `• ${it.quantity}x ${it.jersey.name} (Talla: ${it.size} - ${getJerseyVersionInfo(it.jersey.version).label})`).join('\n') +
                   `\n\n💰 TOTAL: ${formatPrice(completedOrder.total, currency)}\n` +
                   `💳 MÉTODO: ${completedOrder.paymentMethod === 'sinpe_movil' ? 'SINPE Móvil' : completedOrder.paymentMethod === 'bank_transfer' ? 'Transferencia IBAN' : 'Pago Contra Entrega'}\n` +
                   `📍 ENTREGA: ${completedOrder.customer.address}, ${completedOrder.customer.city}\n\n` +

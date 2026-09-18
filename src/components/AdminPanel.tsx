@@ -30,6 +30,7 @@ import {
 import { Jersey, Order, OrderStatus, League, JerseyType, JerseyVersion, GenderCategory, Size, StoreSettings, SportCategory, DiscountCode } from '../types';
 import { formatPrice, getCleanCRC } from '../utils/storage';
 import { handleImageError, compressImageFile } from '../utils/imageUtils';
+import { getJerseyVersionInfo } from '../utils/jerseyUtils';
 import { INITIAL_LEAGUES, LEAGUE_FLAGS, SPORTS_LIST } from '../data/mockData';
 
 interface AdminPanelProps {
@@ -297,7 +298,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           name: editingJersey.name.trim(),
           team: editingJersey.team.trim(),
           league: (editingJersey.league as League) || 'Liga Promerica (CR)',
-          version: editingJersey.version || 'Versión Jugador (Player Issue)',
+          version: editingJersey.version || 'Versión Jugador',
           genderCategory: editingJersey.genderCategory || 'Unisex (Adulto)',
           price: finalPriceCRC,
           priceCRC: finalPriceCRC,
@@ -342,7 +343,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           name: editingJersey.name.trim() || 'Nueva Camiseta',
           team: editingJersey.team.trim() || 'Equipo',
           league: (editingJersey.league as League) || 'Liga Promerica (CR)',
-          version: editingJersey.version || 'Versión Jugador (Player Issue)',
+          version: editingJersey.version || 'Versión Jugador',
           genderCategory: editingJersey.genderCategory || 'Unisex (Adulto)',
           price: finalPriceCRC,
           priceCRC: finalPriceCRC,
@@ -740,7 +741,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                               <span>•</span>
                               <span>{jersey.yearSeason}</span>
                               <span className="bg-[#00e652]/15 border border-[#00e652]/40 text-[#00e652] px-1.5 py-0.2 rounded font-sans font-black text-[9px] uppercase">
-                                {jersey.version || 'Versión Jugador (Player Issue)'}
+                                {getJerseyVersionInfo(jersey.version).label}
                               </span>
                               {jersey.genderCategory && (
                                 <span className="bg-white/10 text-white/80 px-1 py-0.2 rounded font-sans font-bold text-[9px]">
@@ -2036,15 +2037,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div>
                     <label className="block text-white font-black uppercase tracking-wider mb-1">VERSIÓN DE FABRICACIÓN:</label>
                     <select
-                      value={editingJersey.version || 'Versión Jugador (Player Issue)'}
+                      value={editingJersey.version ? getJerseyVersionInfo(editingJersey.version).label : 'Versión Jugador'}
                       onChange={(e) => setEditingJersey({ ...editingJersey, version: e.target.value as JerseyVersion })}
                       className="w-full bg-black border border-white/20 rounded-xl p-2.5 text-white font-bold focus:border-[#00e652]"
                     >
-                      <option value="Versión Jugador (Player Issue)">⚡ Versión Jugador (Player Issue / Premium)</option>
-                      <option value="Versión Fan (Aficionado)">🧢 Versión Fan (Aficionado / Stadium)</option>
-                      <option value="Manga Larga">🧥 Manga Larga (Long Sleeve)</option>
-                      <option value="Chaqueta / Rompevientos">🌪️ Chaqueta / Rompevientos</option>
-                      <option value="Conjunto Completo">⚽ Conjunto Completo (Camiseta + Short)</option>
+                      <option value="Versión Jugador">⚡ Versión Jugador</option>
+                      <option value="Versión Fan">🧢 Versión Fan</option>
+                      <option value="Manga Larga">🧥 Manga Larga</option>
+                      <option value="Chaqueta Rompevientos">🌪️ Chaqueta Rompevientos</option>
+                      <option value="Conjunto Completo">⚽ Conjunto Completo</option>
                     </select>
                   </div>
 

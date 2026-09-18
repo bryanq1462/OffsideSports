@@ -47,7 +47,7 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
         {/* Version Badge on Card */}
         <span className={`text-[8px] sm:text-[9.5px] uppercase px-1.5 sm:px-2 py-0.5 rounded-sm shadow-md flex items-center gap-1 ${versionInfo.badgeClass}`}>
           <span>{versionInfo.icon}</span>
-          <span>{versionInfo.shortLabel}</span>
+          <span>{versionInfo.label}</span>
         </span>
 
         {jersey.discountPercent && jersey.discountPercent > 0 ? (
@@ -126,18 +126,14 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
             {jersey.name}
           </h3>
 
-          {/* Version & Category Pill Tag */}
-          <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-            <span className={`text-[9px] sm:text-[10px] font-black uppercase px-2 py-0.5 rounded flex items-center gap-1 ${versionInfo.pillClass}`}>
-              <span>{versionInfo.icon}</span>
-              <span>{versionInfo.label}</span>
-            </span>
-            {jersey.genderCategory && jersey.genderCategory !== 'Unisex (Adulto)' && (
+          {/* Category Pill Tag if not Unisex */}
+          {jersey.genderCategory && jersey.genderCategory !== 'Unisex (Adulto)' && (
+            <div className="pt-0.5">
               <span className="text-[9px] sm:text-[10px] bg-white/5 border border-white/15 text-white/70 px-1.5 py-0.5 rounded font-bold">
                 {jersey.genderCategory}
               </span>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Rating */}
           <div className="flex items-center gap-1 text-[10px] sm:text-xs">

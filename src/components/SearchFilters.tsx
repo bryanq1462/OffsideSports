@@ -206,11 +206,11 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#00e652]"
           >
             <option value="all">Todas las Versiones</option>
-            <option value="Versión Jugador (Player Issue)">⚡ Versión Jugador</option>
-            <option value="Versión Fan (Aficionado)">🧢 Versión Fan</option>
+            <option value="Versión Jugador">⚡ Versión Jugador</option>
+            <option value="Versión Fan">🧢 Versión Fan</option>
             <option value="Manga Larga">🧥 Manga Larga</option>
-            <option value="Chaqueta / Rompevientos">🌪️ Chaqueta</option>
-            <option value="Conjunto Completo">⚽ Conjunto</option>
+            <option value="Chaqueta Rompevientos">🌪️ Chaqueta Rompevientos</option>
+            <option value="Conjunto Completo">⚽ Conjunto Completo</option>
           </select>
         </div>
 
