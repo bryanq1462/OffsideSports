@@ -32,33 +32,27 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
   onAddToCart,
   onBuyWhatsApp
 }) => {
-  if (!jersey) return null;
-
-  const versionInfo = getJerseyVersionInfo(jersey.version);
-
-  const availableSizes = (jersey?.sizesAvailable || []).filter(() => jersey.stock > 0);
-  const initialSize = availableSizes.length > 0 
-    ? availableSizes[0] 
-    : (jersey?.sizesAvailable?.[0] || 'M');
-
-  const [selectedSize, setSelectedSize] = useState<Size>(initialSize);
+  const [selectedSize, setSelectedSize] = useState<Size>('M');
+  const [quantity, setQuantity] = useState(1);
+  const [activeTab, setActiveTab] = useState<'front' | 'back'>('front');
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [added, setAdded] = useState(false);
 
   useEffect(() => {
     if (jersey) {
       const currentAvailable = (jersey.sizesAvailable || []).filter(() => jersey.stock > 0);
       if (currentAvailable.length > 0) {
-        if (!currentAvailable.includes(selectedSize)) {
-          setSelectedSize(currentAvailable[0]);
-        }
+        setSelectedSize(prev => currentAvailable.includes(prev) ? prev : currentAvailable[0]);
+      } else if (jersey.sizesAvailable && jersey.sizesAvailable.length > 0) {
+        setSelectedSize(jersey.sizesAvailable[0]);
       }
     }
   }, [jersey]);
 
-  const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<'front' | 'back'>('front');
-  
-  const [showSizeGuide, setShowSizeGuide] = useState(false);
-  const [added, setAdded] = useState(false);
+  if (!jersey) return null;
+
+  const versionInfo = getJerseyVersionInfo(jersey.version);
+  const availableSizes = (jersey.sizesAvailable || []).filter(() => jersey.stock > 0);
 
   const unitCRC = jersey.priceCRC || jersey.price;
   const totalPriceCRC = unitCRC * quantity;
@@ -163,7 +157,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
               </div>
               <div className="flex items-center gap-2 p-2.5 bg-slate-950 rounded-xl border border-slate-800 text-slate-300">
                 <ShieldCheck className="w-4 h-4 text-[#00e652] flex-shrink-0" />
-                <span>Prenda física 100% original en stock</span>
+                <span>Prenda física garantizada en stock</span>
               </div>
             </div>
 
@@ -300,7 +294,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                         {size}
                       </span>
 
-                      {/* Rayita diagonal roja que indica que no está disponible */}
+                      {/* Línea diagonal roja que indica que no está disponible */}
                       {!isAvailable && (
                         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
                           <div className="w-[140%] h-[2px] bg-red-500/90 -rotate-45 transform origin-center shadow-[0_0_2px_rgba(239,68,68,0.9)]" />
@@ -311,7 +305,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                 })}
               </div>
 
-              {/* Legend explaining the rayita */}
+              {/* Leyenda de disponibilidad de tallas */}
               <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#00e652] inline-block" />
@@ -321,7 +315,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                   <span className="relative w-3.5 h-3.5 rounded bg-slate-950 border border-slate-800 inline-flex items-center justify-center overflow-hidden">
                     <span className="w-full h-[2px] bg-red-500 -rotate-45 block" />
                   </span>
-                  <span className="text-red-400/90 font-medium">Rayita: Talla no disponible</span>
+                  <span className="text-red-400/90 font-medium">Talla no disponible</span>
                 </div>
               </div>
 

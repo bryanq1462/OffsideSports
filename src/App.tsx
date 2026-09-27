@@ -529,69 +529,77 @@ export default function App() {
       />
 
       {/* Customer Order History / Tracking Modal */}
-      <CustomerOrderHistoryModal
-        isOpen={isOrderHistoryOpen}
-        onClose={() => setIsOrderHistoryOpen(false)}
-        orders={orders}
-        currency={currency}
-        settings={settings}
-      />
+      {isOrderHistoryOpen && (
+        <CustomerOrderHistoryModal
+          isOpen={isOrderHistoryOpen}
+          onClose={() => setIsOrderHistoryOpen(false)}
+          orders={orders}
+          currency={currency}
+          settings={settings}
+        />
+      )}
 
       {/* Persistent Floating WhatsApp Action Button */}
       <WhatsAppFloatingButton settings={settings} />
 
       {/* Jersey Detail & Customizer Modal */}
-      <JerseyDetailModal
-        jersey={selectedJerseyDetail}
-        currency={currency}
-        settings={settings}
-        onClose={() => setSelectedJerseyDetail(null)}
-        onAddToCart={handleAddToCartWithCustom}
-        onBuyWhatsApp={handleBuyWhatsApp}
-      />
+      {selectedJerseyDetail && (
+        <JerseyDetailModal
+          jersey={selectedJerseyDetail}
+          currency={currency}
+          settings={settings}
+          onClose={() => setSelectedJerseyDetail(null)}
+          onAddToCart={handleAddToCartWithCustom}
+          onBuyWhatsApp={handleBuyWhatsApp}
+        />
+      )}
 
       {/* Shopping Cart Drawer */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cart={cart}
-        currency={currency}
-        settings={settings}
-        discountCodes={discountCodes}
-        onUpdateQuantity={handleUpdateCartQuantity}
-        onRemoveItem={handleRemoveCartItem}
-        onProceedToCheckout={(discountCRC) => {
-          setAppliedDiscount(discountCRC);
-          setIsCartOpen(false);
-          setIsCheckoutOpen(true);
-        }}
-        onWhatsAppOrder={() => {
-          if (cart.length === 0) return;
-          let text = `Hola OFFSIDE Sports! ⚽ Quisiera pedir los siguientes productos de mi carrito:\n`;
-          cart.forEach((item, idx) => {
-            text += `\n${idx + 1}. *${item.jersey.name}* - Talla: *${item.size}* (x${item.quantity})`;
-            if (item.customStamping?.enabled) {
-              text += `\n   Estampado: ${item.customStamping.name} #${item.customStamping.number}`;
-            }
-          });
-          text += `\n\nTotal estimado: *${formatPrice(cartTotalUSD, currency)}*`;
-          text += `\n¿Tienen servicio de envío o contra entrega en Costa Rica?`;
+      {isCartOpen && (
+        <CartDrawer
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          cart={cart}
+          currency={currency}
+          settings={settings}
+          discountCodes={discountCodes}
+          onUpdateQuantity={handleUpdateCartQuantity}
+          onRemoveItem={handleRemoveCartItem}
+          onProceedToCheckout={(discountCRC) => {
+            setAppliedDiscount(discountCRC);
+            setIsCartOpen(false);
+            setIsCheckoutOpen(true);
+          }}
+          onWhatsAppOrder={() => {
+            if (cart.length === 0) return;
+            let text = `Hola OFFSIDE Sports! ⚽ Quisiera pedir los siguientes productos de mi carrito:\n`;
+            cart.forEach((item, idx) => {
+              text += `\n${idx + 1}. *${item.jersey.name}* - Talla: *${item.size}* (x${item.quantity})`;
+              if (item.customStamping?.enabled) {
+                text += `\n   Estampado: ${item.customStamping.name} #${item.customStamping.number}`;
+              }
+            });
+            text += `\n\nTotal estimado: *${formatPrice(cartTotalUSD, currency)}*`;
+            text += `\n¿Tienen servicio de envío o contra entrega en Costa Rica?`;
 
-          const cleanPhone = settings.contactPhone.replace(/[^0-9]/g, '');
-          window.open(`https://wa.me/${cleanPhone || '50685595192'}?text=${encodeURIComponent(text)}`, '_blank');
-        }}
-      />
+            const cleanPhone = settings.contactPhone.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/${cleanPhone || '50685595192'}?text=${encodeURIComponent(text)}`, '_blank');
+          }}
+        />
+      )}
 
       {/* Payment Gateway Checkout Modal */}
-      <CheckoutModal
-        isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
-        cart={cart}
-        discount={appliedDiscount}
-        currency={currency}
-        settings={settings}
-        onOrderCompleted={handleOrderCompleted}
-      />
+      {isCheckoutOpen && (
+        <CheckoutModal
+          isOpen={isCheckoutOpen}
+          onClose={() => setIsCheckoutOpen(false)}
+          cart={cart}
+          discount={appliedDiscount}
+          currency={currency}
+          settings={settings}
+          onOrderCompleted={handleOrderCompleted}
+        />
+      )}
 
       {/* Admin Panel Modal */}
       {isAdminOpen && (

@@ -37,6 +37,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   settings,
   onOrderCompleted
 }) => {
+  const [step, setStep] = useState<'shipping' | 'payment' | 'processing' | 'success'>('shipping');
+  const [customer, setCustomer] = useState<CustomerInfo>({
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: 'San José',
+    notes: ''
+  });
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('sinpe_movil');
+  const [sinpePhone, setSinpePhone] = useState('');
+  const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
+
   if (!isOpen) return null;
 
   const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
@@ -48,24 +61,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const stampFee = settings?.customizationPriceCRC ?? 0;
   const shippingFee = settings?.shippingFeeCRC ?? 2500;
   const discount = typeof discountProp === 'number' ? discountProp : (discountUSD || 0); // Discount amount in CRC
-
-  const [step, setStep] = useState<'shipping' | 'payment' | 'processing' | 'success'>('shipping');
-
-  // Customer Form
-  const [customer, setCustomer] = useState<CustomerInfo>({
-    fullName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: 'San José',
-    notes: ''
-  });
-
-  // Payment Form - Only official Costa Rica methods: SINPE Móvil, IBAN Transfer & Cash on Delivery
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('sinpe_movil');
-  const [sinpePhone, setSinpePhone] = useState('');
-
-  const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
 
   // Totals in CRC
   const calculateItemPrice = (item: CartItem) => {

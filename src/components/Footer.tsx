@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shirt, ShieldCheck, Truck, RotateCcw, Heart, Instagram } from 'lucide-react';
+import { Shirt, ShieldCheck, Truck, RotateCcw, Heart, Instagram, Lock } from 'lucide-react';
 import { StoreSettings } from '../types';
 
 interface FooterProps {
@@ -161,8 +161,8 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
                 className="bg-white/5 hover:bg-[#00e652] text-white hover:text-black border border-white/20 hover:border-[#00e652] px-4 py-2.5 text-xs font-black uppercase tracking-widest skew-x-[-10deg] transition-all cursor-pointer flex items-center gap-2"
               >
                 <div className="skew-x-[10deg] flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
-                  <span>PANEL ADMINISTRATIVO</span>
+                  <Lock className="w-4 h-4 stroke-[2.5]" />
+                  <span>ACCESO PROPIETARIO</span>
                 </div>
               </button>
             </div>

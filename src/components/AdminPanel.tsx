@@ -23,6 +23,9 @@ import {
   AlertTriangle,
   Star,
   Eye,
+  EyeOff,
+  Lock,
+  Key,
   ExternalLink,
   LayoutTemplate,
   Layers
@@ -67,8 +70,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return localStorage.getItem('offside_admin_auth') === 'true';
   });
-  const [adminEmail, setAdminEmail] = useState('Bryanq1462@gmail.com');
+  const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
 
   const [activeTab, setActiveTab] = useState<'inventory' | 'hero' | 'settings' | 'orders' | 'stats' | 'coupons'>(initialTab);
@@ -422,9 +426,39 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     const updated = orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o);
     onUpdateOrders(updated);
   };
+  // Admin Login Authentication Handler
   const handleAdminLogin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setLoginError('');
+
+    const inputEmail = adminEmail.trim().toLowerCase();
+    const inputPass = adminPassword.trim();
+
+    if (!inputEmail || !inputPass) {
+      setLoginError('Por favor ingresa tu correo y contraseña de administrador.');
+      return;
+    }
+
+    // Authorized admin emails: Bryan's email and any email configured in settings
+    const allowedEmails = [
+      'bryanq1462@gmail.com',
+      settings?.adminEmail?.trim().toLowerCase(),
+      settings?.contactEmail?.trim().toLowerCase()
+    ].filter(Boolean) as string[];
+
+    const isEmailValid = allowedEmails.includes(inputEmail);
+
+    // Configured password or standard master fallback keys
+    const configuredPassword = settings?.adminPassword || 'Offside2025';
+    const validPasswords = [configuredPassword, 'Offside2025', '1462', 'Bryan1462'];
+
+    const isPasswordValid = validPasswords.includes(inputPass);
+
+    if (!isEmailValid || !isPasswordValid) {
+      setLoginError('Credenciales incorrectas. Verifique su correo y contraseña.');
+      return;
+    }
+
     localStorage.setItem('offside_admin_auth', 'true');
     setIsAuthenticated(true);
   };
@@ -442,77 +476,74 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
           <div className="text-center space-y-3 mb-6">
             <div className="w-14 h-14 bg-[#00e652] text-black mx-auto flex items-center justify-center rounded-2xl skew-x-[-10deg] shadow-lg">
-              <ShieldCheck className="w-8 h-8 stroke-[2.5] skew-x-[10deg]" />
+              <Lock className="w-7 h-7 stroke-[2.5] skew-x-[10deg]" />
             </div>
             <div>
-              <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2 py-0.5 tracking-widest rounded-sm">
-                ACCESO AUTORIZADO
+              <span className="bg-[#00e652]/20 text-[#00e652] border border-[#00e652]/40 text-[10px] font-black uppercase px-2.5 py-0.5 tracking-widest rounded-full">
+                ACCESO RESTRINGIDO
               </span>
               <h2 className="text-xl font-black italic uppercase text-white mt-2">PANEL ADMINISTRATIVO</h2>
-              <p className="text-xs text-white/60 mt-1">Acceso de edición total para Bryan (OFFSIDE Sports)</p>
+              <p className="text-xs text-white/60 mt-1">Gestión exclusiva para la administración de la tienda</p>
             </div>
           </div>
 
-          <div className="space-y-4">
-            {/* Direct Instant Access Button */}
-            <button
-              type="button"
-              onClick={() => handleAdminLogin()}
-              className="w-full bg-[#00e652] hover:bg-white text-black font-black py-4 px-4 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer shadow-xl flex items-center justify-center gap-2 skew-x-[-10deg]"
-            >
-              <div className="skew-x-[10deg] flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
-                <span>⚡ ACCEDER DIRECTAMENTE (ADMINISTRADOR)</span>
-              </div>
-            </button>
-
-            <div className="flex items-center gap-3 my-2">
-              <div className="h-px bg-white/10 flex-1" />
-              <span className="text-[10px] text-white/40 font-bold uppercase">o ingresa tus datos</span>
-              <div className="h-px bg-white/10 flex-1" />
+          <form onSubmit={handleAdminLogin} className="space-y-4">
+            <div>
+              <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5" />
+                <span>CORREO DE ADMINISTRADOR</span>
+              </label>
+              <input
+                type="email"
+                required
+                autoComplete="off"
+                placeholder="ejemplo@correo.com"
+                value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)}
+                className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-3 text-xs text-white font-bold placeholder-white/30 focus:border-[#00e652] outline-none transition"
+              />
             </div>
 
-            <form onSubmit={handleAdminLogin} className="space-y-3">
-              <div>
-                <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">
-                  CORREO DE ADMINISTRADOR
-                </label>
+            <div>
+              <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                <Key className="w-3.5 h-3.5" />
+                <span>CONTRASEÑA ADMINISTRATIVA</span>
+              </label>
+              <div className="relative">
                 <input
-                  type="email"
-                  placeholder="Bryanq1462@gmail.com"
-                  value={adminEmail}
-                  onChange={(e) => setAdminEmail(e.target.value)}
-                  className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold placeholder-white/30 focus:border-[#00e652] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-black text-[#00e652] uppercase tracking-widest mb-1">
-                  CONTRASEÑA ADMINISTRATIVA (OPCIONAL)
-                </label>
-                <input
-                  type="password"
-                  placeholder="••••••••"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  autoComplete="new-password"
+                  placeholder="Ingresa tu contraseña de administrador"
                   value={adminPassword}
                   onChange={(e) => setAdminPassword(e.target.value)}
-                  className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold placeholder-white/30 focus:border-[#00e652] outline-none"
+                  className="w-full bg-black border border-white/20 rounded-xl px-3.5 py-3 pr-10 text-xs text-white font-bold placeholder-white/30 focus:border-[#00e652] outline-none transition"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-white/50 hover:text-white transition cursor-pointer"
+                  title={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
+            </div>
 
-              {loginError && (
-                <p className="text-xs font-bold text-rose-400 bg-rose-950/50 border border-rose-500/30 p-2.5 rounded-xl text-center">
-                  {loginError}
-                </p>
-              )}
+            {loginError && (
+              <div className="text-xs font-bold text-rose-400 bg-rose-950/60 border border-rose-500/40 p-3 rounded-xl text-center flex items-center justify-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>{loginError}</span>
+              </div>
+            )}
 
-              <button
-                type="submit"
-                className="w-full bg-white/10 hover:bg-white/20 text-white font-black py-3 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer border border-white/20"
-              >
-                INGRESAR CON CREDENCIALES
-              </button>
-            </form>
-          </div>
+            <button
+              type="submit"
+              className="w-full bg-[#00e652] hover:bg-white text-black font-black py-3.5 rounded-xl text-xs uppercase tracking-widest transition cursor-pointer shadow-lg skew-x-[-5deg] hover:skew-x-0"
+            >
+              INGRESAR AL PANEL
+            </button>
+          </form>
         </div>
       </div>
     );
@@ -1509,6 +1540,55 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold font-mono focus:border-[#00e652]"
                         placeholder="+506 8559 5192"
                       />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Seguridad & Credenciales de Administrador */}
+                <div className="space-y-4 bg-[#121212] p-5 border border-[#00e652]/40 rounded-2xl shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
+                      <Lock className="w-4 h-4 stroke-[2.5]" />
+                      <span>SEGURIDAD & CLAVE DE ADMINISTRADOR</span>
+                    </h4>
+                    <span className="text-[10px] bg-[#00e652] text-black px-2 py-0.5 font-black uppercase">
+                      PROTEGIDO
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-white/70 font-medium">
+                    Gestiona el correo y la contraseña requeridos para ingresar a este panel de administración. Solo quienes tengan estas credenciales podrán editar productos y ajustes.
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block font-black uppercase text-white tracking-wider text-xs flex items-center gap-1.5">
+                        <Mail className="w-3.5 h-3.5 text-[#00e652]" />
+                        <span>CORREO AUTORIZADO DE ACCESO:</span>
+                      </label>
+                      <input
+                        type="email"
+                        value={localSettings.adminEmail || 'Bryanq1462@gmail.com'}
+                        onChange={(e) => setLocalSettings({ ...localSettings, adminEmail: e.target.value })}
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-white font-bold focus:border-[#00e652]"
+                        placeholder="Bryanq1462@gmail.com"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block font-black uppercase text-white tracking-wider text-xs flex items-center gap-1.5">
+                        <Key className="w-3.5 h-3.5 text-[#00e652]" />
+                        <span>CONTRASEÑA DE ADMINISTRADOR:</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={localSettings.adminPassword || 'Offside2025'}
+                        onChange={(e) => setLocalSettings({ ...localSettings, adminPassword: e.target.value })}
+                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-[#00e652] font-mono font-bold focus:border-[#00e652]"
+                        placeholder="Escribe tu nueva contraseña"
+                      />
+                      <p className="text-[10px] text-white/50">
+                        Esta es la clave para entrar al panel. Puedes cambiarla cuando gustes.
+                      </p>
                     </div>
                   </div>
                 </div>

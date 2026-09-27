@@ -34,7 +34,9 @@ export const DEFAULT_SETTINGS: StoreSettings = {
   featuredPromoBadge: '¡GRATIS! 🎁',
   instagramHandle: '@OFFSIDE_SPORTS22',
   instagramUrl: 'https://www.instagram.com/offside_sports22?igsh=MXZib2J3cjV2bnl1YQ==',
-  whatsappPhone: '+506 8559 5192'
+  whatsappPhone: '+506 8559 5192',
+  adminEmail: 'bryanq1462@gmail.com',
+  adminPassword: 'Offside2025'
 };
 
 export const DEFAULT_DISCOUNT_CODES: DiscountCode[] = [
@@ -140,6 +142,18 @@ export function getStoredJerseys(): Jersey[] {
         item.originalPrice = Math.round(item.originalPrice);
         if (item.originalPriceCRC !== item.originalPrice) {
           item.originalPriceCRC = item.originalPrice;
+          changed = true;
+        }
+      }
+
+      // Clean any 100% original phrasing
+      if (item.description && /original/i.test(item.description)) {
+        const cleanedDesc = item.description
+          .replace(/100%\s*original(es)?/gi, '100% garantizada')
+          .replace(/prenda\s+f[íi]sica\s+original/gi, 'prenda física garantizada')
+          .replace(/prenda\s+original/gi, 'prenda física');
+        if (cleanedDesc !== item.description) {
+          item.description = cleanedDesc;
           changed = true;
         }
       }

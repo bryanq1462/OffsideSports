@@ -39,11 +39,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onProceedToCheckout,
   onWhatsAppOrder
 }) => {
-  if (!isOpen) return null;
-
   const [couponCode, setCouponCode] = useState('');
   const [couponApplied, setCouponApplied] = useState<{ code: string; percent: number } | null>(null);
   const [couponError, setCouponError] = useState('');
+
+  if (!isOpen) return null;
 
   const stampFee = settings?.customizationPriceCRC ?? 0;
   const shippingFee = settings?.shippingFeeCRC ?? 2500;

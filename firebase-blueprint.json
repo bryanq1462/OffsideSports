@@ -62,7 +62,9 @@
         "bankAccountIBAN": { "type": "string" },
         "bankName": { "type": "string" },
         "sinpePhone": { "type": "string" },
-        "heroTagline": { "type": "string" }
+        "heroTagline": { "type": "string" },
+        "adminEmail": { "type": "string" },
+        "adminPassword": { "type": "string" }
       }
     },
     "Review": {

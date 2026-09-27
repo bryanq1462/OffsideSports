@@ -23,6 +23,8 @@ export interface StoreSettings {
   instagramHandle?: string;
   instagramUrl?: string;
   whatsappPhone?: string;
+  adminEmail?: string;
+  adminPassword?: string;
 }
 
 export interface DiscountCode {

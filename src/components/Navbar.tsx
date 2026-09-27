@@ -11,7 +11,8 @@ import {
   DollarSign, 
   SlidersHorizontal,
   Instagram,
-  PackageCheck
+  PackageCheck,
+  Lock
 } from 'lucide-react';
 import { formatPrice } from '../utils/storage';
 
@@ -96,11 +97,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
             <button 
               onClick={onOpenAdmin}
-              className="bg-[#00e652]/10 hover:bg-[#00e652] text-[#00e652] hover:text-black border border-[#00e652]/40 transition flex items-center gap-1.5 font-black cursor-pointer px-2.5 py-1 rounded-sm text-[11px] uppercase tracking-wider shadow-sm"
-              title="Panel Administrativo"
+              className="hover:text-[#00e652] text-white/50 border border-white/10 hover:border-[#00e652]/40 transition flex items-center gap-1 font-extrabold cursor-pointer px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[10px] sm:text-[11px] uppercase tracking-wider"
+              title="Acceso Propietario / Administración"
             >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>ADMIN</span>
+              <Lock className="w-3 h-3 text-white/60" />
+              <span className="hidden xs:inline">ADMIN</span>
             </button>
           </div>
         </div>
@@ -285,10 +286,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
           <button
             onClick={() => { onOpenAdmin(); setMobileMenuOpen(false); }}
-            className="w-full mt-2 flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-lg text-xs font-black uppercase tracking-wider border border-white/20"
+            className="w-full mt-2 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/15 text-white/60 hover:text-white py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider border border-white/10"
           >
-            <ShieldCheck className="w-4 h-4 text-[#00e652]" />
-            Acceder al Panel Administrativo
+            <Lock className="w-3.5 h-3.5 text-white/50" />
+            Acceso Administrativo
           </button>
         </div>
       )}
