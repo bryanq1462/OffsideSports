@@ -31,6 +31,36 @@
       },
       "required": ["id", "name", "team", "price", "stock", "sizesAvailable"]
     },
+    "Ball": {
+      "title": "Ball",
+      "description": "A sports football/soccer ball product in the store catalog",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "brand": { "type": "string" },
+        "tournament": { "type": "string" },
+        "category": { "type": "string" },
+        "price": { "type": "number" },
+        "priceCRC": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "originalPriceCRC": { "type": "number" },
+        "discountPercent": { "type": "number" },
+        "image": { "type": "string" },
+        "backImage": { "type": "string" },
+        "images": { "type": "array" },
+        "sizesAvailable": { "type": "array" },
+        "description": { "type": "string" },
+        "material": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "number" },
+        "isPopular": { "type": "boolean" },
+        "isNew": { "type": "boolean" },
+        "stock": { "type": "number" },
+        "badgeTags": { "type": "array" }
+      },
+      "required": ["id", "name", "brand", "price", "stock", "sizesAvailable"]
+    },
     "Order": {
       "title": "Order",
       "description": "A customer order submitted to the store",
@@ -64,7 +94,8 @@
         "sinpePhone": { "type": "string" },
         "heroTagline": { "type": "string" },
         "adminEmail": { "type": "string" },
-        "adminPassword": { "type": "string" }
+        "adminPassword": { "type": "string" },
+        "themeMode": { "type": "string" }
       }
     },
     "Review": {
@@ -100,6 +131,10 @@
     "/jerseys/{jerseyId}": {
       "schema": "Jersey",
       "description": "Store products available in catalog"
+    },
+    "/balls/{ballId}": {
+      "schema": "Ball",
+      "description": "Footballs and soccer balls available in catalog"
     },
     "/orders/{orderId}": {
       "schema": "Order",

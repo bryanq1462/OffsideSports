@@ -1,6 +1,6 @@
 {
   "name": "OFFSIDE sports",
-  "description": "Tienda en línea de camisetas de fútbol con carrito de compras, pasarela de pagos, buscador avanzado por liga y equipo, panel de administración, zona de contacto con WhatsApp y reseñas de clientes.",
+  "description": "Tienda en línea de camisetas de fútbol y balones oficiales en Costa Rica con carrito de compras, catálogo, panel de administración y pedidos por WhatsApp.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

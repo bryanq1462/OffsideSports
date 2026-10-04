@@ -30,14 +30,16 @@ import {
   LayoutTemplate,
   Layers
 } from 'lucide-react';
-import { Jersey, Order, OrderStatus, League, JerseyType, JerseyVersion, GenderCategory, Size, StoreSettings, SportCategory, DiscountCode } from '../types';
+import { Jersey, Order, OrderStatus, League, JerseyType, JerseyVersion, GenderCategory, Size, StoreSettings, SportCategory, DiscountCode, Ball } from '../types';
 import { formatPrice, getCleanCRC } from '../utils/storage';
 import { handleImageError, compressImageFile } from '../utils/imageUtils';
 import { getJerseyVersionInfo } from '../utils/jerseyUtils';
 import { INITIAL_LEAGUES, LEAGUE_FLAGS, SPORTS_LIST } from '../data/mockData';
+import { AdminBallsTab } from './AdminBallsTab';
 
 interface AdminPanelProps {
   jerseys: Jersey[];
+  balls?: Ball[];
   orders: Order[];
   currency: 'CRC' | 'USD';
   settings: StoreSettings;
@@ -45,15 +47,19 @@ interface AdminPanelProps {
   onUpdateJerseys: (updated: Jersey[]) => void;
   onSaveJersey?: (jersey: Jersey) => Promise<void>;
   onDeleteJersey?: (jerseyId: string) => Promise<void>;
+  onUpdateBalls?: (updated: Ball[]) => void;
+  onSaveBall?: (ball: Ball) => Promise<void>;
+  onDeleteBall?: (ballId: string) => Promise<void>;
   onUpdateOrders: (updated: Order[]) => void;
   onUpdateSettings: (updated: StoreSettings) => void;
   onUpdateDiscountCodes: (updated: DiscountCode[]) => void;
   onClose: () => void;
-  initialTab?: 'inventory' | 'hero' | 'settings' | 'orders' | 'stats' | 'coupons';
+  initialTab?: 'inventory' | 'balls' | 'hero' | 'settings' | 'orders' | 'stats' | 'coupons';
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({
   jerseys,
+  balls = [],
   orders,
   currency,
   settings,
@@ -61,6 +67,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   onUpdateJerseys,
   onSaveJersey,
   onDeleteJersey,
+  onUpdateBalls,
+  onSaveBall,
+  onDeleteBall,
   onUpdateOrders,
   onUpdateSettings,
   onUpdateDiscountCodes,
@@ -75,7 +84,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
 
-  const [activeTab, setActiveTab] = useState<'inventory' | 'hero' | 'settings' | 'orders' | 'stats' | 'coupons'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'inventory' | 'balls' | 'hero' | 'settings' | 'orders' | 'stats' | 'coupons'>(initialTab);
   const [showJerseyPicker, setShowJerseyPicker] = useState(false);
 
   useEffect(() => {
@@ -109,6 +118,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   // Settings State
   const [localSettings, setLocalSettings] = useState<StoreSettings>(settings);
   const [settingsSavedMessage, setSettingsSavedMessage] = useState(false);
+  const [themeMessage, setThemeMessage] = useState<string>('');
+
+  const handleToggleTheme = (mode: 'default' | 'halloween') => {
+    const updated: StoreSettings = {
+      ...localSettings,
+      themeMode: mode
+    };
+    setLocalSettings(updated);
+    onUpdateSettings(updated);
+    setThemeMessage(
+      mode === 'halloween'
+        ? '🎃 ¡Interfaz de HALLOWEEN aplicada en vivo para todos los visitantes!'
+        : '⚽ ¡Interfaz NORMAL (Verde Neón) restaurada para todos los visitantes!'
+    );
+    setTimeout(() => setThemeMessage(''), 4500);
+  };
 
   // Search in admin
   const [adminSearch, setAdminSearch] = useState('');
@@ -594,6 +619,81 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
         </div>
 
+        {/* Global Store Theme Control (Halloween vs Normal) - Live for ALL visitors */}
+        <div className={`mx-3 sm:mx-6 my-2.5 p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 ${
+          localSettings.themeMode === 'halloween'
+            ? 'bg-gradient-to-r from-orange-950/80 via-black to-purple-950/80 border-orange-500/60 shadow-[0_0_25px_rgba(255,107,0,0.3)]'
+            : 'bg-[#121212] border-white/10'
+        }`}>
+          <div className="flex items-center gap-3">
+            <div className={`p-2.5 rounded-xl text-2xl flex-shrink-0 ${
+              localSettings.themeMode === 'halloween'
+                ? 'bg-orange-500/20 border border-orange-500/40 text-orange-400 animate-pulse'
+                : 'bg-white/5 border border-white/10 text-[#00e652]'
+            }`}>
+              {localSettings.themeMode === 'halloween' ? '🎃' : '⚽'}
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h4 className="text-xs sm:text-sm font-black italic uppercase text-white tracking-wider">
+                  TEMPORADA & TEMAS GLOBALES (EN VIVO PARA TODOS LOS VISITANTES)
+                </h4>
+                {localSettings.themeMode === 'halloween' ? (
+                  <span className="bg-orange-500 text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-md shadow-orange-500/40 animate-pulse">
+                    <span>🎃</span> MODO HALLOWEEN ACTIVO EN LA TIENDA
+                  </span>
+                ) : (
+                  <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    <span>⚽</span> MODO NORMAL ACTIVO (VERDE NEÓN)
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-white/60 mt-0.5">
+                {localSettings.themeMode === 'halloween'
+                  ? 'Todos los clientes y visitantes están viendo la tienda con temática de Halloween (colores calabaza, murciélagos, banner de ofertas y detalles embrujados).'
+                  : 'Todos los clientes y visitantes están viendo la tienda con el diseño oficial normal (Verde Neón y Negro Carbón).'}
+              </p>
+              {themeMessage && (
+                <p className="text-[11px] font-black text-amber-300 mt-1 animate-in fade-in slide-in-from-left duration-300">
+                  {themeMessage}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-end">
+            <button
+              type="button"
+              onClick={() => handleToggleTheme('halloween')}
+              disabled={localSettings.themeMode === 'halloween'}
+              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg ${
+                localSettings.themeMode === 'halloween'
+                  ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40 cursor-not-allowed opacity-70'
+                  : 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30 hover:scale-105 active:scale-95'
+              }`}
+              title="Personalizar y aplicar la interfaz de Halloween a todos los visitantes"
+            >
+              <span>🎃</span>
+              <span>Activar Interfaz de Halloween</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleToggleTheme('default')}
+              disabled={localSettings.themeMode !== 'halloween'}
+              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg ${
+                localSettings.themeMode !== 'halloween'
+                  ? 'bg-white/5 text-white/40 border border-white/10 cursor-not-allowed opacity-70'
+                  : 'bg-white hover:bg-[#00e652] text-black hover:scale-105 active:scale-95'
+              }`}
+              title="Restaurar la interfaz normal para todos los visitantes"
+            >
+              <span>⚽</span>
+              <span>Volver a la Interfaz Actual</span>
+            </button>
+          </div>
+        </div>
+
         {/* Admin Navigation Tabs */}
         <div className="px-3 sm:px-6 py-2.5 sm:py-3 bg-[#121212] border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs font-black uppercase tracking-wider">
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1.5 md:pb-0 scrollbar-thin scrollbar-thumb-[#00e652]/40 touch-pan-x">
@@ -607,7 +707,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             >
               <div className="skew-x-[10deg] flex items-center gap-1.5 sm:gap-2">
                 <Package className="w-4 h-4 stroke-[2.5]" />
-                <span className="whitespace-nowrap">INVENTARIO ({jerseys.length})</span>
+                <span className="whitespace-nowrap">CAMISETAS ({jerseys.length})</span>
+              </div>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('balls')}
+              className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
+                activeTab === 'balls'
+                  ? 'bg-[#00e652] text-black font-black'
+                  : 'bg-black text-[#00e652] hover:bg-white/10 border border-[#00e652]/40'
+              }`}
+            >
+              <div className="skew-x-[10deg] flex items-center gap-1.5 sm:gap-2">
+                <span className="text-sm">⚽</span>
+                <span className="whitespace-nowrap">BALONES A LA VENTA ({balls?.length || 0})</span>
               </div>
             </button>
 
@@ -727,6 +841,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
           
+          {/* TAB: BALONES A LA VENTA */}
+          {activeTab === 'balls' && (
+            <AdminBallsTab
+              balls={balls || []}
+              currency={currency}
+              onUpdateBalls={onUpdateBalls || (() => {})}
+              onSaveBall={onSaveBall}
+              onDeleteBall={onDeleteBall}
+            />
+          )}
+
           {/* TAB 1: INVENTORY MANAGEMENT */}
           {activeTab === 'inventory' && (
             <div className="space-y-4">
@@ -995,33 +1120,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           className="hidden"
                         />
                       </label>
-
-                      {/* Quick presets */}
-                      <span className="text-[10px] text-white/40 font-bold uppercase">o prueba presets:</span>
-                      <button
-                        type="button"
-                        onClick={() => setLocalSettings(prev => ({
-                          ...prev,
-                          featuredImage: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&q=80&w=800',
-                          featuredTitle: 'Real Madrid Local 2024/25',
-                          featuredLeague: 'LaLiga EA Sports'
-                        }))}
-                        className="text-[10px] font-black bg-white/5 hover:bg-white/15 px-2.5 py-1 rounded border border-white/10 text-white transition"
-                      >
-                        Real Madrid
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setLocalSettings(prev => ({
-                          ...prev,
-                          featuredImage: 'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&q=80&w=800',
-                          featuredTitle: 'FC Barcelona Local 2024/25',
-                          featuredLeague: 'LaLiga EA Sports'
-                        }))}
-                        className="text-[10px] font-black bg-white/5 hover:bg-white/15 px-2.5 py-1 rounded border border-white/10 text-white transition"
-                      >
-                        Barcelona
-                      </button>
                     </div>
                   </div>
 
@@ -1593,75 +1691,87 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
                 </div>
 
-                {/* Banner & Hero Customization Section */}
-                <div className="space-y-4 bg-[#121212] p-5 border border-white/10 rounded-2xl">
+                {/* Banner & Hero Quick Link */}
+                <div className="space-y-4 bg-[#121212] p-5 border border-white/10 rounded-2xl flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center gap-3">
+                    {localSettings.featuredImage && (
+                      <img
+                        src={localSettings.featuredImage}
+                        alt="Portada"
+                        className="w-14 h-14 object-cover rounded-xl border border-white/20 bg-neutral-900 shrink-0"
+                      />
+                    )}
+                    <div>
+                      <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 stroke-[2.5]" />
+                        <span>PORTADA HERO: {localSettings.featuredTitle || 'Camiseta Destacada'}</span>
+                      </h4>
+                      <p className="text-xs text-white/50">
+                        {localSettings.featuredLeague || 'Selecciones'} • {localSettings.featuredBadge || 'EDICIÓN DESTACADA'}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('hero')}
+                    className="text-xs font-black uppercase text-black bg-[#00e652] hover:bg-white px-4 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-lg"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>Editar Portada Visual</span>
+                  </button>
+                </div>
+
+                {/* Card: TEMA DE TEMPORADA (HALLOWEEN VS NORMAL) */}
+                <div className={`p-5 rounded-2xl border transition-all duration-300 space-y-4 ${
+                  localSettings.themeMode === 'halloween'
+                    ? 'bg-gradient-to-br from-orange-950/70 via-black to-purple-950/70 border-orange-500/60 shadow-[0_0_20px_rgba(255,107,0,0.25)]'
+                    : 'bg-[#121212] border-white/10'
+                }`}>
                   <div className="flex items-center justify-between flex-wrap gap-2">
-                    <h4 className="text-sm font-black italic uppercase text-[#00e652] flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 stroke-[2.5]" />
-                      <span>CAMISETA DESTACADA Y PORTADA DE LA TIENDA (HERO)</span>
+                    <h4 className="text-sm font-black italic uppercase text-white flex items-center gap-2">
+                      <span className="text-xl">🎃</span>
+                      <span>TEMA & PERSONALIZACIÓN DE TEMPORADA (HALLOWEEN)</span>
                     </h4>
+                    {localSettings.themeMode === 'halloween' ? (
+                      <span className="bg-orange-500 text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full animate-pulse">
+                        🎃 MODO HALLOWEEN ACTIVO
+                      </span>
+                    ) : (
+                      <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">
+                        ⚽ MODO NORMAL ACTIVO
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-white/70 leading-relaxed">
+                    Personaliza toda la interfaz pública de la tienda con temática de Halloween en un solo clic. El cambio se aplica en tiempo real para todos los visitantes del sitio web de forma inmediata.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
                     <button
                       type="button"
-                      onClick={() => setActiveTab('hero')}
-                      className="text-xs font-black uppercase text-black bg-[#00e652] hover:bg-white px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer"
+                      onClick={() => handleToggleTheme('halloween')}
+                      disabled={localSettings.themeMode === 'halloween'}
+                      className={`px-5 py-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transition cursor-pointer shadow-lg ${
+                        localSettings.themeMode === 'halloween'
+                          ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40 cursor-not-allowed opacity-75'
+                          : 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30 hover:scale-105 active:scale-95'
+                      }`}
                     >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>Abrir Editor Visual con Vista Previa</span>
+                      <span>🎃</span>
+                      <span>Activar Interfaz de Halloween</span>
                     </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                    <div className="space-y-1.5 sm:col-span-2">
-                      <label className="block text-xs font-black uppercase text-white tracking-wider">
-                        FOTO DE LA CAMISETA DESTACADA (URL):
-                      </label>
-                      <input
-                        type="url"
-                        value={localSettings.featuredImage || ''}
-                        onChange={(e) => setLocalSettings({ ...localSettings, featuredImage: e.target.value })}
-                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-xs text-white font-mono focus:border-[#00e652]"
-                        placeholder="https://..."
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="block text-xs font-black uppercase text-white tracking-wider">
-                        TÍTULO DE LA CAMISETA:
-                      </label>
-                      <input
-                        type="text"
-                        value={localSettings.featuredTitle || 'Real Madrid Local 2024/25'}
-                        onChange={(e) => setLocalSettings({ ...localSettings, featuredTitle: e.target.value })}
-                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-xs text-white font-black uppercase italic focus:border-[#00e652]"
-                        placeholder="Real Madrid Local 2024/25"
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="block text-xs font-black uppercase text-white tracking-wider">
-                        LIGA / COMPETICIÓN:
-                      </label>
-                      <input
-                        type="text"
-                        value={localSettings.featuredLeague || 'LaLiga EA Sports'}
-                        onChange={(e) => setLocalSettings({ ...localSettings, featuredLeague: e.target.value })}
-                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-xs text-[#00e652] font-black focus:border-[#00e652]"
-                        placeholder="LaLiga EA Sports"
-                      />
-                    </div>
-
-                    <div className="space-y-1.5 sm:col-span-2">
-                      <label className="block text-xs font-black uppercase text-white tracking-wider">
-                        ETIQUETA ANIMADA DE INICIO (TAGLINE):
-                      </label>
-                      <input
-                        type="text"
-                        value={localSettings.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25'}
-                        onChange={(e) => setLocalSettings({ ...localSettings, heroTagline: e.target.value })}
-                        className="w-full bg-black border border-white/20 rounded-xl p-3 text-xs text-[#00e652] font-black focus:border-[#00e652]"
-                        placeholder="NEW ARRIVAL / TEMPORADA 24-25"
-                      />
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleToggleTheme('default')}
+                      disabled={localSettings.themeMode !== 'halloween'}
+                      className={`px-5 py-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transition cursor-pointer shadow-lg ${
+                        localSettings.themeMode !== 'halloween'
+                          ? 'bg-white/5 text-white/40 border border-white/10 cursor-not-allowed opacity-75'
+                          : 'bg-white hover:bg-[#00e652] text-black hover:scale-105 active:scale-95'
+                      }`}
+                    >
+                      <span>⚽</span>
+                      <span>Volver a la Interfaz Actual</span>
+                    </button>
                   </div>
                 </div>
 

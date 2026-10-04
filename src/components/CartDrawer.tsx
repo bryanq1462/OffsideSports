@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { CartItem, StoreSettings, DiscountCode } from '../types';
 import { formatPrice } from '../utils/storage';
-import { handleImageError, DEFAULT_JERSEY_FALLBACK_IMAGE } from '../utils/imageUtils';
+import { handleImageError, DEFAULT_JERSEY_FALLBACK_IMAGE, handleBallImageError, DEFAULT_BALL_FALLBACK_IMAGE } from '../utils/imageUtils';
 import { getJerseyVersionInfo } from '../utils/jerseyUtils';
 
 interface CartDrawerProps {
@@ -151,11 +151,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <div className="flex gap-3">
                       {/* Image */}
                       <img
-                        src={item.jersey.image || DEFAULT_JERSEY_FALLBACK_IMAGE}
+                        src={item.jersey.image || (item.itemType === 'ball' ? DEFAULT_BALL_FALLBACK_IMAGE : DEFAULT_JERSEY_FALLBACK_IMAGE)}
                         alt={item.jersey.name}
                         referrerPolicy="no-referrer"
-                        onError={handleImageError}
-                        className="w-16 h-20 object-cover rounded-lg bg-black border border-white/10 flex-shrink-0"
+                        onError={(e) => item.itemType === 'ball' ? handleBallImageError(e) : handleImageError(e)}
+                        className="w-16 h-20 object-contain rounded-lg bg-black border border-white/10 flex-shrink-0 p-1"
                       />
 
                       {/* Info */}
@@ -177,10 +177,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           <span className="text-[10px] text-[#00e652] font-black uppercase tracking-wider">
                             TALLA: <span className="text-white bg-black border border-white/20 px-1.5 py-0.2 rounded ml-0.5">{item.size}</span>
                           </span>
-                          <span className={`text-[9px] px-1.5 py-0.2 rounded border inline-flex items-center gap-1 uppercase font-black ${getJerseyVersionInfo(item.jersey.version).pillClass}`}>
-                            <span>{getJerseyVersionInfo(item.jersey.version).icon}</span>
-                            <span>{getJerseyVersionInfo(item.jersey.version).shortLabel}</span>
-                          </span>
+                          {item.itemType === 'ball' ? (
+                            <span className="text-[9px] px-1.5 py-0.2 rounded border border-[#00e652]/40 bg-[#00e652]/10 text-[#00e652] inline-flex items-center gap-1 uppercase font-black">
+                              <span>⚽</span>
+                              <span>BALÓN OFICIAL</span>
+                            </span>
+                          ) : (
+                            <span className={`text-[9px] px-1.5 py-0.2 rounded border inline-flex items-center gap-1 uppercase font-black ${getJerseyVersionInfo(item.jersey.version).pillClass}`}>
+                              <span>{getJerseyVersionInfo(item.jersey.version).icon}</span>
+                              <span>{getJerseyVersionInfo(item.jersey.version).shortLabel}</span>
+                            </span>
+                          )}
                         </div>
 
                         {/* Stamping details badge */}

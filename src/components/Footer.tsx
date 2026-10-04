@@ -106,6 +106,11 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
                 Catálogo de Camisetas
               </button>
             </li>
+            <li>
+              <button onClick={() => setActiveTab('balls')} className="text-[#00e652] hover:text-white transition cursor-pointer font-black flex items-center gap-1">
+                ⚽ Balones a la Venta (Oficiales)
+              </button>
+            </li>
             {onOpenOrderHistory && (
               <li>
                 <button onClick={onOpenOrderHistory} className="text-[#00e652] hover:underline transition cursor-pointer font-black flex items-center gap-1">

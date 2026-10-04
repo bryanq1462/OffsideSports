@@ -11,8 +11,9 @@ import {
 } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import firebaseConfig from '../../firebase-applet-config.json';
-import { Jersey, StoreSettings, Order, DiscountCode, Review } from '../types';
+import { Jersey, StoreSettings, Order, DiscountCode, Review, Ball } from '../types';
 import { INITIAL_JERSEYS, INITIAL_REVIEWS } from '../data/mockData';
+import { INITIAL_BALLS } from '../data/mockBalls';
 import { DEFAULT_SETTINGS, DEFAULT_DISCOUNT_CODES } from '../utils/storage';
 
 // Initialize Firebase app singleton
@@ -113,45 +114,21 @@ testConnection();
 // REAL-TIME CLOUD CATALOG (JERSEYS)
 // ==========================================
 
-let isInitialJerseysSeeded = false;
-
 export function subscribeToJerseys(callback: (jerseys: Jersey[]) => void): () => void {
   const path = 'jerseys';
   const jerseysRef = collection(db, path);
 
   const unsubscribe = onSnapshot(
     jerseysRef,
-    async (snapshot) => {
-      // If collection is completely empty in Firestore, automatically seed initial catalog
-      if (snapshot.empty && !isInitialJerseysSeeded) {
-        isInitialJerseysSeeded = true;
-        try {
-          const batch = writeBatch(db);
-          INITIAL_JERSEYS.forEach((jersey) => {
-            const jDoc = doc(db, 'jerseys', jersey.id);
-            batch.set(jDoc, jersey);
-          });
-          await batch.commit();
-          callback(INITIAL_JERSEYS);
-          return;
-        } catch (e) {
-          console.warn('Could not auto-seed jerseys in batch, using mock data:', e);
-          callback(INITIAL_JERSEYS);
-          return;
-        }
-      }
-
-      if (!snapshot.empty) {
-        const cloudJerseys: Jersey[] = [];
-        snapshot.forEach((docSnap) => {
-          cloudJerseys.push(docSnap.data() as Jersey);
-        });
-        callback(cloudJerseys);
-      }
+    (snapshot) => {
+      const cloudJerseys: Jersey[] = [];
+      snapshot.forEach((docSnap) => {
+        cloudJerseys.push(docSnap.data() as Jersey);
+      });
+      callback(cloudJerseys);
     },
     (error) => {
       console.warn('Firestore jerseys onSnapshot error, falling back to local state:', error);
-      handleFirestoreError(error, OperationType.LIST, path);
     }
   );
 
@@ -195,6 +172,70 @@ export async function syncAllJerseysToCloud(jerseys: Jersey[]): Promise<void> {
     handleFirestoreError(error, OperationType.WRITE, 'jerseys');
   }
 }
+
+// ==========================================
+// REAL-TIME CLOUD CATALOG (BALLS / BALONES)
+// ==========================================
+
+export function subscribeToBalls(callback: (balls: Ball[]) => void): () => void {
+  const path = 'balls';
+  const ballsRef = collection(db, path);
+
+  const unsubscribe = onSnapshot(
+    ballsRef,
+    (snapshot) => {
+      const cloudBalls: Ball[] = [];
+      snapshot.forEach((docSnap) => {
+        cloudBalls.push(docSnap.data() as Ball);
+      });
+      callback(cloudBalls);
+    },
+    (error) => {
+      console.warn('Firestore balls onSnapshot error, falling back to local state:', error);
+    }
+  );
+
+  return unsubscribe;
+}
+
+export async function saveBallToCloud(ball: Ball): Promise<void> {
+  const path = `balls/${ball.id}`;
+  try {
+    const cleaned = cleanForFirestore(ball);
+    const ballDoc = doc(db, 'balls', ball.id);
+    await setDoc(ballDoc, cleaned, { merge: true });
+    console.log(`[Firestore] Successfully saved ball: ${ball.id}`);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, path);
+  }
+}
+
+export async function deleteBallFromCloud(ballId: string): Promise<void> {
+  const path = `balls/${ballId}`;
+  try {
+    const ballDoc = doc(db, 'balls', ballId);
+    await deleteDoc(ballDoc);
+    console.log(`[Firestore] Successfully deleted ball: ${ballId}`);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, path);
+  }
+}
+
+export async function syncAllBallsToCloud(balls: Ball[]): Promise<void> {
+  try {
+    const batch = writeBatch(db);
+    balls.forEach((ball) => {
+      const cleaned = cleanForFirestore(ball);
+      const bDoc = doc(db, 'balls', ball.id);
+      batch.set(bDoc, cleaned, { merge: true });
+    });
+    await batch.commit();
+    console.log(`[Firestore] Successfully synced ${balls.length} balls`);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, 'balls');
+  }
+}
+
 
 // ==========================================
 // REAL-TIME STORE SETTINGS (CONTACT, SINPE, FEES)

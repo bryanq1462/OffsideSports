@@ -8,11 +8,15 @@ import {
   Size, 
   CustomStamping,
   StoreSettings,
-  DiscountCode
+  DiscountCode,
+  Ball
 } from './types';
 import { 
   getStoredJerseys, 
   saveJerseys, 
+  getStoredBalls,
+  saveBalls,
+  ballToJerseyAdapter,
   getStoredCart, 
   saveCart, 
   getStoredOrders, 
@@ -32,6 +36,10 @@ import {
   syncAllJerseysToCloud,
   saveJerseyToCloud,
   deleteJerseyFromCloud,
+  subscribeToBalls,
+  saveBallToCloud,
+  deleteBallFromCloud,
+  syncAllBallsToCloud,
   subscribeToSettings,
   saveSettingsToCloud,
   subscribeToOrders,
@@ -47,6 +55,8 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { JerseyCard } from './components/JerseyCard';
 import { JerseyDetailModal } from './components/JerseyDetailModal';
+import { BallsSection } from './components/BallsSection';
+import { BallDetailModal } from './components/BallDetailModal';
 import { SearchFilters } from './components/SearchFilters';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
@@ -62,6 +72,7 @@ import { getJerseyVersionInfo } from './utils/jerseyUtils';
 export default function App() {
   // Primary States with Persistence
   const [jerseys, setJerseys] = useState<Jersey[]>(() => getStoredJerseys());
+  const [balls, setBalls] = useState<Ball[]>(() => getStoredBalls());
   const [cart, setCart] = useState<CartItem[]>(() => getStoredCart());
   const [orders, setOrders] = useState<Order[]>(() => getStoredOrders());
   const [reviews, setReviews] = useState<Review[]>(() => getStoredReviews());
@@ -74,9 +85,10 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [adminInitialTab, setAdminInitialTab] = useState<'inventory' | 'settings' | 'orders' | 'stats' | 'coupons' | 'hero'>('hero');
+  const [adminInitialTab, setAdminInitialTab] = useState<'inventory' | 'balls' | 'settings' | 'orders' | 'stats' | 'coupons' | 'hero'>('hero');
   const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
   const [selectedJerseyDetail, setSelectedJerseyDetail] = useState<Jersey | null>(null);
+  const [selectedBallDetail, setSelectedBallDetail] = useState<Ball | null>(null);
   const [appliedDiscount, setAppliedDiscount] = useState(0);
 
   // Search & Filter State
@@ -96,9 +108,16 @@ export default function App() {
   // Real-time synchronization with Cloud Firestore
   useEffect(() => {
     const unsubJerseys = subscribeToJerseys((cloudJerseys) => {
-      if (cloudJerseys && cloudJerseys.length > 0) {
+      if (cloudJerseys) {
         setJerseys(cloudJerseys);
         saveJerseys(cloudJerseys);
+      }
+    });
+
+    const unsubBalls = subscribeToBalls((cloudBalls) => {
+      if (cloudBalls) {
+        setBalls(cloudBalls);
+        saveBalls(cloudBalls);
       }
     });
 
@@ -132,6 +151,7 @@ export default function App() {
 
     return () => {
       unsubJerseys();
+      unsubBalls();
       unsubSettings();
       unsubOrders();
       unsubDiscounts();
@@ -192,6 +212,35 @@ export default function App() {
       return updated;
     });
     await deleteJerseyFromCloud(jerseyId);
+  };
+
+  const handleUpdateBalls = async (newBalls: Ball[]) => {
+    setBalls(newBalls);
+    saveBalls(newBalls);
+    try {
+      await syncAllBallsToCloud(newBalls);
+    } catch (e) {
+      console.warn('Could not sync balls to cloud:', e);
+    }
+  };
+
+  const handleSaveSingleBall = async (ball: Ball) => {
+    setBalls(prev => {
+      const exists = prev.some(b => b.id === ball.id);
+      const updated = exists ? prev.map(b => b.id === ball.id ? ball : b) : [ball, ...prev];
+      saveBalls(updated);
+      return updated;
+    });
+    await saveBallToCloud(ball);
+  };
+
+  const handleDeleteSingleBall = async (ballId: string) => {
+    setBalls(prev => {
+      const updated = prev.filter(b => b.id !== ballId);
+      saveBalls(updated);
+      return updated;
+    });
+    await deleteBallFromCloud(ballId);
   };
 
   const handleUpdateOrders = async (newOrders: Order[]) => {
@@ -343,6 +392,50 @@ export default function App() {
     }
   };
 
+  const handleQuickAddBall = (ball: Ball, size: string) => {
+    const cartItemId = `ball-${ball.id}-${size}`;
+    const existingIndex = cart.findIndex(i => i.cartItemId === cartItemId);
+    const jerseyEquivalent = ballToJerseyAdapter(ball);
+
+    if (existingIndex > -1) {
+      const updated = [...cart];
+      updated[existingIndex].quantity += 1;
+      handleUpdateCart(updated);
+    } else {
+      const newItem: CartItem = {
+        cartItemId,
+        jersey: jerseyEquivalent,
+        size,
+        quantity: 1,
+        itemType: 'ball',
+        ball
+      };
+      handleUpdateCart([...cart, newItem]);
+    }
+  };
+
+  const handleAddToCartBall = (ball: Ball, size: string, quantity: number) => {
+    const cartItemId = `ball-${ball.id}-${size}`;
+    const existingIndex = cart.findIndex(i => i.cartItemId === cartItemId);
+    const jerseyEquivalent = ballToJerseyAdapter(ball);
+
+    if (existingIndex > -1) {
+      const updated = [...cart];
+      updated[existingIndex].quantity += quantity;
+      handleUpdateCart(updated);
+    } else {
+      const newItem: CartItem = {
+        cartItemId,
+        jersey: jerseyEquivalent,
+        size,
+        quantity,
+        itemType: 'ball',
+        ball
+      };
+      handleUpdateCart([...cart, newItem]);
+    }
+  };
+
   const handleUpdateCartQuantity = (cartItemId: string, newQty: number) => {
     if (newQty <= 0) {
       handleRemoveCartItem(cartItemId);
@@ -425,11 +518,32 @@ export default function App() {
               const el = document.getElementById('catalog-grid');
               el?.scrollIntoView({ behavior: 'smooth' });
             }}
+            onExploreBalls={() => {
+              setActiveTab('balls');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             onOpenAdminToHero={() => {
               setAdminInitialTab('hero');
               setIsAdminOpen(true);
             }}
           />
+        )}
+
+        {/* Section: Balones a la Venta */}
+        {activeTab === 'balls' && (
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+            <BallsSection
+              balls={balls}
+              currency={currency}
+              settings={settings}
+              onQuickAdd={handleQuickAddBall}
+              onOpenDetail={(b) => setSelectedBallDetail(b)}
+              onOpenAdminToBalls={() => {
+                setAdminInitialTab('balls');
+                setIsAdminOpen(true);
+              }}
+            />
+          </section>
         )}
 
         {/* Section: Catalog Grid or Search Filters View */}
@@ -554,6 +668,17 @@ export default function App() {
         />
       )}
 
+      {/* Ball Detail & Purchase Modal */}
+      {selectedBallDetail && (
+        <BallDetailModal
+          ball={selectedBallDetail}
+          currency={currency}
+          settings={settings}
+          onClose={() => setSelectedBallDetail(null)}
+          onAddToCart={handleAddToCartBall}
+        />
+      )}
+
       {/* Shopping Cart Drawer */}
       {isCartOpen && (
         <CartDrawer
@@ -574,7 +699,8 @@ export default function App() {
             if (cart.length === 0) return;
             let text = `Hola OFFSIDE Sports! ⚽ Quisiera pedir los siguientes productos de mi carrito:\n`;
             cart.forEach((item, idx) => {
-              text += `\n${idx + 1}. *${item.jersey.name}* - Talla: *${item.size}* (x${item.quantity})`;
+              const label = item.itemType === 'ball' ? '⚽ Balón' : 'Camiseta';
+              text += `\n${idx + 1}. *${item.jersey.name}* (${label}) - Talla: *${item.size}* (x${item.quantity})`;
               if (item.customStamping?.enabled) {
                 text += `\n   Estampado: ${item.customStamping.name} #${item.customStamping.number}`;
               }
@@ -605,6 +731,7 @@ export default function App() {
       {isAdminOpen && (
         <AdminPanel
           jerseys={jerseys}
+          balls={balls}
           orders={orders}
           currency={currency}
           settings={settings}
@@ -612,6 +739,9 @@ export default function App() {
           onUpdateJerseys={handleUpdateJerseys}
           onSaveJersey={handleSaveSingleJersey}
           onDeleteJersey={handleDeleteSingleJersey}
+          onUpdateBalls={handleUpdateBalls}
+          onSaveBall={handleSaveSingleBall}
+          onDeleteBall={handleDeleteSingleBall}
           onUpdateOrders={handleUpdateOrders}
           onUpdateSettings={handleUpdateSettings}
           onUpdateDiscountCodes={handleUpdateDiscountCodes}

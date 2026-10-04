@@ -25,6 +25,7 @@ export interface StoreSettings {
   whatsappPhone?: string;
   adminEmail?: string;
   adminPassword?: string;
+  themeMode?: 'default' | 'halloween';
 }
 
 export interface DiscountCode {
@@ -108,12 +109,47 @@ export interface Jersey {
   fabricInfo?: string;
 }
 
+export type BallCategory = 
+  | 'Oficial Pro Match'
+  | 'Réplica Match'
+  | 'Entrenamiento'
+  | 'Fútbol Sala (Futsal)'
+  | 'Colección / Retro'
+  | 'Mini Balón';
+
+export interface Ball {
+  id: string;
+  name: string;
+  brand: string;
+  tournament?: string;
+  category?: BallCategory;
+  price: number; // Base price CRC
+  priceCRC?: number;
+  originalPrice?: number;
+  originalPriceCRC?: number;
+  discountPercent?: number;
+  image: string;
+  backImage?: string;
+  images?: string[];
+  sizesAvailable: string[];
+  description: string;
+  material?: string;
+  rating: number;
+  reviewsCount: number;
+  isPopular?: boolean;
+  isNew?: boolean;
+  stock: number;
+  badgeTags?: string[];
+}
+
 export interface CartItem {
   cartItemId: string; // unique ID including custom options
   jersey: Jersey;
-  size: Size;
+  size: Size | string;
   quantity: number;
   customStamping?: CustomStamping;
+  itemType?: 'jersey' | 'ball';
+  ball?: Ball;
 }
 
 export type PaymentMethod = 'card' | 'sinpe_movil' | 'bank_transfer' | 'paypal' | 'cash';

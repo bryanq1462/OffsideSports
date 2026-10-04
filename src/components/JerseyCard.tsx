@@ -10,6 +10,7 @@ interface JerseyCardProps {
   currency: 'USD' | 'COP';
   onQuickAdd: (jersey: Jersey, size: Size) => void;
   onOpenDetail: (jersey: Jersey) => void;
+  isHalloween?: boolean;
 }
 
 const ALL_SIZES: Size[] = ['S', 'M', 'L', 'XL', 'XXL'];
@@ -18,7 +19,8 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
   jersey,
   currency,
   onQuickAdd,
-  onOpenDetail
+  onOpenDetail,
+  isHalloween
 }) => {
   const sizes = jersey.sizesAvailable || [];
   const availableSizes = sizes.filter(() => jersey.stock > 0);
@@ -40,7 +42,11 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
   return (
     <div 
       onClick={() => onOpenDetail(jersey)}
-      className="group bg-[#121212] border border-white/10 rounded-2xl overflow-hidden hover:border-[#00e652]/60 transition-all duration-300 hover:shadow-2xl hover:shadow-[#00e652]/10 flex flex-col justify-between cursor-pointer relative"
+      className={`group bg-[#121212] border rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between cursor-pointer relative ${
+        isHalloween
+          ? 'border-orange-500/20 hover:border-orange-500/80 hover:shadow-2xl hover:shadow-orange-500/20'
+          : 'border-white/10 hover:border-[#00e652]/60 hover:shadow-2xl hover:shadow-[#00e652]/10'
+      }`}
     >
       {/* Badges Overlay */}
       <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 flex flex-col gap-1 items-start pointer-events-none">
@@ -61,12 +67,12 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
           </span>
         )}
         {jersey.isPopular && jersey.type !== 'Retro' && (
-          <span className="bg-[#00e652] text-black font-black text-[8px] sm:text-[10px] uppercase px-1.5 sm:px-2.5 py-0.5 rounded-sm shadow">
-            MÁS VENDIDA
+          <span className={`${isHalloween ? 'bg-orange-500 text-black' : 'bg-[#00e652] text-black'} font-black text-[8px] sm:text-[10px] uppercase px-1.5 sm:px-2.5 py-0.5 rounded-sm shadow`}>
+            {isHalloween ? '🎃 SPOOKY TOP' : 'MÁS VENDIDA'}
           </span>
         )}
         {jersey.badgeTags && jersey.badgeTags.map((tag, idx) => (
-          <span key={idx} className="bg-black/90 text-[#00e652] border border-white/20 font-black text-[8px] sm:text-[9px] uppercase px-1.5 py-0.5 rounded-sm">
+          <span key={idx} className={`bg-black/90 ${isHalloween ? 'text-orange-400 border-orange-500/30' : 'text-[#00e652] border-white/20'} border font-black text-[8px] sm:text-[9px] uppercase px-1.5 py-0.5 rounded-sm`}>
             {tag}
           </span>
         ))}
@@ -75,8 +81,8 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
       {/* Stock indicator */}
       <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 pointer-events-none">
         {jersey.stock > 0 ? (
-          <span className="bg-black/80 backdrop-blur text-[#00e652] text-[8px] sm:text-[10px] font-extrabold px-1.5 sm:px-2 py-0.5 rounded-sm border border-white/20 flex items-center gap-1">
-            <span className="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-[#00e652] animate-ping" />
+          <span className={`bg-black/80 backdrop-blur ${isHalloween ? 'text-orange-400 border-orange-500/30' : 'text-[#00e652] border-white/20'} text-[8px] sm:text-[10px] font-extrabold px-1.5 sm:px-2 py-0.5 rounded-sm border flex items-center gap-1`}>
+            <span className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full ${isHalloween ? 'bg-orange-500' : 'bg-[#00e652]'} animate-ping`} />
             {jersey.stock <= 10 ? `¡Solo ${jersey.stock}!` : 'En Stock'}
           </span>
         ) : (
@@ -103,7 +109,7 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4">
             <button 
               onClick={(e) => { e.stopPropagation(); onOpenDetail(jersey); }}
-              className="bg-[#00e652] hover:bg-white text-black font-black px-4 py-2.5 text-xs uppercase tracking-widest flex items-center gap-2 shadow-xl skew-x-[-10deg] cursor-pointer"
+              className={`${isHalloween ? 'bg-orange-500 hover:bg-white text-black' : 'bg-[#00e652] hover:bg-white text-black'} font-black px-4 py-2.5 text-xs uppercase tracking-widest flex items-center gap-2 shadow-xl skew-x-[-10deg] cursor-pointer`}
             >
               <div className="skew-x-[10deg] flex items-center gap-2">
                 <Eye className="w-4 h-4 stroke-[3]" />
@@ -117,12 +123,12 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
         <div className="p-2.5 sm:p-4 space-y-1.5 sm:space-y-2">
           {/* League & Season */}
           <div className="flex items-center justify-between text-[9px] sm:text-[11px] font-black uppercase tracking-wider">
-            <span className="text-[#00e652] truncate max-w-[110px] sm:max-w-none">{jersey.league}</span>
+            <span className={`${isHalloween ? 'text-orange-400' : 'text-[#00e652]'} truncate max-w-[110px] sm:max-w-none`}>{jersey.league}</span>
             <span className="bg-white/10 px-1.5 py-0.5 rounded text-white/80 font-mono text-[9px] sm:text-[10px]">{jersey.yearSeason}</span>
           </div>
 
           {/* Name */}
-          <h3 className="text-xs sm:text-base font-black italic uppercase text-white line-clamp-2 group-hover:text-[#00e652] transition-colors leading-tight tracking-tight">
+          <h3 className={`text-xs sm:text-base font-black italic uppercase text-white line-clamp-2 ${isHalloween ? 'group-hover:text-orange-400' : 'group-hover:text-[#00e652]'} transition-colors leading-tight tracking-tight`}>
             {jersey.name}
           </h3>
 
@@ -146,7 +152,7 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
 
           {/* Price */}
           <div className="flex items-baseline gap-1.5 pt-0.5">
-            <span className="text-base sm:text-2xl font-black text-[#00e652] tracking-tight">
+            <span className={`text-base sm:text-2xl font-black ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'} tracking-tight`}>
               {formatPrice(jersey.price, currency, jersey.priceCRC)}
             </span>
             {jersey.originalPrice && jersey.originalPrice > jersey.price && (
@@ -183,7 +189,9 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
                     !isAvailable
                       ? 'bg-white/5 text-white/20 border border-white/5 cursor-not-allowed opacity-50'
                       : isSelected
-                      ? 'bg-[#00e652] text-black font-black cursor-pointer'
+                      ? isHalloween
+                        ? 'bg-orange-500 text-black font-black cursor-pointer shadow-md shadow-orange-500/40'
+                        : 'bg-[#00e652] text-black font-black cursor-pointer'
                       : 'bg-white/5 text-white/80 hover:bg-white/20 border border-white/10 cursor-pointer'
                   }`}
                 >
@@ -206,7 +214,9 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
             added
               ? 'bg-emerald-500 text-black'
               : jersey.stock > 0 && sizes.length > 0
-              ? 'bg-[#00e652] hover:bg-white text-black skew-x-[-10deg]'
+              ? isHalloween
+                ? 'bg-orange-500 hover:bg-orange-400 text-black skew-x-[-10deg] shadow-lg shadow-orange-500/20'
+                : 'bg-[#00e652] hover:bg-white text-black skew-x-[-10deg]'
               : 'bg-white/5 text-white/40 border border-white/10 cursor-not-allowed'
           }`}
         >
@@ -219,7 +229,7 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
             ) : (
               <>
                 <ShoppingBag className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span className="truncate">{jersey.stock > 0 && sizes.length > 0 ? 'AGREGAR' : 'AGOTADA'}</span>
+                <span className="truncate">{jersey.stock > 0 && sizes.length > 0 ? (isHalloween ? '🎃 AGREGAR' : 'AGREGAR') : 'AGOTADA'}</span>
               </>
             )}
           </div>

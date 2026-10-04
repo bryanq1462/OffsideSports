@@ -12,6 +12,12 @@ service cloud.firestore {
       allow write: if isValidId(jerseyId);
     }
 
+    // Catalog footballs / balls collection - public reading, validated writing
+    match /balls/{ballId} {
+      allow read: if true;
+      allow write: if isValidId(ballId);
+    }
+
     // Customer orders
     match /orders/{orderId} {
       allow read: if true;

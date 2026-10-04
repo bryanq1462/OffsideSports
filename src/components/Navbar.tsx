@@ -12,7 +12,8 @@ import {
   SlidersHorizontal,
   Instagram,
   PackageCheck,
-  Lock
+  Lock,
+  Trophy
 } from 'lucide-react';
 import { formatPrice } from '../utils/storage';
 
@@ -49,9 +50,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
+  const isHalloween = settings?.themeMode === 'halloween';
 
   const navItems = [
-    { id: 'catalog', label: 'Catálogo', icon: Shirt },
+    { id: 'catalog', label: 'Camisetas', icon: Shirt, badge: isHalloween ? '🎃 SPOOKY' : undefined },
+    { id: 'balls', label: 'Balones', icon: Trophy, badge: isHalloween ? '⚽ TERROR' : 'NUEVO' },
     { id: 'filters', label: 'Buscador & Filtros', icon: SlidersHorizontal },
     { id: 'reviews', label: 'Reseñas Verificadas', icon: UserCheck },
     { id: 'contact', label: 'Contacto & WhatsApp', icon: MessageCircle }
@@ -59,19 +62,34 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-white/10 text-white shadow-2xl">
+      {/* Halloween Special Announcement Banner */}
+      {isHalloween && (
+        <div className="bg-gradient-to-r from-orange-600 via-purple-700 to-orange-600 text-white px-3 py-1.5 text-center text-xs font-black tracking-widest uppercase flex items-center justify-center gap-2 border-b border-orange-500/40 shadow-lg">
+          <span className="animate-bounce">🎃</span>
+          <span className="text-[11px] sm:text-xs">¡TEMPORADA DE HALLOWEEN EN OFFSIDE! 👻 ESTAMPADOS DE TERROR GRATIS, ENVÍO A TODO COSTA RICA Y DESCUENTOS EMBRUJADOS 🦇</span>
+          <span className="hidden sm:inline animate-pulse">⚡</span>
+        </div>
+      )}
+
       {/* Top Banner */}
-      <div className="bg-[#000000] border-b border-white/10 text-white/80 px-2 sm:px-4 py-1.5 text-xs font-bold tracking-widest uppercase overflow-x-auto scrollbar-none">
+      <div className={`border-b border-white/10 text-white/80 px-2 sm:px-4 py-1.5 text-xs font-bold tracking-widest uppercase overflow-x-auto scrollbar-none ${
+        isHalloween ? 'bg-gradient-to-r from-black via-orange-950/40 to-black' : 'bg-[#000000]'
+      }`}>
         <div className="max-w-7xl mx-auto w-full flex justify-between items-center gap-2 min-w-max sm:min-w-0">
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <span className="bg-[#00e652] text-black text-[9px] sm:text-[10px] font-black uppercase px-1.5 sm:px-2 py-0.5 rounded-sm">
-              COSTA RICA
+            <span className={`${isHalloween ? 'bg-orange-500 text-black shadow-orange-500/30' : 'bg-[#00e652] text-black'} text-[9px] sm:text-[10px] font-black uppercase px-1.5 sm:px-2 py-0.5 rounded-sm`}>
+              {isHalloween ? '🎃 COSTA RICA' : 'COSTA RICA'}
             </span>
             <span className="hidden sm:inline text-white/70 text-[11px]">Envíos a todo Costa Rica por Correos de CR y Mensajería | WhatsApp: {phoneDisplay}</span>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-3 text-[10px] sm:text-[11px]">
             <button
               onClick={onOpenOrderHistory}
-              className="flex items-center gap-1 bg-[#00e652]/10 hover:bg-[#00e652] text-[#00e652] hover:text-black border border-[#00e652]/40 font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded transition cursor-pointer"
+              className={`flex items-center gap-1 font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded transition cursor-pointer ${
+                isHalloween
+                  ? 'bg-orange-500/10 hover:bg-orange-500 text-orange-400 hover:text-black border border-orange-500/40'
+                  : 'bg-[#00e652]/10 hover:bg-[#00e652] text-[#00e652] hover:text-black border border-[#00e652]/40'
+              }`}
               title="Consultar tu historial de compras"
             >
               <PackageCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
@@ -89,19 +107,23 @@ export const Navbar: React.FC<NavbarProps> = ({
             </a>
             <button
               onClick={() => setCurrency(currency === 'CRC' ? 'USD' : 'CRC')}
-              className="hover:text-[#00e652] flex items-center gap-1 bg-white/5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded border border-white/10 transition cursor-pointer font-extrabold"
+              className={`flex items-center gap-1 bg-white/5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded border border-white/10 transition cursor-pointer font-extrabold ${
+                isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'
+              }`}
               title="Cambiar Moneda"
             >
-              <DollarSign className="w-3 h-3 text-[#00e652]" />
-              <span className="hidden xs:inline">MONEDA:</span> <span className="font-black text-[#00e652]">{currency}</span>
+              <DollarSign className={`w-3 h-3 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
+              <span className="hidden xs:inline">MONEDA:</span> <span className={`font-black ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>{currency}</span>
             </button>
             <button 
               onClick={onOpenAdmin}
-              className="hover:text-[#00e652] text-white/50 border border-white/10 hover:border-[#00e652]/40 transition flex items-center gap-1 font-extrabold cursor-pointer px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[10px] sm:text-[11px] uppercase tracking-wider"
+              className={`text-white/50 border border-white/10 transition flex items-center gap-1 font-extrabold cursor-pointer px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[10px] sm:text-[11px] uppercase tracking-wider ${
+                isHalloween ? 'hover:text-orange-400 hover:border-orange-500/40' : 'hover:text-[#00e652] hover:border-[#00e652]/40'
+              }`}
               title="Acceso Propietario / Administración"
             >
               <Lock className="w-3 h-3 text-white/60" />
-              <span className="hidden xs:inline">ADMIN</span>
+              <span className="hidden xs:inline">{isHalloween ? 'ADMIN 🎃' : 'ADMIN'}</span>
             </button>
           </div>
         </div>
@@ -117,15 +139,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => { setActiveTab('catalog'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               className="flex items-center gap-2.5 group text-left cursor-pointer"
             >
-              <div className="bg-[#00e652] text-black p-1.5 rounded-lg font-black skew-x-[-10deg] shadow-[0_0_15px_rgba(0,230,82,0.4)] transition-transform group-hover:scale-105">
+              <div className={`${
+                isHalloween
+                  ? 'bg-orange-500 text-black shadow-[0_0_20px_rgba(255,107,0,0.5)]'
+                  : 'bg-[#00e652] text-black shadow-[0_0_15px_rgba(0,230,82,0.4)]'
+              } p-1.5 rounded-lg font-black skew-x-[-10deg] transition-transform group-hover:scale-105`}>
                 <Shirt className="w-5 h-5 skew-x-[10deg] stroke-[2.5]" />
               </div>
               <div>
                 <div className="text-2xl sm:text-3xl font-black italic tracking-tighter uppercase text-white leading-none">
-                  OFF<span className="text-[#00e652]">side</span> <span className="text-white/90 text-lg sm:text-xl font-black">Sports</span>
+                  OFF<span className={isHalloween ? 'text-orange-500' : 'text-[#00e652]'}>side</span> <span className="text-white/90 text-lg sm:text-xl font-black">Sports</span> {isHalloween && '🎃'}
                 </div>
-                <div className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.25em] text-[#00e652] mt-0.5">
-                  ROPA DEPORTIVA
+                <div className={`text-[8px] sm:text-[9px] font-black uppercase tracking-[0.25em] mt-0.5 ${
+                  isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+                }`}>
+                  {isHalloween ? 'EDICIÓN SPOOKY HALLOWEEN 👻' : 'ROPA DEPORTIVA'}
                 </div>
               </div>
             </button>
@@ -170,12 +198,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all cursor-pointer ${
                     isActive
-                      ? 'text-[#00e652] border-b-2 border-[#00e652]'
-                      : 'text-white/70 hover:text-[#00e652] hover:bg-white/5'
+                      ? isHalloween ? 'text-orange-400 border-b-2 border-orange-500 shadow-[0_4px_12px_rgba(255,107,0,0.3)]' : 'text-[#00e652] border-b-2 border-[#00e652]'
+                      : isHalloween ? 'text-white/70 hover:text-orange-400 hover:bg-orange-500/10' : 'text-white/70 hover:text-[#00e652] hover:bg-white/5'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#00e652]' : 'text-white/40'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? (isHalloween ? 'text-orange-400' : 'text-[#00e652]') : 'text-white/40'}`} />
                   <span>{item.label}</span>
+                  {item.badge && (
+                    <span className={`${isHalloween ? 'bg-orange-500 text-black shadow-orange-500/40' : 'bg-[#00e652] text-black'} text-[9px] font-black px-1.5 py-0.5 rounded-sm shadow-sm`}>
+                      {item.badge}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -185,13 +218,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={onOpenCart}
-              className="relative flex items-center gap-3 bg-[#00e652] hover:bg-white text-black font-black px-5 py-2.5 uppercase tracking-wider skew-x-[-10deg] transition-all shadow-lg cursor-pointer group"
+              className={`relative flex items-center gap-3 font-black px-5 py-2.5 uppercase tracking-wider skew-x-[-10deg] transition-all shadow-lg cursor-pointer group ${
+                isHalloween
+                  ? 'bg-orange-500 hover:bg-white text-black shadow-orange-500/30'
+                  : 'bg-[#00e652] hover:bg-white text-black'
+              }`}
             >
               <div className="skew-x-[10deg] flex items-center gap-2">
                 <div className="relative">
                   <ShoppingBag className="w-5 h-5 stroke-[2.5]" />
                   {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-black text-[#00e652] text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border border-[#00e652]">
+                    <span className={`absolute -top-2 -right-2 bg-black text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border ${
+                      isHalloween ? 'text-orange-400 border-orange-500' : 'text-[#00e652] border-[#00e652]'
+                    }`}>
                       {cartCount}
                     </span>
                   )}
@@ -255,7 +294,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Icon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-[#00e652]'}`} />
-                <span>{item.label}</span>
+                <span className="flex-1 text-left">{item.label}</span>
+                {item.badge && (
+                  <span className={`text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm ${
+                    isActive ? 'bg-black text-[#00e652]' : 'bg-[#00e652] text-black'
+                  }`}>
+                    {item.badge}
+                  </span>
+                )}
               </button>
             );
           })}
