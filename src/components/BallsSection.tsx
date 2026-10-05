@@ -32,6 +32,7 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
   onOpenDetail,
   onOpenAdminToBalls
 }) => {
+  const isHalloween = settings?.themeMode === 'halloween';
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -279,16 +280,21 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
               currency={currency}
               onQuickAdd={onQuickAdd}
               onOpenDetail={onOpenDetail}
+              isHalloween={isHalloween}
             />
           ))}
         </div>
       )}
 
       {/* Wholesale & Custom Orders CTA */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-emerald-950/40 via-black to-emerald-950/40 border border-[#00e652]/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className={`p-6 sm:p-8 rounded-3xl border flex flex-col sm:flex-row items-center justify-between gap-4 transition-all ${
+        isHalloween
+          ? 'bg-gradient-to-r from-orange-950/40 via-black to-purple-950/40 border-orange-500/40 shadow-[0_0_25px_rgba(255,107,0,0.15)]'
+          : 'bg-gradient-to-r from-emerald-950/40 via-black to-emerald-950/40 border-[#00e652]/30'
+      }`}>
         <div className="space-y-1 text-center sm:text-left">
-          <span className="text-[10px] font-black uppercase tracking-widest text-[#00e652]">
-            PRECIOS POR MAYOR & EQUIPOS
+          <span className={`text-[10px] font-black uppercase tracking-widest ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>
+            {isHalloween ? '🎃 PRECIOS DE TERROR POR MAYOR & EQUIPOS' : 'PRECIOS POR MAYOR & EQUIPOS'}
           </span>
           <h3 className="text-lg sm:text-xl font-black uppercase text-white">
             ¿Ocupas balones para tu equipo, academia o torneo?
@@ -302,7 +308,11 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
           href={`https://wa.me/${phoneDisplay.replace(/[^0-9]/g, '') || '50685595192'}?text=${encodeURIComponent('¡Hola OFFSIDE Sports! ⚽ Quisiera cotizar balones por mayor para mi equipo o torneo.')}`}
           target="_blank"
           rel="noreferrer"
-          className="flex-shrink-0 bg-[#00e652] hover:bg-white text-black font-black text-xs uppercase tracking-wider px-5 py-3 rounded-2xl flex items-center gap-2 shadow-xl hover:scale-105 transition-all cursor-pointer"
+          className={`flex-shrink-0 font-black text-xs uppercase tracking-wider px-5 py-3 rounded-2xl flex items-center gap-2 shadow-xl hover:scale-105 transition-all cursor-pointer ${
+            isHalloween
+              ? 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30'
+              : 'bg-[#00e652] hover:bg-white text-black'
+          }`}
         >
           <MessageCircle className="w-4 h-4 stroke-[2.5]" />
           <span>Cotizar por WhatsApp</span>

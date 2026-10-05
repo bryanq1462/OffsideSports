@@ -575,127 +575,69 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
-      <div className="relative w-full max-w-6xl bg-[#0a0a0a] border border-white/10 rounded-3xl shadow-2xl flex flex-col max-h-[92vh] text-white overflow-hidden animate-in zoom-in-95">
+    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-0 sm:p-4 md:p-6 overflow-hidden">
+      <div className="relative w-full max-w-6xl bg-[#0a0a0a] border-0 sm:border border-white/10 rounded-none sm:rounded-3xl shadow-2xl flex flex-col h-full sm:h-auto sm:max-h-[92vh] text-white overflow-hidden animate-in zoom-in-95">
         
         {/* Header */}
-        <div className="p-5 border-b border-white/10 bg-black flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[#00e652] text-black skew-x-[-10deg]">
-              <ShieldCheck className="w-6 h-6 stroke-[2.5] skew-x-[10deg]" />
+        <div className="p-3 sm:p-5 border-b border-white/10 bg-black flex items-center justify-between gap-2 sm:gap-4 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="p-2 sm:p-2.5 bg-[#00e652] text-black skew-x-[-10deg] shrink-0">
+              <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5] skew-x-[10deg]" />
             </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-xl font-black italic uppercase text-white tracking-wider">PANEL ADMINISTRATIVO</h2>
-                <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2 py-0.5 tracking-widest">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                <h2 className="text-base sm:text-xl font-black italic uppercase text-white tracking-wider truncate">PANEL ADMINISTRATIVO</h2>
+                <span className="hidden sm:inline bg-[#00e652] text-black text-[10px] font-black uppercase px-2 py-0.5 tracking-widest shrink-0">
                   OFFSIDE ADMIN
                 </span>
-                <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                <span className="inline-flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[9px] sm:text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  Cloud Firestore Activo
+                  <span className="hidden sm:inline">Cloud Firestore Activo</span>
+                  <span className="sm:hidden">En Vivo</span>
                 </span>
               </div>
-              <p className="text-xs text-white/60 font-semibold mt-0.5">Control total de inventario, pedidos y sincronización en la nube en tiempo real</p>
+              <p className="hidden md:block text-xs text-white/60 font-semibold mt-0.5">Control total de inventario, pedidos y sincronización en la nube en tiempo real</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Quick theme toggle in header */}
+            <button
+              type="button"
+              onClick={() => handleToggleTheme(localSettings.themeMode === 'halloween' ? 'default' : 'halloween')}
+              className={`px-2 sm:px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider flex items-center gap-1.5 border transition cursor-pointer shadow-md ${
+                localSettings.themeMode === 'halloween'
+                  ? 'bg-orange-500/20 text-orange-400 border-orange-500/50 hover:bg-orange-500 hover:text-black shadow-orange-500/20'
+                  : 'bg-white/5 text-white/80 border-white/15 hover:bg-[#00e652] hover:text-black'
+              }`}
+              title={localSettings.themeMode === 'halloween' ? 'Tema Halloween activo. Clic para cambiar a Normal' : 'Tema Normal activo. Clic para cambiar a Halloween'}
+            >
+              <span>{localSettings.themeMode === 'halloween' ? '🎃' : '⚽'}</span>
+              <span className="hidden sm:inline">{localSettings.themeMode === 'halloween' ? 'Halloween Activo' : 'Tema Normal'}</span>
+            </button>
+
             <button
               onClick={() => {
                 localStorage.removeItem('offside_admin_auth');
                 setIsAuthenticated(false);
               }}
-              className="text-[11px] text-white/50 hover:text-rose-400 font-bold uppercase transition px-3 py-1.5 rounded-lg border border-white/10 hover:border-rose-500/40"
+              className="text-[10px] sm:text-[11px] text-white/50 hover:text-rose-400 font-bold uppercase transition px-2 sm:px-3 py-1.5 rounded-lg border border-white/10 hover:border-rose-500/40"
               title="Cerrar sesión de administrador"
             >
-              Cerrar Sesión
+              <span className="hidden sm:inline">Cerrar Sesión</span>
+              <span className="sm:hidden">Salir</span>
             </button>
             <button
               onClick={onClose}
-              className="p-2 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer"
+              className="p-1.5 sm:p-2 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer"
             >
               <X className="w-5 h-5 stroke-[2.5]" />
             </button>
           </div>
         </div>
 
-        {/* Global Store Theme Control (Halloween vs Normal) - Live for ALL visitors */}
-        <div className={`mx-3 sm:mx-6 my-2.5 p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 ${
-          localSettings.themeMode === 'halloween'
-            ? 'bg-gradient-to-r from-orange-950/80 via-black to-purple-950/80 border-orange-500/60 shadow-[0_0_25px_rgba(255,107,0,0.3)]'
-            : 'bg-[#121212] border-white/10'
-        }`}>
-          <div className="flex items-center gap-3">
-            <div className={`p-2.5 rounded-xl text-2xl flex-shrink-0 ${
-              localSettings.themeMode === 'halloween'
-                ? 'bg-orange-500/20 border border-orange-500/40 text-orange-400 animate-pulse'
-                : 'bg-white/5 border border-white/10 text-[#00e652]'
-            }`}>
-              {localSettings.themeMode === 'halloween' ? '🎃' : '⚽'}
-            </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h4 className="text-xs sm:text-sm font-black italic uppercase text-white tracking-wider">
-                  TEMPORADA & TEMAS GLOBALES (EN VIVO PARA TODOS LOS VISITANTES)
-                </h4>
-                {localSettings.themeMode === 'halloween' ? (
-                  <span className="bg-orange-500 text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-md shadow-orange-500/40 animate-pulse">
-                    <span>🎃</span> MODO HALLOWEEN ACTIVO EN LA TIENDA
-                  </span>
-                ) : (
-                  <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                    <span>⚽</span> MODO NORMAL ACTIVO (VERDE NEÓN)
-                  </span>
-                )}
-              </div>
-              <p className="text-[11px] text-white/60 mt-0.5">
-                {localSettings.themeMode === 'halloween'
-                  ? 'Todos los clientes y visitantes están viendo la tienda con temática de Halloween (colores calabaza, murciélagos, banner de ofertas y detalles embrujados).'
-                  : 'Todos los clientes y visitantes están viendo la tienda con el diseño oficial normal (Verde Neón y Negro Carbón).'}
-              </p>
-              {themeMessage && (
-                <p className="text-[11px] font-black text-amber-300 mt-1 animate-in fade-in slide-in-from-left duration-300">
-                  {themeMessage}
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-end">
-            <button
-              type="button"
-              onClick={() => handleToggleTheme('halloween')}
-              disabled={localSettings.themeMode === 'halloween'}
-              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg ${
-                localSettings.themeMode === 'halloween'
-                  ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40 cursor-not-allowed opacity-70'
-                  : 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30 hover:scale-105 active:scale-95'
-              }`}
-              title="Personalizar y aplicar la interfaz de Halloween a todos los visitantes"
-            >
-              <span>🎃</span>
-              <span>Activar Interfaz de Halloween</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleToggleTheme('default')}
-              disabled={localSettings.themeMode !== 'halloween'}
-              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg ${
-                localSettings.themeMode !== 'halloween'
-                  ? 'bg-white/5 text-white/40 border border-white/10 cursor-not-allowed opacity-70'
-                  : 'bg-white hover:bg-[#00e652] text-black hover:scale-105 active:scale-95'
-              }`}
-              title="Restaurar la interfaz normal para todos los visitantes"
-            >
-              <span>⚽</span>
-              <span>Volver a la Interfaz Actual</span>
-            </button>
-          </div>
-        </div>
-
         {/* Admin Navigation Tabs */}
-        <div className="px-3 sm:px-6 py-2.5 sm:py-3 bg-[#121212] border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs font-black uppercase tracking-wider">
+        <div className="px-3 sm:px-6 py-2 sm:py-3 bg-[#121212] border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-2.5 text-xs font-black uppercase tracking-wider shrink-0">
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1.5 md:pb-0 scrollbar-thin scrollbar-thumb-[#00e652]/40 touch-pan-x">
             <button
               onClick={() => setActiveTab('inventory')}
@@ -839,7 +781,82 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6 overscroll-contain">
+          
+          {/* Global Store Theme Control (Halloween vs Normal) - Live for ALL visitors */}
+          <div className={`p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 ${
+            localSettings.themeMode === 'halloween'
+              ? 'bg-gradient-to-r from-orange-950/80 via-black to-purple-950/80 border-orange-500/60 shadow-[0_0_25px_rgba(255,107,0,0.3)]'
+              : 'bg-[#121212] border-white/10'
+          }`}>
+            <div className="flex items-center gap-3">
+              <div className={`p-2.5 rounded-xl text-2xl flex-shrink-0 ${
+                localSettings.themeMode === 'halloween'
+                  ? 'bg-orange-500/20 border border-orange-500/40 text-orange-400 animate-pulse'
+                  : 'bg-white/5 border border-white/10 text-[#00e652]'
+              }`}>
+                {localSettings.themeMode === 'halloween' ? '🎃' : '⚽'}
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h4 className="text-xs sm:text-sm font-black italic uppercase text-white tracking-wider">
+                    TEMPORADA & TEMAS GLOBALES (EN VIVO PARA TODOS LOS VISITANTES)
+                  </h4>
+                  {localSettings.themeMode === 'halloween' ? (
+                    <span className="bg-orange-500 text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-md shadow-orange-500/40 animate-pulse">
+                      <span>🎃</span> MODO HALLOWEEN ACTIVO EN LA TIENDA
+                    </span>
+                  ) : (
+                    <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                      <span>⚽</span> MODO NORMAL ACTIVO (VERDE NEÓN)
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-white/60 mt-0.5">
+                  {localSettings.themeMode === 'halloween'
+                    ? 'Todos los clientes y visitantes están viendo la tienda con temática de Halloween (colores calabaza, murciélagos, banner de ofertas y detalles embrujados).'
+                    : 'Todos los clientes y visitantes están viendo la tienda con el diseño oficial normal (Verde Neón y Negro Carbón).'}
+                </p>
+                {themeMessage && (
+                  <p className="text-[11px] font-black text-amber-300 mt-1 animate-in fade-in slide-in-from-left duration-300">
+                    {themeMessage}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-end">
+              <button
+                type="button"
+                onClick={() => handleToggleTheme('halloween')}
+                disabled={localSettings.themeMode === 'halloween'}
+                className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg ${
+                  localSettings.themeMode === 'halloween'
+                    ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40 cursor-not-allowed opacity-70'
+                    : 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30 hover:scale-105 active:scale-95'
+                }`}
+                title="Personalizar y aplicar la interfaz de Halloween a todos los visitantes"
+              >
+                <span>🎃</span>
+                <span>Activar Interfaz de Halloween</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleToggleTheme('default')}
+                disabled={localSettings.themeMode !== 'halloween'}
+                className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg ${
+                  localSettings.themeMode !== 'halloween'
+                    ? 'bg-white/5 text-white/40 border border-white/10 cursor-not-allowed opacity-70'
+                    : 'bg-white hover:bg-[#00e652] text-black hover:scale-105 active:scale-95'
+                }`}
+                title="Restaurar la interfaz normal para todos los visitantes"
+              >
+                <span>⚽</span>
+                <span>Volver a la Interfaz Actual</span>
+              </button>
+            </div>
+          </div>
           
           {/* TAB: BALONES A LA VENTA */}
           {activeTab === 'balls' && (

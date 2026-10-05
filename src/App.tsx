@@ -66,6 +66,7 @@ import { ReviewsSection } from './components/ReviewsSection';
 import { Footer } from './components/Footer';
 import { WhatsAppFloatingButton } from './components/WhatsAppFloatingButton';
 import { CustomerOrderHistoryModal } from './components/CustomerOrderHistoryModal';
+import { HalloweenDecorations } from './components/HalloweenDecorations';
 import { INITIAL_LEAGUES } from './data/mockData';
 import { getJerseyVersionInfo } from './utils/jerseyUtils';
 
@@ -473,6 +474,8 @@ export default function App() {
     return sum + item.jersey.price * item.quantity;
   }, 0);
 
+  const isHalloween = settings?.themeMode === 'halloween';
+
   const handleOrderCompleted = async (newOrder: Order) => {
     handleUpdateOrders([newOrder, ...orders]);
     handleUpdateCart([]); // Clear cart after order
@@ -484,7 +487,12 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950 flex flex-col justify-between">
+    <div className={`min-h-screen ${
+      isHalloween 
+        ? 'bg-[#0a050d] text-orange-50 font-sans selection:bg-orange-500 selection:text-black' 
+        : 'bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950'
+    } flex flex-col justify-between relative`}>
+      {isHalloween && <HalloweenDecorations />}
       
       {/* Navbar Header */}
       <Navbar
@@ -557,6 +565,7 @@ export default function App() {
               leagues={INITIAL_LEAGUES}
               availableTeams={availableTeams}
               totalResults={filteredJerseys.length}
+              settings={settings}
               onReset={() => setFilters({
                 searchQuery: '',
                 selectedSport: 'all',
@@ -609,6 +618,7 @@ export default function App() {
                       currency={currency}
                       onQuickAdd={handleQuickAdd}
                       onOpenDetail={(j) => setSelectedJerseyDetail(j)}
+                      isHalloween={isHalloween}
                     />
                   ))}
                 </div>

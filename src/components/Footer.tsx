@@ -11,15 +11,18 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpenOrderHistory, settings }) => {
   const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
+  const isHalloween = settings?.themeMode === 'halloween';
   return (
     <footer className="bg-[#0a0a0a] text-white/70 border-t border-white/10 text-xs">
       
       {/* Top Value Badges Bar */}
-      <div className="border-b border-white/10 bg-[#121212]">
+      <div className={`border-b border-white/10 ${isHalloween ? 'bg-gradient-to-r from-black via-orange-950/20 to-black' : 'bg-[#121212]'}`}>
         <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center sm:text-left">
           
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/30">
+            <div className={`p-2.5 rounded-xl border ${
+              isHalloween ? 'bg-orange-500/10 text-orange-400 border-orange-500/30' : 'bg-[#00e652]/10 text-[#00e652] border-[#00e652]/30'
+            }`}>
               <Truck className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
@@ -29,7 +32,9 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/30">
+            <div className={`p-2.5 rounded-xl border ${
+              isHalloween ? 'bg-orange-500/10 text-orange-400 border-orange-500/30' : 'bg-[#00e652]/10 text-[#00e652] border-[#00e652]/30'
+            }`}>
               <ShieldCheck className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
@@ -39,7 +44,9 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/30">
+            <div className={`p-2.5 rounded-xl border ${
+              isHalloween ? 'bg-orange-500/10 text-orange-400 border-orange-500/30' : 'bg-[#00e652]/10 text-[#00e652] border-[#00e652]/30'
+            }`}>
               <RotateCcw className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
@@ -49,12 +56,14 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/30">
+            <div className={`p-2.5 rounded-xl border ${
+              isHalloween ? 'bg-orange-500/10 text-orange-400 border-orange-500/30' : 'bg-[#00e652]/10 text-[#00e652] border-[#00e652]/30'
+            }`}>
               <Shirt className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
-              <p className="font-black text-white text-xs uppercase tracking-wider">Estampado Personalizado</p>
-              <p className="text-[11px] text-white/60 font-semibold">Tu nombre y dorsal preferido</p>
+              <p className="font-black text-white text-xs uppercase tracking-wider">{isHalloween ? '🎃 Estampados Embrujados' : 'Estampado Personalizado'}</p>
+              <p className="text-[11px] text-white/60 font-semibold">{isHalloween ? '¡GRATIS durante Halloween!' : 'Tu nombre y dorsal preferido'}</p>
             </div>
           </div>
 

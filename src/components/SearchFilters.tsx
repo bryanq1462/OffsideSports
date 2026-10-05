@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, RotateCcw, SlidersHorizontal, Trophy, Shield, Activity, Sparkles } from 'lucide-react';
-import { FilterState, League, JerseyType, SportCategory } from '../types';
+import { FilterState, League, JerseyType, SportCategory, StoreSettings } from '../types';
 import { TEAMS_BY_LEAGUE, LEAGUE_FLAGS, SPORTS_LIST } from '../data/mockData';
 
 interface SearchFiltersProps {
@@ -10,6 +10,7 @@ interface SearchFiltersProps {
   availableTeams: string[];
   totalResults: number;
   onReset: () => void;
+  settings?: StoreSettings;
 }
 
 export const SearchFilters: React.FC<SearchFiltersProps> = ({
@@ -18,8 +19,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
   leagues,
   availableTeams,
   totalResults,
-  onReset
+  onReset,
+  settings
 }) => {
+  const isHalloween = settings?.themeMode === 'halloween';
   const types: JerseyType[] = ['Local', 'Visitante', 'Tercera', 'Edición Especial', 'Retro'];
   const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
 
@@ -29,27 +32,38 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
     : availableTeams;
 
   return (
-    <div className="bg-[#121212] border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-6">
+    <div className={`bg-[#121212] border rounded-3xl p-5 sm:p-6 shadow-2xl space-y-6 transition-all ${
+      isHalloween ? 'border-orange-500/30 shadow-[0_0_30px_rgba(255,107,0,0.15)]' : 'border-white/10'
+    }`}>
       
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/30">
+          <div className={`p-2.5 rounded-xl border ${
+            isHalloween ? 'bg-orange-500/10 text-orange-400 border-orange-500/30' : 'bg-[#00e652]/10 text-[#00e652] border-[#00e652]/30'
+          }`}>
             <SlidersHorizontal className="w-5 h-5 stroke-[2.5]" />
           </div>
           <div>
-            <h2 className="text-xl font-black italic uppercase text-white tracking-wider">BUSCADOR & FILTROS</h2>
+            <h2 className="text-xl font-black italic uppercase text-white tracking-wider flex items-center gap-2">
+              {isHalloween && <span>🎃</span>}
+              <span>BUSCADOR & FILTROS</span>
+            </h2>
             <p className="text-xs text-white/60 font-semibold">Encuentra la camiseta exacta por Liga, Equipo, Talla o Edición</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="bg-black text-[#00e652] text-xs font-black uppercase px-3 py-1.5 border border-white/20 tracking-wider">
+          <span className={`bg-black text-xs font-black uppercase px-3 py-1.5 border tracking-wider ${
+            isHalloween ? 'text-orange-400 border-orange-500/30' : 'text-[#00e652] border-white/20'
+          }`}>
             {totalResults} {totalResults === 1 ? 'CAMISETA ENCONTRADA' : 'CAMISETAS ENCONTRADAS'}
           </span>
           <button
             onClick={onReset}
-            className="flex items-center gap-1.5 text-white/80 hover:text-[#00e652] text-xs font-black uppercase tracking-wider bg-white/5 hover:bg-white/10 px-3.5 py-1.5 border border-white/20 transition cursor-pointer"
+            className={`flex items-center gap-1.5 text-white/80 ${
+              isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'
+            } text-xs font-black uppercase tracking-wider bg-white/5 hover:bg-white/10 px-3.5 py-1.5 border border-white/20 transition cursor-pointer`}
           >
             <RotateCcw className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>LIMPIAR</span>
@@ -59,8 +73,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
       {/* Sports Categories Bar */}
       <div className="space-y-2 pb-2 border-b border-white/10">
-        <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] flex items-center gap-1.5">
-          <Activity className="w-3.5 h-3.5 text-[#00e652]" />
+        <label className={`block text-[10px] font-black uppercase tracking-[0.15em] flex items-center gap-1.5 ${
+          isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+        }`}>
+          <Activity className={`w-3.5 h-3.5 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
           <span>CATEGORÍAS DEPORTIVAS:</span>
         </label>
         <div className="flex overflow-x-auto pb-1 gap-2 scrollbar-none -mx-2 px-2 sm:mx-0 sm:px-0">
@@ -77,8 +93,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                 }))}
                 className={`flex-shrink-0 flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-black uppercase tracking-wider transition cursor-pointer rounded-lg sm:rounded-none ${
                   isSelected
-                    ? 'bg-[#00e652] text-black shadow-lg shadow-[#00e652]/20 font-black'
-                    : 'bg-black text-white/80 border border-white/20 hover:border-[#00e652]/50'
+                    ? isHalloween
+                      ? 'bg-orange-500 text-black shadow-lg shadow-orange-500/20 font-black'
+                      : 'bg-[#00e652] text-black shadow-lg shadow-[#00e652]/20 font-black'
+                    : `bg-black text-white/80 border border-white/20 ${isHalloween ? 'hover:border-orange-500/50' : 'hover:border-[#00e652]/50'}`
                 }`}
               >
                 <span className="text-sm">{sport.icon}</span>
@@ -94,7 +112,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         
         {/* Search Query Input */}
         <div className="md:col-span-8 relative">
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5">
+          <label className={`block text-[10px] font-black uppercase tracking-[0.15em] mb-1.5 ${
+            isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+          }`}>
             BUSCAR POR EQUIPO, JUGADOR O DORSAL:
           </label>
           <div className="relative">
@@ -103,7 +123,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
               value={filters.searchQuery}
               onChange={(e) => setFilters(prev => ({ ...prev, searchQuery: e.target.value }))}
               placeholder="Ej: Zidane, Mbappé, Curry, Ohtani, Verstappen, Brady, Real Madrid..."
-              className="w-full bg-black border border-white/20 rounded-xl py-2.5 pl-10 pr-4 text-xs font-bold text-white placeholder-white/40 focus:outline-none focus:border-[#00e652] transition-colors"
+              className={`w-full bg-black border border-white/20 rounded-xl py-2.5 pl-10 pr-4 text-xs font-bold text-white placeholder-white/40 focus:outline-none transition-colors ${
+                isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'
+              }`}
             />
             <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-3" />
           </div>
@@ -111,13 +133,17 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
         {/* Sort selector */}
         <div className="md:col-span-4">
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5">
+          <label className={`block text-[10px] font-black uppercase tracking-[0.15em] mb-1.5 ${
+            isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+          }`}>
             ORDENAR RESULTADOS:
           </label>
           <select
             value={filters.sortBy}
             onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value as any }))}
-            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#00e652]"
+            className={`w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none ${
+              isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'
+            }`}
           >
             <option value="recommended">Destacados & Populares</option>
             <option value="price-asc">Precio: Menor a Mayor</option>
