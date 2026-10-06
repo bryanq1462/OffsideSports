@@ -97,18 +97,28 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
     <div className="space-y-8 animate-in fade-in duration-300">
       
       {/* Hero Banner for Balls Section */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-zinc-950 via-[#0a1a0f] to-zinc-950 border border-white/15 p-6 sm:p-10 shadow-2xl">
+      <div className={`relative rounded-3xl overflow-hidden border p-6 sm:p-10 shadow-2xl transition-all ${
+        isHalloween
+          ? 'bg-gradient-to-r from-zinc-950 via-orange-950/40 to-zinc-950 border-orange-500/40'
+          : 'bg-gradient-to-r from-zinc-950 via-[#0a1a0f] to-zinc-950 border-white/15'
+      }`}>
         {/* Glow decoration */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#00e652]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className={`absolute top-0 right-1/4 w-96 h-96 rounded-full blur-3xl pointer-events-none ${
+          isHalloween ? 'bg-orange-600/15' : 'bg-[#00e652]/15'
+        }`} />
 
         <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 bg-[#00e652]/10 border border-[#00e652]/40 text-[#00e652] px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest">
+          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border ${
+            isHalloween
+              ? 'bg-orange-500/10 border-orange-500/40 text-orange-400'
+              : 'bg-[#00e652]/10 border-[#00e652]/40 text-[#00e652]'
+          }`}>
             <Trophy className="w-3.5 h-3.5" />
-            <span>BALONES OFICIALES & COMPETICIÓN</span>
+            <span>{isHalloween ? '🎃 BALONES OFICIALES & COMPETICIÓN' : 'BALONES OFICIALES & COMPETICIÓN'}</span>
           </div>
 
           <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black italic tracking-tighter uppercase text-white leading-none">
-            PASIÓN EN CADA <span className="text-[#00e652]">DISPARO</span>
+            PASIÓN EN CADA <span className={isHalloween ? 'text-orange-400' : 'text-[#00e652]'}>DISPARO</span>
           </h1>
 
           <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-medium">
@@ -117,16 +127,20 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
 
           <div className="flex flex-wrap items-center gap-3 pt-2 text-xs font-black uppercase tracking-wider">
             <span className="flex items-center gap-1.5 text-white/90 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
-              <ShieldCheck className="w-4 h-4 text-[#00e652]" /> Termosellado Pro
+              <ShieldCheck className={`w-4 h-4 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} /> Termosellado Pro
             </span>
             <span className="flex items-center gap-1.5 text-white/90 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
-              <Truck className="w-4 h-4 text-[#00e652]" /> Envíos a todo Costa Rica
+              <Truck className={`w-4 h-4 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} /> Envíos a todo Costa Rica
             </span>
             {onOpenAdminToBalls && (
               <button
                 type="button"
                 onClick={onOpenAdminToBalls}
-                className="flex items-center gap-1.5 bg-[#00e652] hover:bg-white text-black font-black px-3.5 py-1.5 rounded-xl shadow-lg transition-all cursor-pointer hover:scale-105"
+                className={`flex items-center gap-1.5 font-black px-3.5 py-1.5 rounded-xl shadow-lg transition-all cursor-pointer hover:scale-105 ${
+                  isHalloween
+                    ? 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30'
+                    : 'bg-[#00e652] hover:bg-white text-black'
+                }`}
               >
                 <Plus className="w-4 h-4 stroke-[3]" />
                 <span>Poner Balón a la Venta</span>
@@ -137,7 +151,9 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-[#111111] border border-white/10 rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg">
+      <div className={`bg-[#111111] border rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg transition-all ${
+        isHalloween ? 'border-orange-500/30' : 'border-white/10'
+      }`}>
         
         {/* Top Search & Results Counter */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
@@ -148,7 +164,9 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por nombre, torneo (Champions, Eurocopa, Premier...), marca..."
-              className="w-full bg-black border border-white/20 rounded-xl py-2 pl-10 pr-10 text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#00e652] transition-colors"
+              className={`w-full bg-black border border-white/20 rounded-xl py-2 pl-10 pr-10 text-xs text-white placeholder-white/40 focus:outline-none transition-colors ${
+                isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'
+              }`}
             />
             {searchQuery && (
               <button
@@ -170,7 +188,9 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
               <button
                 type="button"
                 onClick={resetFilters}
-                className="flex items-center gap-1 text-[#00e652] hover:text-white font-black uppercase text-[10px] bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg transition cursor-pointer"
+                className={`flex items-center gap-1 font-black uppercase text-[10px] bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg transition cursor-pointer ${
+                  isHalloween ? 'text-orange-400 hover:text-white' : 'text-[#00e652] hover:text-white'
+                }`}
               >
                 <RotateCcw className="w-3 h-3" /> Limpiar
               </button>
@@ -189,7 +209,9 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
             <select
               value={selectedBrand}
               onChange={(e) => setSelectedBrand(e.target.value)}
-              className="w-full bg-black border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none focus:border-[#00e652] cursor-pointer"
+              className={`w-full bg-black border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none cursor-pointer ${
+                isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'
+              }`}
             >
               <option value="all">Todas las marcas</option>
               {BALL_BRANDS.map(brand => (
@@ -206,7 +228,9 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full bg-black border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none focus:border-[#00e652] cursor-pointer"
+              className={`w-full bg-black border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none cursor-pointer ${
+                isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'
+              }`}
             >
               <option value="all">Todas las categorías</option>
               {BALL_CATEGORIES_LIST.map(cat => (
@@ -223,7 +247,9 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
             <select
               value={selectedSize}
               onChange={(e) => setSelectedSize(e.target.value)}
-              className="w-full bg-black border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none focus:border-[#00e652] cursor-pointer"
+              className={`w-full bg-black border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none cursor-pointer ${
+                isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'
+              }`}
             >
               <option value="all">Todas las tallas</option>
               {BALL_SIZES_CATALOG.map(sz => (
@@ -240,7 +266,9 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="w-full bg-black border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none focus:border-[#00e652] cursor-pointer"
+              className={`w-full bg-black border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none cursor-pointer ${
+                isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'
+              }`}
             >
               <option value="recommended">Recomendados / Populares</option>
               <option value="price-asc">Menor Precio</option>
@@ -266,7 +294,11 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
           <button
             type="button"
             onClick={resetFilters}
-            className="bg-[#00e652] hover:bg-white text-black font-black px-6 py-2.5 rounded-xl text-xs uppercase cursor-pointer"
+            className={`font-black px-6 py-2.5 rounded-xl text-xs uppercase cursor-pointer transition-all ${
+              isHalloween
+                ? 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30'
+                : 'bg-[#00e652] hover:bg-white text-black'
+            }`}
           >
             Ver Todos los Balones
           </button>

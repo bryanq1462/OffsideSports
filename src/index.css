@@ -33,3 +33,90 @@
 .text-stroke-neon {
   -webkit-text-stroke: 1px #00e652;
 }
+
+/* Comprehensive Halloween Spooky Theme Dynamic Overrides */
+.theme-halloween .text-stroke-neon {
+  -webkit-text-stroke: 1px #ff6b00;
+}
+
+.theme-halloween .bg-\[\#00e652\] {
+  background-color: #ff6b00 !important;
+}
+
+.theme-halloween .text-\[\#00e652\] {
+  color: #fb923c !important;
+}
+
+.theme-halloween .border-\[\#00e652\] {
+  border-color: #ff6b00 !important;
+}
+
+.theme-halloween .border-\[\#00e652\]\/40,
+.theme-halloween .border-\[\#00e652\]\/30,
+.theme-halloween .border-\[\#00e652\]\/50,
+.theme-halloween .border-\[\#00e652\]\/60 {
+  border-color: rgba(255, 107, 0, 0.4) !important;
+}
+
+.theme-halloween .bg-\[\#00e652\]\/10,
+.theme-halloween .bg-\[\#00e652\]\/15,
+.theme-halloween .bg-\[\#00e652\]\/20 {
+  background-color: rgba(255, 107, 0, 0.15) !important;
+}
+
+.theme-halloween .hover\:bg-\[\#00e652\]:hover {
+  background-color: #ff6b00 !important;
+}
+
+.theme-halloween .hover\:text-\[\#00e652\]:hover {
+  color: #fb923c !important;
+}
+
+.theme-halloween .hover\:border-\[\#00e652\]:hover,
+.theme-halloween .hover\:border-\[\#00e652\]\/50:hover,
+.theme-halloween .hover\:border-\[\#00e652\]\/40:hover,
+.theme-halloween .hover\:border-\[\#00e652\]\/60:hover {
+  border-color: #ff6b00 !important;
+}
+
+.theme-halloween .focus\:border-\[\#00e652\]:focus {
+  border-color: #ff6b00 !important;
+}
+
+.theme-halloween .shadow-\[\#00e652\]\/20,
+.theme-halloween .shadow-\[\#00e652\]\/10 {
+  --tw-shadow-color: rgba(255, 107, 0, 0.3) !important;
+}
+
+.theme-halloween .accent-\[\#00e652\] {
+  accent-color: #ff6b00 !important;
+}
+
+/* Emerald overrides in Halloween mode */
+.theme-halloween .bg-emerald-500 {
+  background-color: #ff6b00 !important;
+}
+
+.theme-halloween .hover\:bg-emerald-400:hover {
+  background-color: #fb923c !important;
+}
+
+.theme-halloween .text-emerald-400 {
+  color: #fb923c !important;
+}
+
+.theme-halloween .text-emerald-500 {
+  color: #f97316 !important;
+}
+
+.theme-halloween .border-emerald-500\/40,
+.theme-halloween .border-emerald-500\/30 {
+  border-color: rgba(255, 107, 0, 0.4) !important;
+}
+
+.theme-halloween .bg-emerald-950\/40,
+.theme-halloween .bg-emerald-950\/80,
+.theme-halloween .bg-emerald-500\/10 {
+  background-color: rgba(255, 107, 0, 0.15) !important;
+}
+

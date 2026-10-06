@@ -575,23 +575,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-0 sm:p-4 md:p-6 overflow-hidden">
-      <div className="relative w-full max-w-6xl bg-[#0a0a0a] border-0 sm:border border-white/10 rounded-none sm:rounded-3xl shadow-2xl flex flex-col h-full sm:h-auto sm:max-h-[92vh] text-white overflow-hidden animate-in zoom-in-95">
+    <div className={`fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-0 sm:p-4 md:p-6 overflow-hidden ${localSettings.themeMode === 'halloween' ? 'theme-halloween' : ''}`}>
+      <div className="relative w-full max-w-6xl bg-[#0a0a0a] border-0 sm:border border-white/10 rounded-none sm:rounded-3xl shadow-2xl flex flex-col h-[100dvh] sm:h-auto sm:max-h-[92vh] text-white overflow-hidden animate-in zoom-in-95">
         
         {/* Header */}
         <div className="p-3 sm:p-5 border-b border-white/10 bg-black flex items-center justify-between gap-2 sm:gap-4 shrink-0">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div className="p-2 sm:p-2.5 bg-[#00e652] text-black skew-x-[-10deg] shrink-0">
+            <div className={`p-2 sm:p-2.5 ${localSettings.themeMode === 'halloween' ? 'bg-orange-500' : 'bg-[#00e652]'} text-black skew-x-[-10deg] shrink-0`}>
               <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5] skew-x-[10deg]" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                 <h2 className="text-base sm:text-xl font-black italic uppercase text-white tracking-wider truncate">PANEL ADMINISTRATIVO</h2>
-                <span className="hidden sm:inline bg-[#00e652] text-black text-[10px] font-black uppercase px-2 py-0.5 tracking-widest shrink-0">
+                <span className={`hidden sm:inline ${localSettings.themeMode === 'halloween' ? 'bg-orange-500' : 'bg-[#00e652]'} text-black text-[10px] font-black uppercase px-2 py-0.5 tracking-widest shrink-0`}>
                   OFFSIDE ADMIN
                 </span>
-                <span className="inline-flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[9px] sm:text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className={`inline-flex items-center gap-1 ${localSettings.themeMode === 'halloween' ? 'bg-orange-500/10 border-orange-500/30 text-orange-400' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'} text-[9px] sm:text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider shrink-0`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${localSettings.themeMode === 'halloween' ? 'bg-orange-400' : 'bg-emerald-400'} animate-pulse`}></span>
                   <span className="hidden sm:inline">Cloud Firestore Activo</span>
                   <span className="sm:hidden">En Vivo</span>
                 </span>
@@ -629,7 +629,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 sm:p-2 bg-white/10 hover:bg-[#00e652] text-white hover:text-black transition cursor-pointer"
+              className={`p-1.5 sm:p-2 bg-white/10 ${localSettings.themeMode === 'halloween' ? 'hover:bg-orange-500' : 'hover:bg-[#00e652]'} text-white hover:text-black transition cursor-pointer`}
             >
               <X className="w-5 h-5 stroke-[2.5]" />
             </button>
@@ -638,12 +638,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
         {/* Admin Navigation Tabs */}
         <div className="px-3 sm:px-6 py-2 sm:py-3 bg-[#121212] border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-2.5 text-xs font-black uppercase tracking-wider shrink-0">
-          <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1.5 md:pb-0 scrollbar-thin scrollbar-thumb-[#00e652]/40 touch-pan-x">
+          <div className={`flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1.5 md:pb-0 scrollbar-thin ${localSettings.themeMode === 'halloween' ? 'scrollbar-thumb-orange-500/40' : 'scrollbar-thumb-[#00e652]/40'} touch-pan-x`}>
             <button
               onClick={() => setActiveTab('inventory')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'inventory'
-                  ? 'bg-[#00e652] text-black font-black'
+                  ? localSettings.themeMode === 'halloween' ? 'bg-orange-500 text-black font-black' : 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
@@ -657,12 +657,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onClick={() => setActiveTab('balls')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'balls'
-                  ? 'bg-[#00e652] text-black font-black'
-                  : 'bg-black text-[#00e652] hover:bg-white/10 border border-[#00e652]/40'
+                  ? localSettings.themeMode === 'halloween' ? 'bg-orange-500 text-black font-black' : 'bg-[#00e652] text-black font-black'
+                  : localSettings.themeMode === 'halloween' ? 'bg-black text-orange-400 hover:bg-white/10 border border-orange-500/40' : 'bg-black text-[#00e652] hover:bg-white/10 border border-[#00e652]/40'
               }`}
             >
               <div className="skew-x-[10deg] flex items-center gap-1.5 sm:gap-2">
-                <span className="text-sm">⚽</span>
+                <span className="text-sm">{localSettings.themeMode === 'halloween' ? '🎃' : '⚽'}</span>
                 <span className="whitespace-nowrap">BALONES A LA VENTA ({balls?.length || 0})</span>
               </div>
             </button>
@@ -671,14 +671,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onClick={() => setActiveTab('hero')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'hero'
-                  ? 'bg-[#00e652] text-black font-black'
-                  : 'bg-black text-[#00e652] hover:bg-white/10 border border-[#00e652]/40'
+                  ? localSettings.themeMode === 'halloween' ? 'bg-orange-500 text-black font-black' : 'bg-[#00e652] text-black font-black'
+                  : localSettings.themeMode === 'halloween' ? 'bg-black text-orange-400 hover:bg-white/10 border border-orange-500/40' : 'bg-black text-[#00e652] hover:bg-white/10 border border-[#00e652]/40'
               }`}
             >
               <div className="skew-x-[10deg] flex items-center gap-1.5 sm:gap-2">
                 <Sparkles className="w-4 h-4 stroke-[2.5]" />
                 <span className="whitespace-nowrap">PORTADA & BANNER HERO</span>
-                <span className="bg-[#00e652] text-black text-[9px] px-1 py-0 font-black">
+                <span className={`${localSettings.themeMode === 'halloween' ? 'bg-orange-500' : 'bg-[#00e652]'} text-black text-[9px] px-1 py-0 font-black`}>
                   FOTO & TEXTO
                 </span>
               </div>
@@ -688,7 +688,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onClick={() => setActiveTab('settings')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'settings'
-                  ? 'bg-[#00e652] text-black font-black'
+                  ? localSettings.themeMode === 'halloween' ? 'bg-orange-500 text-black font-black' : 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
@@ -702,7 +702,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onClick={() => setActiveTab('orders')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'orders'
-                  ? 'bg-[#00e652] text-black font-black'
+                  ? localSettings.themeMode === 'halloween' ? 'bg-orange-500 text-black font-black' : 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
@@ -710,7 +710,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <ShoppingBag className="w-4 h-4 stroke-[2.5]" />
                 <span className="whitespace-nowrap">PEDIDOS ({orders.length})</span>
                 {pendingOrders > 0 && (
-                  <span className="bg-black text-[#00e652] border border-[#00e652] text-[10px] px-1.5 py-0.2 font-black">
+                  <span className={`bg-black ${localSettings.themeMode === 'halloween' ? 'text-orange-400 border border-orange-500' : 'text-[#00e652] border border-[#00e652]'} text-[10px] px-1.5 py-0.2 font-black`}>
                     {pendingOrders}
                   </span>
                 )}
@@ -721,7 +721,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onClick={() => setActiveTab('coupons')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'coupons'
-                  ? 'bg-[#00e652] text-black font-black'
+                  ? localSettings.themeMode === 'halloween' ? 'bg-orange-500 text-black font-black' : 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
@@ -735,7 +735,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onClick={() => setActiveTab('stats')}
               className={`shrink-0 px-3 sm:px-4 py-2 flex items-center gap-2 transition cursor-pointer skew-x-[-10deg] ${
                 activeTab === 'stats'
-                  ? 'bg-[#00e652] text-black font-black'
+                  ? localSettings.themeMode === 'halloween' ? 'bg-orange-500 text-black font-black' : 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/70 hover:bg-white/10'
               }`}
             >
@@ -770,7 +770,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 setOriginalUsdInputValue('');
                 setIsNewModalOpen(true);
               }}
-              className="shrink-0 bg-[#00e652] hover:bg-white text-black px-4 py-2 flex items-center justify-center gap-2 font-black cursor-pointer shadow-xl skew-x-[-10deg] text-xs"
+              className={`shrink-0 ${localSettings.themeMode === 'halloween' ? 'bg-orange-500 hover:bg-white' : 'bg-[#00e652] hover:bg-white'} text-black px-4 py-2 flex items-center justify-center gap-2 font-black cursor-pointer shadow-xl skew-x-[-10deg] text-xs`}
             >
               <div className="skew-x-[10deg] flex items-center gap-2">
                 <Plus className="w-4 h-4 stroke-[2.5]" />
@@ -780,80 +780,80 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           )}
         </div>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6 overscroll-contain">
+        {/* Content Area - with min-h-0 and ample pb for smooth mobile scrolling */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-6 pb-36 sm:pb-16 space-y-4 sm:space-y-6 overscroll-contain touch-pan-y scrollbar-thin">
           
-          {/* Global Store Theme Control (Halloween vs Normal) - Live for ALL visitors */}
-          <div className={`p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 ${
+          {/* Global Store Theme Control (Compact Seasonal Banner) */}
+          <div className={`p-3 sm:p-3.5 rounded-2xl border transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
             localSettings.themeMode === 'halloween'
-              ? 'bg-gradient-to-r from-orange-950/80 via-black to-purple-950/80 border-orange-500/60 shadow-[0_0_25px_rgba(255,107,0,0.3)]'
+              ? 'bg-gradient-to-r from-orange-950/80 via-black to-purple-950/80 border-orange-500/60 shadow-[0_0_20px_rgba(255,107,0,0.25)]'
               : 'bg-[#121212] border-white/10'
           }`}>
-            <div className="flex items-center gap-3">
-              <div className={`p-2.5 rounded-xl text-2xl flex-shrink-0 ${
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className={`p-2 rounded-xl text-xl flex-shrink-0 ${
                 localSettings.themeMode === 'halloween'
-                  ? 'bg-orange-500/20 border border-orange-500/40 text-orange-400 animate-pulse'
+                  ? 'bg-orange-500/20 border border-orange-500/40 text-orange-400'
                   : 'bg-white/5 border border-white/10 text-[#00e652]'
               }`}>
                 {localSettings.themeMode === 'halloween' ? '🎃' : '⚽'}
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h4 className="text-xs sm:text-sm font-black italic uppercase text-white tracking-wider">
-                    TEMPORADA & TEMAS GLOBALES (EN VIVO PARA TODOS LOS VISITANTES)
+                    TEMA TIENDA:
                   </h4>
                   {localSettings.themeMode === 'halloween' ? (
-                    <span className="bg-orange-500 text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-md shadow-orange-500/40 animate-pulse">
-                      <span>🎃</span> MODO HALLOWEEN ACTIVO EN LA TIENDA
+                    <span className="bg-orange-500 text-black text-[10px] font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm shadow-orange-500/40 animate-pulse">
+                      🎃 MODO HALLOWEEN ACTIVO
                     </span>
                   ) : (
-                    <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                      <span>⚽</span> MODO NORMAL ACTIVO (VERDE NEÓN)
+                    <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1">
+                      ⚽ MODO NORMAL (VERDE NEÓN)
                     </span>
                   )}
                 </div>
-                <p className="text-[11px] text-white/60 mt-0.5">
+                <p className="text-[10px] sm:text-[11px] text-white/60 truncate max-w-xl">
                   {localSettings.themeMode === 'halloween'
-                    ? 'Todos los clientes y visitantes están viendo la tienda con temática de Halloween (colores calabaza, murciélagos, banner de ofertas y detalles embrujados).'
-                    : 'Todos los clientes y visitantes están viendo la tienda con el diseño oficial normal (Verde Neón y Negro Carbón).'}
+                    ? 'Todo el sitio web está en temática Spooky Halloween en tiempo real para todos.'
+                    : 'Diseño original en Verde Neón activo en tiempo real para todos los visitantes.'}
                 </p>
                 {themeMessage && (
-                  <p className="text-[11px] font-black text-amber-300 mt-1 animate-in fade-in slide-in-from-left duration-300">
+                  <p className="text-[10px] sm:text-[11px] font-black text-amber-300 animate-in fade-in">
                     {themeMessage}
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-end">
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0">
               <button
                 type="button"
                 onClick={() => handleToggleTheme('halloween')}
                 disabled={localSettings.themeMode === 'halloween'}
-                className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg ${
+                className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                   localSettings.themeMode === 'halloween'
-                    ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40 cursor-not-allowed opacity-70'
-                    : 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30 hover:scale-105 active:scale-95'
+                    ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40 cursor-not-allowed opacity-60'
+                    : 'bg-orange-500 hover:bg-orange-400 text-black shadow-md shadow-orange-500/30 active:scale-95'
                 }`}
-                title="Personalizar y aplicar la interfaz de Halloween a todos los visitantes"
+                title="Activar Interfaz de Halloween para todos"
               >
                 <span>🎃</span>
-                <span>Activar Interfaz de Halloween</span>
+                <span>Halloween</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleToggleTheme('default')}
                 disabled={localSettings.themeMode !== 'halloween'}
-                className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg ${
+                className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                   localSettings.themeMode !== 'halloween'
-                    ? 'bg-white/5 text-white/40 border border-white/10 cursor-not-allowed opacity-70'
-                    : 'bg-white hover:bg-[#00e652] text-black hover:scale-105 active:scale-95'
+                    ? 'bg-white/5 text-white/30 border border-white/10 cursor-not-allowed opacity-60'
+                    : 'bg-white hover:bg-[#00e652] text-black active:scale-95'
                 }`}
-                title="Restaurar la interfaz normal para todos los visitantes"
+                title="Volver a la Interfaz Normal"
               >
                 <span>⚽</span>
-                <span>Volver a la Interfaz Actual</span>
+                <span>Normal</span>
               </button>
             </div>
           </div>
@@ -866,6 +866,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onUpdateBalls={onUpdateBalls || (() => {})}
               onSaveBall={onSaveBall}
               onDeleteBall={onDeleteBall}
+              isHalloween={localSettings.themeMode === 'halloween'}
             />
           )}
 

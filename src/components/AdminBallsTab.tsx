@@ -28,6 +28,7 @@ interface AdminBallsTabProps {
   onUpdateBalls: (updated: Ball[]) => void;
   onSaveBall?: (ball: Ball) => Promise<void>;
   onDeleteBall?: (ballId: string) => Promise<void>;
+  isHalloween?: boolean;
 }
 
 export const AdminBallsTab: React.FC<AdminBallsTabProps> = ({
@@ -35,7 +36,8 @@ export const AdminBallsTab: React.FC<AdminBallsTabProps> = ({
   currency,
   onUpdateBalls,
   onSaveBall,
-  onDeleteBall
+  onDeleteBall,
+  isHalloween = false
 }) => {
   const [search, setSearch] = useState('');
   const [brandFilter, setBrandFilter] = useState('all');
@@ -257,14 +259,18 @@ export const AdminBallsTab: React.FC<AdminBallsTabProps> = ({
     <div className="space-y-6">
       
       {/* Top Banner & Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-gradient-to-r from-emerald-950/40 via-black to-emerald-950/40 border border-[#00e652]/30 rounded-2xl">
+      <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 border rounded-2xl ${
+        isHalloween
+          ? 'bg-gradient-to-r from-orange-950/60 via-black to-orange-950/60 border-orange-500/40 shadow-lg shadow-orange-950/30'
+          : 'bg-gradient-to-r from-emerald-950/40 via-black to-emerald-950/40 border-[#00e652]/30'
+      }`}>
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xl">⚽</span>
+            <span className="text-xl">{isHalloween ? '🎃' : '⚽'}</span>
             <h3 className="text-base sm:text-lg font-black uppercase text-white tracking-wide">
-              Catálogo de Balones a la Venta
+              {isHalloween ? 'Catálogo de Balones (Edición Halloween)' : 'Catálogo de Balones a la Venta'}
             </h3>
-            <span className="bg-[#00e652] text-black text-[10px] font-black uppercase px-2 py-0.5 rounded">
+            <span className={`${isHalloween ? 'bg-orange-500' : 'bg-[#00e652]'} text-black text-[10px] font-black uppercase px-2 py-0.5 rounded`}>
               {balls.length} En Catálogo
             </span>
           </div>
@@ -276,7 +282,7 @@ export const AdminBallsTab: React.FC<AdminBallsTabProps> = ({
         <button
           type="button"
           onClick={handleOpenNewBall}
-          className="shrink-0 bg-[#00e652] hover:bg-white text-black font-black px-5 py-3 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl hover:scale-105 transition-all cursor-pointer"
+          className={`shrink-0 ${isHalloween ? 'bg-orange-500 hover:bg-orange-400 shadow-orange-500/20' : 'bg-[#00e652] hover:bg-white'} text-black font-black px-5 py-3 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl hover:scale-105 transition-all cursor-pointer`}
         >
           <Plus className="w-4 h-4 stroke-[3]" />
           <span>Poner Nuevo Balón a la Venta</span>

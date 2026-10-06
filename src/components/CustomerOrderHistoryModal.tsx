@@ -25,6 +25,7 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
 
   if (!isOpen) return null;
 
+  const isHalloween = settings?.themeMode === 'halloween';
   const contactPhoneClean = (settings?.contactPhone || '+506 8559 5192').replace(/[^0-9]/g, '');
 
   // Filter orders matching phone, email, or order ID
@@ -100,7 +101,7 @@ export const CustomerOrderHistoryModal: React.FC<CustomerOrderHistoryModalProps>
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
+    <div className={`fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200 ${isHalloween ? 'theme-halloween' : ''}`}>
       <div className="bg-[#121212] border border-white/20 rounded-2xl w-full max-w-3xl text-white shadow-2xl my-auto overflow-hidden">
         
         {/* Header */}

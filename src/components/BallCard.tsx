@@ -44,33 +44,41 @@ export const BallCard: React.FC<BallCardProps> = ({
           : 'border-white/10 hover:border-[#00e652]/60 hover:shadow-[0_0_25px_rgba(0,230,82,0.15)]'
       }`}
     >
-      {/* Top Badges */}
-      <div className="absolute top-2.5 left-2.5 sm:top-3.5 sm:left-3.5 z-10 flex flex-col gap-1.5 items-start">
-        {ball.isNew && (
-          <span className={`${isHalloween ? 'bg-orange-500' : 'bg-[#00e652]'} text-black text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md shadow-md flex items-center gap-1`}>
-            <Sparkles className="w-2.5 h-2.5" /> {isHalloween ? '🎃 NUEVO' : 'NUEVO'}
-          </span>
-        )}
-        {ball.isPopular && (
-          <span className="bg-amber-500 text-black text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md shadow-md flex items-center gap-1">
-            <Flame className="w-2.5 h-2.5" /> TOP VENTAS
-          </span>
-        )}
-        {ball.category && (
-          <span className="bg-black/80 backdrop-blur-md text-white text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md border border-white/20">
-            {ball.category}
+      {/* Top Badges Overlay */}
+      <div className="absolute top-2 left-2 sm:top-3 sm:left-3 right-2 sm:right-3 z-10 flex items-start justify-between gap-1 pointer-events-none">
+        <div className="flex flex-col gap-1 items-start min-w-0">
+          {ball.isNew && (
+            <span className={`${isHalloween ? 'bg-orange-500 text-black shadow-orange-500/30' : 'bg-[#00e652] text-black'} text-[8.5px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-sm shadow-md flex items-center gap-1 shrink-0`}>
+              <Sparkles className="w-2.5 h-2.5" />
+              <span>{isHalloween ? '🎃 NUEVO' : 'NUEVO'}</span>
+            </span>
+          )}
+          {ball.isPopular && (
+            <span className="bg-amber-500 text-black text-[8.5px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-sm shadow-md flex items-center gap-1 shrink-0">
+              <Flame className="w-2.5 h-2.5" /> TOP VENTAS
+            </span>
+          )}
+          {ball.category && (
+            <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded-sm border shrink-0 ${
+              isHalloween
+                ? 'bg-black/90 text-orange-300 border-orange-500/40'
+                : 'bg-black/85 text-white/90 border-white/20'
+            }`}>
+              {ball.category}
+            </span>
+          )}
+        </div>
+
+        {ball.stock <= 5 && ball.stock > 0 && (
+          <span className={`text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded-sm shrink-0 shadow-md ${
+            isHalloween
+              ? 'bg-orange-600 text-black border border-orange-400 shadow-orange-500/30'
+              : 'bg-rose-500/90 text-white'
+          }`}>
+            Solo {ball.stock} disp.
           </span>
         )}
       </div>
-
-      {/* Stock warning */}
-      {ball.stock <= 5 && ball.stock > 0 && (
-        <div className="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 z-10">
-          <span className="bg-rose-500/90 text-white text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md">
-            Solo {ball.stock} disp.
-          </span>
-        </div>
-      )}
 
       {/* Ball Image Stage */}
       <div className="relative aspect-square w-full bg-gradient-to-b from-[#18181b] to-[#0c0c0e] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
@@ -91,7 +99,7 @@ export const BallCard: React.FC<BallCardProps> = ({
 
         {/* Quick View Button on Hover */}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
-          <span className="bg-[#00e652] text-black font-black text-xs uppercase px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-xl scale-95 group-hover:scale-100 transition-transform">
+          <span className={`${isHalloween ? 'bg-orange-500' : 'bg-[#00e652]'} text-black font-black text-xs uppercase px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-xl scale-95 group-hover:scale-100 transition-transform`}>
             <Eye className="w-3.5 h-3.5 stroke-[2.5]" /> Ver Detalles
           </span>
         </div>
@@ -102,7 +110,7 @@ export const BallCard: React.FC<BallCardProps> = ({
         <div className="space-y-1.5">
           {/* Brand & Tournament */}
           <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs">
-            <span className="font-black text-[#00e652] uppercase tracking-wider">
+            <span className={`font-black uppercase tracking-wider ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>
               {ball.brand}
             </span>
             {ball.tournament && (
@@ -113,7 +121,7 @@ export const BallCard: React.FC<BallCardProps> = ({
           </div>
 
           {/* Name */}
-          <h3 className="text-xs sm:text-sm font-black text-white group-hover:text-[#00e652] transition-colors line-clamp-2 uppercase leading-tight tracking-wide">
+          <h3 className={`text-xs sm:text-sm font-black text-white ${isHalloween ? 'group-hover:text-orange-400' : 'group-hover:text-[#00e652]'} transition-colors line-clamp-2 uppercase leading-tight tracking-wide`}>
             {ball.name}
           </h3>
 

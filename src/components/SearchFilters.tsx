@@ -160,8 +160,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         
         {/* League Selector */}
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5 flex items-center gap-1">
-            <Trophy className="w-3 h-3 text-[#00e652]" />
+          <label className={`block text-[10px] font-black uppercase tracking-[0.15em] mb-1.5 flex items-center gap-1 ${
+            isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+          }`}>
+            <Trophy className={`w-3 h-3 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
             <span>LIGA / TORNEO:</span>
           </label>
           <select
@@ -174,7 +176,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                 selectedTeam: 'all' // Reset team when changing league
               }));
             }}
-            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#00e652]"
+            className={`w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none transition-colors ${
+              isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'
+            }`}
           >
             <option value="all">Todas las Ligas & Torneos</option>
             {leagues.map(lg => (
@@ -187,14 +191,18 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
         {/* Team Selector (Filtered dynamically!) */}
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5 flex items-center gap-1">
-            <Shield className="w-3 h-3 text-[#00e652]" />
+          <label className={`block text-[10px] font-black uppercase tracking-[0.15em] mb-1.5 flex items-center gap-1 ${
+            isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+          }`}>
+            <Shield className={`w-3 h-3 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
             <span>EQUIPO / CLUB:</span>
           </label>
           <select
             value={filters.selectedTeam}
             onChange={(e) => setFilters(prev => ({ ...prev, selectedTeam: e.target.value }))}
-            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#00e652]"
+            className={`w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none transition-colors ${
+              isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'
+            }`}
           >
             <option value="all">Todos los Equipos</option>
             {filteredTeams.map(team => (
@@ -205,13 +213,17 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
         {/* Jersey Type */}
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5">
+          <label className={`block text-[10px] font-black uppercase tracking-[0.15em] mb-1.5 ${
+            isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+          }`}>
             TIPO DE EDICIÓN:
           </label>
           <select
             value={filters.selectedType}
             onChange={(e) => setFilters(prev => ({ ...prev, selectedType: e.target.value }))}
-            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#00e652]"
+            className={`w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none transition-colors ${
+              isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'
+            }`}
           >
             <option value="all">Todas las Ediciones</option>
             {types.map(t => (
@@ -222,14 +234,18 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
         {/* Jersey Version Filter */}
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5 flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-[#00e652]" />
+          <label className={`block text-[10px] font-black uppercase tracking-[0.15em] mb-1.5 flex items-center gap-1 ${
+            isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+          }`}>
+            <Sparkles className={`w-3 h-3 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
             <span>VERSIÓN:</span>
           </label>
           <select
             value={filters.selectedVersion || 'all'}
             onChange={(e) => setFilters(prev => ({ ...prev, selectedVersion: e.target.value }))}
-            className="w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none focus:border-[#00e652]"
+            className={`w-full bg-black border border-white/20 rounded-xl py-2.5 px-3 text-xs text-white font-black uppercase focus:outline-none transition-colors ${
+              isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'
+            }`}
           >
             <option value="all">Todas las Versiones</option>
             <option value="Versión Jugador">⚡ Versión Jugador</option>
@@ -242,7 +258,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
         {/* Size Filter */}
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-[0.15em] text-[#00e652] mb-1.5">
+          <label className={`block text-[10px] font-black uppercase tracking-[0.15em] mb-1.5 ${
+            isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+          }`}>
             TALLA DISPONIBLE:
           </label>
           <div className="flex gap-1">
@@ -250,7 +268,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
               onClick={() => setFilters(prev => ({ ...prev, selectedSize: 'all' }))}
               className={`px-2.5 py-2 text-[11px] font-black uppercase transition cursor-pointer ${
                 filters.selectedSize === 'all'
-                  ? 'bg-[#00e652] text-black font-black'
+                  ? isHalloween
+                    ? 'bg-orange-500 text-black font-black shadow-md shadow-orange-500/20'
+                    : 'bg-[#00e652] text-black font-black'
                   : 'bg-black text-white/60 border border-white/20'
               }`}
             >
@@ -262,7 +282,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                 onClick={() => setFilters(prev => ({ ...prev, selectedSize: sz }))}
                 className={`flex-1 py-2 text-[11px] font-black transition cursor-pointer ${
                   filters.selectedSize === sz
-                    ? 'bg-[#00e652] text-black font-black'
+                    ? isHalloween
+                      ? 'bg-orange-500 text-black font-black shadow-md shadow-orange-500/20'
+                      : 'bg-[#00e652] text-black font-black'
                     : 'bg-black text-white/60 border border-white/20 hover:bg-white/10'
                 }`}
               >
@@ -280,42 +302,54 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
           <span className="text-white/40 text-[10px] tracking-widest">FILTROS ACTIVOS:</span>
           
           {filters.selectedSport && filters.selectedSport !== 'all' && (
-            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className={`${
+              isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
+            } px-2.5 py-1 rounded-sm flex items-center gap-1.5`}>
               Deporte: {filters.selectedSport}
               <button onClick={() => setFilters(p => ({ ...p, selectedSport: 'all' }))} className="hover:text-white font-black">✕</button>
             </span>
           )}
           
           {filters.selectedLeague !== 'all' && (
-            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className={`${
+              isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
+            } px-2.5 py-1 rounded-sm flex items-center gap-1.5`}>
               Liga: {filters.selectedLeague}
               <button onClick={() => setFilters(p => ({ ...p, selectedLeague: 'all' }))} className="hover:text-white font-black">✕</button>
             </span>
           )}
 
           {filters.selectedTeam !== 'all' && (
-            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className={`${
+              isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
+            } px-2.5 py-1 rounded-sm flex items-center gap-1.5`}>
               Equipo: {filters.selectedTeam}
               <button onClick={() => setFilters(p => ({ ...p, selectedTeam: 'all' }))} className="hover:text-white font-black">✕</button>
             </span>
           )}
 
           {filters.selectedType !== 'all' && (
-            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className={`${
+              isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
+            } px-2.5 py-1 rounded-sm flex items-center gap-1.5`}>
               Tipo: {filters.selectedType}
               <button onClick={() => setFilters(p => ({ ...p, selectedType: 'all' }))} className="hover:text-white font-black">✕</button>
             </span>
           )}
 
           {filters.selectedSize !== 'all' && (
-            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className={`${
+              isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
+            } px-2.5 py-1 rounded-sm flex items-center gap-1.5`}>
               Talla: {filters.selectedSize}
               <button onClick={() => setFilters(p => ({ ...p, selectedSize: 'all' }))} className="hover:text-white font-black">✕</button>
             </span>
           )}
 
           {filters.searchQuery && (
-            <span className="bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+            <span className={`${
+              isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
+            } px-2.5 py-1 rounded-sm flex items-center gap-1.5`}>
               Búsqueda: "{filters.searchQuery}"
               <button onClick={() => setFilters(p => ({ ...p, searchQuery: '' }))} className="hover:text-white font-black">✕</button>
             </span>

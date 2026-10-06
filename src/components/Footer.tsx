@@ -76,16 +76,19 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
         {/* Brand info */}
         <div className="md:col-span-5 space-y-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-[#00e652] text-black font-black flex items-center justify-center skew-x-[-10deg] shadow-[0_0_15px_rgba(0,230,82,0.4)]">
+            <div className={`w-9 h-9 ${isHalloween ? 'bg-orange-500 shadow-[0_0_15px_rgba(255,107,0,0.5)]' : 'bg-[#00e652] shadow-[0_0_15px_rgba(0,230,82,0.4)]'} text-black font-black flex items-center justify-center skew-x-[-10deg]`}>
               <Shirt className="w-5 h-5 stroke-[3] skew-x-[10deg]" />
             </div>
             <div>
               <div className="flex items-center gap-1 text-2xl font-black italic tracking-tighter uppercase leading-none">
                 <span className="text-white">OFF</span>
-                <span className="text-[#00e652]">side</span>
+                <span className={isHalloween ? 'text-orange-500' : 'text-[#00e652]'}>side</span>
                 <span className="text-white/80 text-xl font-black ml-1">Sports</span>
+                {isHalloween && <span className="text-sm">🎃</span>}
               </div>
-              <p className="text-[8px] font-black uppercase tracking-[0.25em] text-[#00e652] mt-0.5">ROPA DEPORTIVA</p>
+              <p className={`text-[8px] font-black uppercase tracking-[0.25em] ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'} mt-0.5`}>
+                {isHalloween ? 'TEMPORADA SPOOKY HALLOWEEN 👻' : 'ROPA DEPORTIVA'}
+              </p>
             </div>
           </div>
 
@@ -95,9 +98,9 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
 
           {/* Payment Methods */}
           <div className="pt-2">
-            <p className="text-[10px] font-black uppercase text-[#00e652] tracking-widest mb-2">MEDIOS DE PAGO ACEPTADOS:</p>
+            <p className={`text-[10px] font-black uppercase ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'} tracking-widest mb-2`}>MEDIOS DE PAGO ACEPTADOS:</p>
             <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase text-white/90">
-              <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm text-[#00e652]">SINPE Móvil ({phoneDisplay})</span>
+              <span className={`bg-black border border-white/20 px-2.5 py-1 rounded-sm ${isHalloween ? 'text-orange-400 border-orange-500/30' : 'text-[#00e652]'}`}>SINPE Móvil ({phoneDisplay})</span>
               <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm">Visa</span>
               <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm">Mastercard</span>
               <span className="bg-black border border-white/20 px-2.5 py-1 rounded-sm">PayPal</span>
@@ -111,34 +114,34 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenAdmin, onOpe
           <h4 className="font-black italic uppercase text-white text-sm tracking-wider">NAVEGACIÓN RÁPIDA</h4>
           <ul className="space-y-2 text-xs font-bold uppercase tracking-wider">
             <li>
-              <button onClick={() => setActiveTab('catalog')} className="hover:text-[#00e652] transition cursor-pointer">
+              <button onClick={() => setActiveTab('catalog')} className={`transition cursor-pointer ${isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'}`}>
                 Catálogo de Camisetas
               </button>
             </li>
             <li>
-              <button onClick={() => setActiveTab('balls')} className="text-[#00e652] hover:text-white transition cursor-pointer font-black flex items-center gap-1">
-                ⚽ Balones a la Venta (Oficiales)
+              <button onClick={() => setActiveTab('balls')} className={`transition cursor-pointer font-black flex items-center gap-1 ${isHalloween ? 'text-orange-400 hover:text-white' : 'text-[#00e652] hover:text-white'}`}>
+                {isHalloween ? '🎃 Balones de Terror' : '⚽ Balones a la Venta (Oficiales)'}
               </button>
             </li>
             {onOpenOrderHistory && (
               <li>
-                <button onClick={onOpenOrderHistory} className="text-[#00e652] hover:underline transition cursor-pointer font-black flex items-center gap-1">
+                <button onClick={onOpenOrderHistory} className={`hover:underline transition cursor-pointer font-black flex items-center gap-1 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>
                   📦 Historial de Compras / Rastrear Pedido
                 </button>
               </li>
             )}
             <li>
-              <button onClick={() => setActiveTab('filters')} className="hover:text-[#00e652] transition cursor-pointer">
+              <button onClick={() => setActiveTab('filters')} className={`transition cursor-pointer ${isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'}`}>
                 Buscador por Liga y Equipo
               </button>
             </li>
             <li>
-              <button onClick={() => setActiveTab('reviews')} className="hover:text-[#00e652] transition cursor-pointer">
+              <button onClick={() => setActiveTab('reviews')} className={`transition cursor-pointer ${isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'}`}>
                 Reseñas de Clientes Verificados
               </button>
             </li>
             <li>
-              <button onClick={() => setActiveTab('contact')} className="hover:text-[#00e652] transition cursor-pointer">
+              <button onClick={() => setActiveTab('contact')} className={`transition cursor-pointer ${isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'}`}>
                 Atención por WhatsApp
               </button>
             </li>

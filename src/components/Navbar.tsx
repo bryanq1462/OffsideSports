@@ -289,15 +289,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${
                   isActive
-                    ? 'bg-[#00e652] text-black font-black'
-                    : 'text-white/80 hover:bg-white/5'
+                    ? isHalloween ? 'bg-orange-500 text-black font-black' : 'bg-[#00e652] text-black font-black'
+                    : isHalloween ? 'text-white/80 hover:bg-orange-500/10' : 'text-white/80 hover:bg-white/5'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-[#00e652]'}`} />
+                <Icon className={`w-5 h-5 ${isActive ? 'text-black' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
                 <span className="flex-1 text-left">{item.label}</span>
                 {item.badge && (
                   <span className={`text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm ${
-                    isActive ? 'bg-black text-[#00e652]' : 'bg-[#00e652] text-black'
+                    isActive 
+                      ? isHalloween ? 'bg-black text-orange-400' : 'bg-black text-[#00e652]'
+                      : isHalloween ? 'bg-orange-500 text-black' : 'bg-[#00e652] text-black'
                   }`}>
                     {item.badge}
                   </span>
@@ -309,7 +311,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>Cambiar Moneda:</span>
             <button
               onClick={() => setCurrency(currency === 'CRC' ? 'USD' : 'CRC')}
-              className="bg-white/10 text-[#00e652] px-3 py-1.5 rounded-lg font-black border border-white/20"
+              className={`px-3 py-1.5 rounded-lg font-black border ${
+                isHalloween 
+                  ? 'bg-white/10 text-orange-400 border-orange-500/30' 
+                  : 'bg-white/10 text-[#00e652] border-white/20'
+              }`}
             >
               {currency === 'CRC' ? '₡ COLONES (CRC)' : '$ DÓLARES (USD)'}
             </button>
@@ -325,7 +331,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           </a>
           <button
             onClick={() => { onOpenOrderHistory(); setMobileMenuOpen(false); }}
-            className="w-full flex items-center justify-center gap-2 bg-[#00e652]/20 hover:bg-[#00e652] text-[#00e652] hover:text-black font-black py-2.5 rounded-lg text-xs uppercase tracking-wider border border-[#00e652]/40 transition"
+            className={`w-full flex items-center justify-center gap-2 font-black py-2.5 rounded-lg text-xs uppercase tracking-wider border transition ${
+              isHalloween
+                ? 'bg-orange-500/20 hover:bg-orange-500 text-orange-400 hover:text-black border-orange-500/40'
+                : 'bg-[#00e652]/20 hover:bg-[#00e652] text-[#00e652] hover:text-black border-[#00e652]/40'
+            }`}
           >
             <PackageCheck className="w-4 h-4" />
             Mis Pedidos / Historial de Compras

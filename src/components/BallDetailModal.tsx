@@ -43,6 +43,7 @@ export const BallDetailModal: React.FC<BallDetailModalProps> = ({
   const priceCRC = ball.priceCRC ?? ball.price;
   const originalPriceCRC = ball.originalPriceCRC ?? ball.originalPrice;
   const hasDiscount = originalPriceCRC && originalPriceCRC > priceCRC;
+  const isHalloween = settings?.themeMode === 'halloween';
 
   const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
 
@@ -176,7 +177,7 @@ export const BallDetailModal: React.FC<BallDetailModalProps> = ({
               <div>
                 <span className="text-[10px] font-black uppercase text-white/50 block">Precio OFFSIDE</span>
                 <div className="flex items-baseline gap-2 mt-0.5">
-                  <span className="text-2xl sm:text-3xl font-black text-[#00e652]">
+                  <span className={`text-2xl sm:text-3xl font-black ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>
                     {formatPrice(priceCRC, currency)}
                   </span>
                   {hasDiscount && (
@@ -188,7 +189,7 @@ export const BallDetailModal: React.FC<BallDetailModalProps> = ({
               </div>
 
               {hasDiscount && (
-                <span className="bg-[#00e652] text-black font-black text-xs uppercase px-2.5 py-1 rounded-md shadow-sm">
+                <span className={`${isHalloween ? 'bg-orange-500 shadow-orange-500/30' : 'bg-[#00e652]'} text-black font-black text-xs uppercase px-2.5 py-1 rounded-md shadow-sm`}>
                   {ball.discountPercent || 15}% OFF
                 </span>
               )}
@@ -198,7 +199,7 @@ export const BallDetailModal: React.FC<BallDetailModalProps> = ({
             <div className="space-y-2">
               <label className="text-xs font-black uppercase tracking-wider text-white flex justify-between">
                 <span>Selecciona la Talla del Balón:</span>
-                <span className="text-[#00e652] font-mono">{selectedSize}</span>
+                <span className={`${isHalloween ? 'text-orange-400' : 'text-[#00e652]'} font-mono`}>{selectedSize}</span>
               </label>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -211,7 +212,11 @@ export const BallDetailModal: React.FC<BallDetailModalProps> = ({
                       onClick={() => setSelectedSize(sz)}
                       className={`p-3 rounded-xl border text-xs font-black uppercase transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
                         isSelected
-                          ? 'bg-[#00e652] border-[#00e652] text-black shadow-md scale-102'
+                          ? isHalloween
+                            ? 'bg-orange-500 border-orange-500 text-black shadow-md scale-102'
+                            : 'bg-[#00e652] border-[#00e652] text-black shadow-md scale-102'
+                          : isHalloween
+                          ? 'bg-black border-white/15 text-white hover:border-orange-500/60 hover:bg-white/5'
                           : 'bg-black border-white/15 text-white hover:border-[#00e652]/60 hover:bg-white/5'
                       }`}
                     >
@@ -232,15 +237,15 @@ export const BallDetailModal: React.FC<BallDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-3 py-1.5 text-white/70 hover:text-[#00e652] font-black text-sm cursor-pointer"
+                  className={`px-3 py-1.5 text-white/70 ${isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'} font-black text-sm cursor-pointer`}
                 >
                   -
                 </button>
-                <span className="px-3 text-sm font-black text-[#00e652]">{quantity}</span>
+                <span className={`px-3 text-sm font-black ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>{quantity}</span>
                 <button
                   type="button"
                   onClick={() => setQuantity(Math.min(ball.stock || 20, quantity + 1))}
-                  className="px-3 py-1.5 text-white/70 hover:text-[#00e652] font-black text-sm cursor-pointer"
+                  className={`px-3 py-1.5 text-white/70 ${isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'} font-black text-sm cursor-pointer`}
                 >
                   +
                 </button>
@@ -259,6 +264,8 @@ export const BallDetailModal: React.FC<BallDetailModalProps> = ({
                 className={`w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl transition-all cursor-pointer ${
                   addedSuccess
                     ? 'bg-white text-black'
+                    : isHalloween
+                    ? 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30 hover:scale-[1.01]'
                     : 'bg-[#00e652] hover:bg-white text-black hover:scale-[1.01]'
                 }`}
               >
@@ -278,7 +285,11 @@ export const BallDetailModal: React.FC<BallDetailModalProps> = ({
               <button
                 type="button"
                 onClick={handleWhatsAppClick}
-                className="w-full py-3.5 rounded-2xl bg-black border border-[#00e652]/60 hover:bg-[#00e652]/10 text-[#00e652] font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer"
+                className={`w-full py-3.5 rounded-2xl bg-black border ${
+                  isHalloween
+                    ? 'border-orange-500/60 hover:bg-orange-500/10 text-orange-400'
+                    : 'border-[#00e652]/60 hover:bg-[#00e652]/10 text-[#00e652]'
+                } font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer`}
               >
                 <MessageCircle className="w-4 h-4 stroke-[2.5]" />
                 <span>PEDIR DIRECTO POR WHATSAPP</span>

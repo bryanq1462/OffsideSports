@@ -53,6 +53,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
 
   const versionInfo = getJerseyVersionInfo(jersey.version);
   const availableSizes = (jersey.sizesAvailable || []).filter(() => jersey.stock > 0);
+  const isHalloween = settings?.themeMode === 'halloween';
 
   const unitCRC = jersey.priceCRC || jersey.price;
   const totalPriceCRC = unitCRC * quantity;
@@ -285,7 +286,9 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                         !isAvailable
                           ? 'bg-slate-950/40 text-slate-600 border border-slate-800/80 cursor-not-allowed opacity-50'
                           : isSelected
-                          ? 'bg-[#00e652] text-slate-950 shadow-lg shadow-[#00e652]/20 border border-[#00e652] cursor-pointer'
+                          ? isHalloween
+                            ? 'bg-orange-500 text-black shadow-lg shadow-orange-500/30 border border-orange-500 cursor-pointer'
+                            : 'bg-[#00e652] text-slate-950 shadow-lg shadow-[#00e652]/20 border border-[#00e652] cursor-pointer'
                           : 'bg-slate-950 text-slate-200 border border-slate-800 hover:border-white/40 hover:bg-slate-800 cursor-pointer'
                       }`}
                     >
@@ -308,7 +311,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
               {/* Leyenda de disponibilidad de tallas */}
               <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#00e652] inline-block" />
+                  <span className={`w-2.5 h-2.5 rounded-full ${isHalloween ? 'bg-orange-500' : 'bg-[#00e652]'} inline-block`} />
                   <span className="text-slate-300">Talla Disponible</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-slate-400">
@@ -321,7 +324,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
 
               {showSizeGuide && (
                 <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1 animate-in fade-in">
-                  <p className="font-bold text-[#00e652]">Medidas Aproximadas (Pecho x Largo):</p>
+                  <p className={`font-bold ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>Medidas Aproximadas (Pecho x Largo):</p>
                   <p>• S: 50 cm x 70 cm (Estatura 1.65m - 1.72m)</p>
                   <p>• M: 52 cm x 72 cm (Estatura 1.72m - 1.78m)</p>
                   <p>• L: 54 cm x 74 cm (Estatura 1.78m - 1.83m)</p>
@@ -342,7 +345,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                 >
                   -
                 </button>
-                <span className="px-3 text-xs font-black text-[#00e652]">{quantity}</span>
+                <span className={`px-3 text-xs font-black ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>{quantity}</span>
                 <button
                   type="button"
                   onClick={() => setQuantity(Math.min(jersey.stock || 10, quantity + 1))}
@@ -363,7 +366,9 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                 disabled={jersey.stock <= 0}
                 className={`w-full py-3.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg ${
                   added
-                    ? 'bg-emerald-600 text-white'
+                    ? isHalloween ? 'bg-orange-600 text-white' : 'bg-emerald-600 text-white'
+                    : isHalloween
+                    ? 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30'
                     : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950'
                 }`}
               >
@@ -382,9 +387,13 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
 
               <button
                 onClick={handleWhatsApp}
-                className="w-full py-3.5 rounded-xl text-xs font-black uppercase tracking-wider bg-emerald-950/80 hover:bg-emerald-900/90 text-emerald-400 border border-emerald-500/40 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                className={`w-full py-3.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer border ${
+                  isHalloween
+                    ? 'bg-orange-950/60 hover:bg-orange-900/80 text-orange-400 border-orange-500/40'
+                    : 'bg-emerald-950/80 hover:bg-emerald-900/90 text-emerald-400 border-emerald-500/40'
+                }`}
               >
-                <MessageCircle className="w-5 h-5 text-emerald-400" />
+                <MessageCircle className={`w-5 h-5 ${isHalloween ? 'text-orange-400' : 'text-emerald-400'}`} />
                 <span>Comprar directamente por WhatsApp</span>
               </button>
             </div>

@@ -57,6 +57,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const bankAccountHolder = settings?.bankAccountHolder || 'OFFSIDE Sports Costa Rica S.A.';
   const bankAccountIBAN = settings?.bankAccountIBAN || 'CR05015202001026384920';
   const bankName = settings?.bankName || 'BAC Credomatic Costa Rica';
+  const isHalloween = settings?.themeMode === 'halloween';
 
   const stampFee = settings?.customizationPriceCRC ?? 0;
   const shippingFee = settings?.shippingFeeCRC ?? 2500;
@@ -152,7 +153,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+    <div className={`fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 ${isHalloween ? 'theme-halloween' : ''}`}>
       <div 
         className="relative w-full max-w-3xl bg-[#0a0a0a] border border-white/10 rounded-3xl shadow-2xl overflow-hidden text-white my-auto animate-in zoom-in-95 max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}

@@ -489,7 +489,7 @@ export default function App() {
   return (
     <div className={`min-h-screen ${
       isHalloween 
-        ? 'bg-[#0a050d] text-orange-50 font-sans selection:bg-orange-500 selection:text-black' 
+        ? 'bg-[#0a050d] text-orange-50 font-sans selection:bg-orange-500 selection:text-black theme-halloween' 
         : 'bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950'
     } flex flex-col justify-between relative`}>
       {isHalloween && <HalloweenDecorations />}
@@ -760,28 +760,17 @@ export default function App() {
         />
       )}
 
-      {/* Floating Instagram & WhatsApp Quick Access Buttons */}
-      <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3">
+      {/* Floating Instagram Quick Access Button (placed above WhatsApp floating button) */}
+      <div className="fixed bottom-24 right-5 z-40">
         <a
           href="https://www.instagram.com/offside_sports22?igsh=MXZib2J3cjV2bnl1YQ=="
           target="_blank"
           rel="noreferrer"
-          className="group flex items-center gap-2 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 hover:scale-105 text-white font-black px-4 py-3 rounded-full shadow-2xl transition-all cursor-pointer border border-white/20"
+          className="group flex items-center gap-2 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 hover:scale-105 text-white font-black p-3.5 sm:px-4 sm:py-3 rounded-full shadow-2xl transition-all cursor-pointer border border-white/20"
           title="Visítanos en Instagram @offside_sports22"
         >
           <Instagram className="w-5 h-5 stroke-[2.5]" />
           <span className="hidden sm:inline text-xs uppercase tracking-wider">Instagram @offside_sports22</span>
-        </a>
-
-        <a
-          href={`https://wa.me/${(settings.contactPhone || '+506 8559 5192').replace(/[^0-9]/g, '') || '50685595192'}?text=${encodeURIComponent('Hola OFFSIDE Sports! ⚽ Quisiera consultar sobre disponibilidad de camisetas.')}`}
-          target="_blank"
-          rel="noreferrer"
-          className="group flex items-center gap-2 bg-[#00e652] hover:bg-white text-black font-black px-4 py-3 rounded-full shadow-2xl hover:scale-105 transition-all cursor-pointer border border-black/10"
-          title="Atención por WhatsApp"
-        >
-          <MessageCircle className="w-5 h-5 stroke-[2.5]" />
-          <span className="hidden sm:inline text-xs uppercase tracking-wider">WhatsApp Directo</span>
         </a>
       </div>
 
