@@ -37,7 +37,7 @@ export const handleImageError = (
   }
 };
 
-export function compressImageFile(file: File, maxWidth = 720, maxHeight = 850, quality = 0.70): Promise<string> {
+export function compressImageFile(file: File, maxWidth = 600, maxHeight = 750, quality = 0.65): Promise<string> {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -62,9 +62,12 @@ export function compressImageFile(file: File, maxWidth = 720, maxHeight = 850, q
         if (ctx) {
           ctx.drawImage(img, 0, 0, width, height);
           let dataUrl = canvas.toDataURL('image/jpeg', quality);
-          // If still over 180KB string length, re-compress with slightly lower quality to keep it ultra lightweight
-          if (dataUrl.length > 180000) {
-            dataUrl = canvas.toDataURL('image/jpeg', 0.55);
+          // If still over 90KB string length, re-compress with lower quality for ultra lightweight storage
+          if (dataUrl.length > 90000) {
+            dataUrl = canvas.toDataURL('image/jpeg', 0.50);
+          }
+          if (dataUrl.length > 150000) {
+            dataUrl = canvas.toDataURL('image/jpeg', 0.38);
           }
           resolve(dataUrl);
         } else {

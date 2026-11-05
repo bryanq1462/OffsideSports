@@ -15,7 +15,7 @@ import firebaseConfig from '../../firebase-applet-config.json';
 import { Jersey, StoreSettings, Order, DiscountCode, Review, Ball } from '../types';
 import { INITIAL_JERSEYS, INITIAL_REVIEWS } from '../data/mockData';
 import { INITIAL_BALLS } from '../data/mockBalls';
-import { DEFAULT_SETTINGS, DEFAULT_DISCOUNT_CODES } from '../utils/storage';
+import { DEFAULT_SETTINGS, DEFAULT_DISCOUNT_CODES, getStoredJerseys, getStoredBalls } from '../utils/storage';
 
 // Initialize Firebase app singleton
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
@@ -122,6 +122,16 @@ export function subscribeToJerseys(callback: (jerseys: Jersey[]) => void): () =>
   const unsubscribe = onSnapshot(
     jerseysRef,
     (snapshot) => {
+      if (snapshot.empty) {
+        // Seed Firestore if collection is empty
+        const initial = getStoredJerseys();
+        if (initial && initial.length > 0) {
+          syncAllJerseysToCloud(initial).catch((e) =>
+            console.warn('Initial seeding of jerseys to Firestore skipped:', e)
+          );
+        }
+        return;
+      }
       const cloudJerseys: Jersey[] = [];
       snapshot.forEach((docSnap) => {
         cloudJerseys.push(docSnap.data() as Jersey);
@@ -185,6 +195,15 @@ export function subscribeToBalls(callback: (balls: Ball[]) => void): () => void 
   const unsubscribe = onSnapshot(
     ballsRef,
     (snapshot) => {
+      if (snapshot.empty) {
+        const initial = getStoredBalls();
+        if (initial && initial.length > 0) {
+          syncAllBallsToCloud(initial).catch((e) =>
+            console.warn('Initial seeding of balls to Firestore skipped:', e)
+          );
+        }
+        return;
+      }
       const cloudBalls: Ball[] = [];
       snapshot.forEach((docSnap) => {
         cloudBalls.push(docSnap.data() as Ball);

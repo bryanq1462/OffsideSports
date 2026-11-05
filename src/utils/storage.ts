@@ -106,15 +106,11 @@ export function getStoredJerseys(): Jersey[] {
       return INITIAL_JERSEYS;
     }
 
-    // Purge legacy oversized cache (from previous 5.4MB base64 storage) to free up storage quota immediately
-    if (raw.length > 200000 || raw.includes('data:image')) {
-      try {
-        localStorage.removeItem(KEYS.JERSEYS);
-      } catch (ignore) {}
+    const parsed: Jersey[] = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
       return INITIAL_JERSEYS;
     }
 
-    const parsed: Jersey[] = JSON.parse(raw);
     let changed = false;
     const sanitized = parsed.map(j => {
       const item = { ...j };
@@ -191,41 +187,21 @@ export function getStoredJerseys(): Jersey[] {
 
 export function saveJerseys(jerseys: Jersey[]): void {
   try {
-    // Sanitize any large data URIs if uploaded manually
-    const safeJerseys = jerseys.map(j => ({
-      ...j,
-      image: (j.image && j.image.startsWith('data:image') && j.image.length > 25000)
-        ? DEFAULT_JERSEY_FALLBACK_IMAGE
-        : (j.image || DEFAULT_JERSEY_FALLBACK_IMAGE),
-      backImage: (j.backImage && j.backImage.startsWith('data:image') && j.backImage.length > 25000)
-        ? undefined
-        : j.backImage,
-      images: (j.images || []).filter(img => !img.startsWith('data:image') || img.length < 15000).slice(0, 2)
-    }));
-    localStorage.setItem(KEYS.JERSEYS, JSON.stringify(safeJerseys));
+    localStorage.setItem(KEYS.JERSEYS, JSON.stringify(jerseys));
   } catch (e) {
     try {
-      // Minimal fallback to ensure core catalogue persists without hitting storage quotas
-      const minimalJerseys = jerseys.map(j => ({
-        id: j.id,
-        name: j.name,
-        team: j.team,
-        league: j.league,
-        price: j.price,
-        priceCRC: j.priceCRC,
-        discountPercent: j.discountPercent,
-        stock: j.stock,
-        sizesAvailable: j.sizesAvailable,
-        type: j.type,
-        yearSeason: j.yearSeason,
-        rating: j.rating,
-        reviewsCount: j.reviewsCount,
-        image: j.image?.startsWith('data:') ? DEFAULT_JERSEY_FALLBACK_IMAGE : (j.image || DEFAULT_JERSEY_FALLBACK_IMAGE),
-        backImage: j.backImage?.startsWith('data:') ? undefined : j.backImage
+      // If quota exceeded, sanitize secondary large galleries while preserving main images & full catalog list
+      const safeJerseys = jerseys.map(j => ({
+        ...j,
+        image: j.image || DEFAULT_JERSEY_FALLBACK_IMAGE,
+        backImage: (j.backImage && j.backImage.startsWith('data:image') && j.backImage.length > 100000)
+          ? undefined
+          : j.backImage,
+        images: (j.images || []).filter(img => !img.startsWith('data:image') || img.length < 80000).slice(0, 2)
       }));
-      localStorage.setItem(KEYS.JERSEYS, JSON.stringify(minimalJerseys));
+      localStorage.setItem(KEYS.JERSEYS, JSON.stringify(safeJerseys));
     } catch (err) {
-      // In-memory fallback
+      console.warn('LocalStorage quota exceeded for jerseys, persisting in memory & Firestore:', err);
     }
   }
 }
@@ -252,9 +228,7 @@ export function saveCart(cart: CartItem[]): void {
         league: item.jersey.league,
         price: item.jersey.price,
         discountPercent: item.jersey.discountPercent,
-        image: item.jersey.image?.startsWith('data:image') && item.jersey.image.length > 25000
-          ? DEFAULT_JERSEY_FALLBACK_IMAGE
-          : (item.jersey.image || DEFAULT_JERSEY_FALLBACK_IMAGE),
+        image: item.jersey.image || DEFAULT_JERSEY_FALLBACK_IMAGE,
         type: item.jersey.type,
         sizesAvailable: item.jersey.sizesAvailable,
         stock: item.jersey.stock,

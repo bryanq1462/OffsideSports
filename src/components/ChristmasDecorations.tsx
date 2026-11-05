@@ -15,6 +15,7 @@ const FESTIVE_COLORS = ['#fbbf24', '#ffffff', '#ef4444', '#10b981', '#60a5fa', '
 export const ChristmasDecorations: React.FC = () => {
   const [particles, setParticles] = useState<Particle[]>([]);
   const [tiltOffset, setTiltOffset] = useState({ x: 0, y: 0 });
+  const [swayingLights, setSwayingLights] = useState<{ [key: number]: boolean }>({});
 
   // Mouse move interactive trail listener (fluid 60fps throttled)
   useEffect(() => {
@@ -91,6 +92,25 @@ export const ChristmasDecorations: React.FC = () => {
     }));
   }, []);
 
+  // Hanging garland lights with onMouseEnter pendulum swing handler
+  const hangingLights = useMemo(() => {
+    const colors = ['#ef4444', '#22c55e', '#fbbf24', '#38bdf8', '#f43f5e', '#ffffff'];
+    return Array.from({ length: 12 }, (_, i) => ({
+      id: i,
+      left: `${(i * 8.3 + 4).toFixed(1)}%`,
+      color: colors[i % colors.length],
+      height: 35 + (i % 3) * 12,
+      delay: `${((i % 4) * 0.25).toFixed(2)}s`
+    }));
+  }, []);
+
+  const handleLightMouseEnter = (id: number) => {
+    setSwayingLights((prev) => ({ ...prev, [id]: true }));
+    setTimeout(() => {
+      setSwayingLights((prev) => ({ ...prev, [id]: false }));
+    }, 2000);
+  };
+
   return (
     <>
       {/* Interactive mouse sparkle trail */}
@@ -135,6 +155,42 @@ export const ChristmasDecorations: React.FC = () => {
             {flake.char}
           </div>
         ))}
+      </div>
+
+      {/* Hanging Garland Lights directly below header with onMouseEnter pendulum swing */}
+      <div className="w-full relative z-30 pointer-events-none select-none">
+        <div className="max-w-7xl mx-auto px-4 relative h-16">
+          {hangingLights.map((light) => {
+            const isSwaying = swayingLights[light.id];
+            return (
+              <div
+                key={light.id}
+                className="absolute top-0 pointer-events-auto cursor-pointer group"
+                style={{ left: light.left }}
+                onMouseEnter={() => handleLightMouseEnter(light.id)}
+              >
+                {/* Pendent thread */}
+                <div 
+                  className={`w-[1.5px] bg-gradient-to-b from-amber-300 to-amber-500 mx-auto origin-top transition-transform ${
+                    isSwaying ? 'animate-bauble-sway' : ''
+                  }`}
+                  style={{ height: `${light.height}px` }}
+                />
+                {/* Glowing Bulb / Pendant Light */}
+                <div
+                  className={`w-4 h-5 rounded-full shadow-[0_0_15px_currentColor] transition-transform duration-300 group-hover:scale-125 ${
+                    isSwaying ? 'animate-bauble-sway' : ''
+                  }`}
+                  style={{
+                    backgroundColor: light.color,
+                    color: light.color
+                  }}
+                  title="¡Pasa el cursor para balancear como péndulo!"
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ShoppingBag, 
   Search, 
@@ -374,24 +374,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       )}
 
-      {/* Garland lights hanging from the bottom of header */}
-      {isChristmas && (
-        <div className="absolute -bottom-2.5 left-0 right-0 h-4 flex justify-between items-start px-3 overflow-visible z-30 pointer-events-none">
-          {Array.from({ length: 32 }).map((_, i) => (
-            <div key={i} className="flex flex-col items-center">
-              <div className="w-1 h-1.5 bg-amber-400 rounded-sm" />
-              <div 
-                className="w-2.5 h-3.5 rounded-full animate-light-glow shadow-[0_0_10px_currentColor]"
-                style={{
-                  backgroundColor: i % 3 === 0 ? '#ef4444' : i % 3 === 1 ? '#22c55e' : '#fbbf24',
-                  color: i % 3 === 0 ? '#ef4444' : i % 3 === 1 ? '#22c55e' : '#fbbf24',
-                  animationDelay: `${(i % 5) * 0.3}s`
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      )}
     </header>
   );
 };
