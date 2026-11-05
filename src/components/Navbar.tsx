@@ -51,17 +51,24 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
   const isHalloween = settings?.themeMode === 'halloween';
+  const isChristmas = settings?.themeMode === 'christmas';
 
   const navItems = [
-    { id: 'catalog', label: 'Camisetas', icon: Shirt, badge: isHalloween ? '🎃 SPOOKY' : undefined },
-    { id: 'balls', label: 'Balones', icon: Trophy, badge: isHalloween ? '⚽ TERROR' : 'NUEVO' },
+    { id: 'catalog', label: 'Camisetas', icon: Shirt, badge: isChristmas ? '🎄 DESTACADAS' : isHalloween ? '🎃 SPOOKY' : undefined },
+    { id: 'balls', label: 'Balones', icon: Trophy, badge: isChristmas ? '⚽ OFICIALES' : isHalloween ? '⚽ TERROR' : 'NUEVO' },
     { id: 'filters', label: 'Buscador & Filtros', icon: SlidersHorizontal },
     { id: 'reviews', label: 'Reseñas Verificadas', icon: UserCheck },
     { id: 'contact', label: 'Contacto & WhatsApp', icon: MessageCircle }
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-white/10 text-white shadow-2xl">
+    <header className={`sticky top-0 z-40 backdrop-blur-md border-b text-white shadow-2xl transition-colors duration-500 relative ${
+      isChristmas
+        ? 'bg-[#180307]/90 border-red-500/25 shadow-[0_4px_30px_rgba(185,28,28,0.25)]'
+        : 'bg-[#0a0a0a]/95 border-white/10'
+    }`}>
+
+
       {/* Halloween Special Announcement Banner */}
       {isHalloween && (
         <div className="bg-gradient-to-r from-orange-600 via-purple-700 to-orange-600 text-white px-3 py-1.5 text-center text-xs font-black tracking-widest uppercase flex items-center justify-center gap-2 border-b border-orange-500/40 shadow-lg">
@@ -73,12 +80,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Top Banner */}
       <div className={`border-b border-white/10 text-white/80 px-2 sm:px-4 py-1.5 text-xs font-bold tracking-widest uppercase overflow-x-auto scrollbar-none ${
-        isHalloween ? 'bg-gradient-to-r from-black via-orange-950/40 to-black' : 'bg-[#000000]'
+        isChristmas ? 'bg-gradient-to-r from-[#170306] via-[#24050b] to-[#170306]' : isHalloween ? 'bg-gradient-to-r from-black via-orange-950/40 to-black' : 'bg-[#000000]'
       }`}>
         <div className="max-w-7xl mx-auto w-full flex justify-between items-center gap-2 min-w-max sm:min-w-0">
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <span className={`${isHalloween ? 'bg-orange-500 text-black shadow-orange-500/30' : 'bg-[#00e652] text-black'} text-[9px] sm:text-[10px] font-black uppercase px-1.5 sm:px-2 py-0.5 rounded-sm`}>
-              {isHalloween ? '🎃 COSTA RICA' : 'COSTA RICA'}
+            <span className={`${
+              isChristmas 
+                ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/40 shadow-red-500/30' 
+                : isHalloween 
+                ? 'bg-orange-500 text-black shadow-orange-500/30' 
+                : 'bg-[#00e652] text-black'
+            } text-[9px] sm:text-[10px] font-black uppercase px-2 py-0.5 rounded-sm`}>
+              {isChristmas ? '🎄 COSTA RICA' : isHalloween ? '🎃 COSTA RICA' : 'COSTA RICA'}
             </span>
             <span className="hidden sm:inline text-white/70 text-[11px]">Envíos a todo Costa Rica por Correos de CR y Mensajería | WhatsApp: {phoneDisplay}</span>
           </div>
@@ -86,7 +99,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onOpenOrderHistory}
               className={`flex items-center gap-1 font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded transition cursor-pointer ${
-                isHalloween
+                isChristmas
+                  ? 'bg-red-500/10 hover:bg-gradient-to-r hover:from-red-600 hover:to-rose-600 text-red-300 hover:text-white border border-red-500/40'
+                  : isHalloween
                   ? 'bg-orange-500/10 hover:bg-orange-500 text-orange-400 hover:text-black border border-orange-500/40'
                   : 'bg-[#00e652]/10 hover:bg-[#00e652] text-[#00e652] hover:text-black border border-[#00e652]/40'
               }`}
@@ -108,22 +123,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => setCurrency(currency === 'CRC' ? 'USD' : 'CRC')}
               className={`flex items-center gap-1 bg-white/5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded border border-white/10 transition cursor-pointer font-extrabold ${
-                isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'
+                isChristmas ? 'hover:text-amber-300 hover:border-amber-400/40' : isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'
               }`}
               title="Cambiar Moneda"
             >
-              <DollarSign className={`w-3 h-3 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
-              <span className="hidden xs:inline">MONEDA:</span> <span className={`font-black ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>{currency}</span>
+              <DollarSign className={`w-3 h-3 ${isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
+              <span className="hidden xs:inline">MONEDA:</span> <span className={`font-black ${isChristmas ? 'text-amber-300' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>{currency}</span>
             </button>
             <button 
               onClick={onOpenAdmin}
               className={`text-white/50 border border-white/10 transition flex items-center gap-1 font-extrabold cursor-pointer px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[10px] sm:text-[11px] uppercase tracking-wider ${
-                isHalloween ? 'hover:text-orange-400 hover:border-orange-500/40' : 'hover:text-[#00e652] hover:border-[#00e652]/40'
+                isChristmas ? 'hover:text-amber-300 hover:border-amber-400/40' : isHalloween ? 'hover:text-orange-400 hover:border-orange-500/40' : 'hover:text-[#00e652] hover:border-[#00e652]/40'
               }`}
               title="Acceso Propietario / Administración"
             >
               <Lock className="w-3 h-3 text-white/60" />
-              <span className="hidden xs:inline">{isHalloween ? 'ADMIN 🎃' : 'ADMIN'}</span>
+              <span className="hidden xs:inline">{isChristmas ? 'ADMIN 🎄' : isHalloween ? 'ADMIN 🎃' : 'ADMIN'}</span>
             </button>
           </div>
         </div>
@@ -133,14 +148,21 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-4">
           
-          {/* Logo */}
+          {/* Logo with Christmas Santa Hat Accent */}
           <div className="flex items-center gap-3">
             <button 
               onClick={() => { setActiveTab('catalog'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-              className="flex items-center gap-2.5 group text-left cursor-pointer"
+              className="flex items-center gap-2.5 group text-left cursor-pointer relative"
             >
+              {isChristmas && (
+                <span className="absolute -top-3.5 -left-1.5 text-base sm:text-lg select-none pointer-events-none -rotate-12 animate-pulse z-20">
+                  🎅
+                </span>
+              )}
               <div className={`${
-                isHalloween
+                isChristmas
+                  ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-white shadow-[0_0_20px_rgba(220,38,38,0.5)] border border-amber-400/50'
+                  : isHalloween
                   ? 'bg-orange-500 text-black shadow-[0_0_20px_rgba(255,107,0,0.5)]'
                   : 'bg-[#00e652] text-black shadow-[0_0_15px_rgba(0,230,82,0.4)]'
               } p-1.5 rounded-lg font-black skew-x-[-10deg] transition-transform group-hover:scale-105`}>
@@ -148,12 +170,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
               <div>
                 <div className="text-2xl sm:text-3xl font-black italic tracking-tighter uppercase text-white leading-none">
-                  OFF<span className={isHalloween ? 'text-orange-500' : 'text-[#00e652]'}>side</span> <span className="text-white/90 text-lg sm:text-xl font-black">Sports</span> {isHalloween && '🎃'}
+                  OFF<span className={isChristmas ? 'text-red-400' : isHalloween ? 'text-orange-500' : 'text-[#00e652]'}>side</span> <span className="text-white/90 text-lg sm:text-xl font-black">Sports</span> {isChristmas ? '🎄' : isHalloween ? '🎃' : ''}
                 </div>
                 <div className={`text-[8px] sm:text-[9px] font-black uppercase tracking-[0.25em] mt-0.5 ${
-                  isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+                  isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'
                 }`}>
-                  {isHalloween ? 'EDICIÓN SPOOKY HALLOWEEN 👻' : 'ROPA DEPORTIVA'}
+                  {isChristmas ? 'ROPA DEPORTIVA' : isHalloween ? 'EDICIÓN SPOOKY HALLOWEEN 👻' : 'ROPA DEPORTIVA'}
                 </div>
               </div>
             </button>
@@ -198,14 +220,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all cursor-pointer ${
                     isActive
-                      ? isHalloween ? 'text-orange-400 border-b-2 border-orange-500 shadow-[0_4px_12px_rgba(255,107,0,0.3)]' : 'text-[#00e652] border-b-2 border-[#00e652]'
-                      : isHalloween ? 'text-white/70 hover:text-orange-400 hover:bg-orange-500/10' : 'text-white/70 hover:text-[#00e652] hover:bg-white/5'
+                      ? isChristmas ? 'text-amber-300 border-b-2 border-amber-400 shadow-[0_4px_12px_rgba(251,191,36,0.35)]' : isHalloween ? 'text-orange-400 border-b-2 border-orange-500 shadow-[0_4px_12px_rgba(255,107,0,0.3)]' : 'text-[#00e652] border-b-2 border-[#00e652]'
+                      : isChristmas ? 'text-white/70 hover:text-amber-300 hover:bg-red-500/10' : isHalloween ? 'text-white/70 hover:text-orange-400 hover:bg-orange-500/10' : 'text-white/70 hover:text-[#00e652] hover:bg-white/5'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? (isHalloween ? 'text-orange-400' : 'text-[#00e652]') : 'text-white/40'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? (isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]') : 'text-white/40'}`} />
                   <span>{item.label}</span>
                   {item.badge && (
-                    <span className={`${isHalloween ? 'bg-orange-500 text-black shadow-orange-500/40' : 'bg-[#00e652] text-black'} text-[9px] font-black px-1.5 py-0.5 rounded-sm shadow-sm`}>
+                    <span className={`${isChristmas ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/40 shadow-red-500/40' : isHalloween ? 'bg-orange-500 text-black shadow-orange-500/40' : 'bg-[#00e652] text-black'} text-[9px] font-black px-1.5 py-0.5 rounded-sm shadow-sm`}>
                       {item.badge}
                     </span>
                   )}
@@ -219,7 +241,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onOpenCart}
               className={`relative flex items-center gap-3 font-black px-5 py-2.5 uppercase tracking-wider skew-x-[-10deg] transition-all shadow-lg cursor-pointer group ${
-                isHalloween
+                isChristmas
+                  ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white shadow-[0_0_20px_rgba(220,38,38,0.45)] border border-amber-400/40'
+                  : isHalloween
                   ? 'bg-orange-500 hover:bg-white text-black shadow-orange-500/30'
                   : 'bg-[#00e652] hover:bg-white text-black'
               }`}
@@ -229,15 +253,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <ShoppingBag className="w-5 h-5 stroke-[2.5]" />
                   {cartCount > 0 && (
                     <span className={`absolute -top-2 -right-2 bg-black text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border ${
-                      isHalloween ? 'text-orange-400 border-orange-500' : 'text-[#00e652] border-[#00e652]'
+                      isChristmas ? 'text-amber-300 border-amber-400' : isHalloween ? 'text-orange-400 border-orange-500' : 'text-[#00e652] border-[#00e652]'
                     }`}>
                       {cartCount}
                     </span>
                   )}
                 </div>
                 <div className="hidden sm:block text-left text-xs leading-none">
-                  <p className="font-black text-black text-[10px] uppercase tracking-wider">CARRITO</p>
-                  <p className="font-black text-black text-xs mt-0.5">{formatPrice(cartTotalUSD, currency)}</p>
+                  <p className={`font-black ${isChristmas ? 'text-amber-200' : 'text-black'} text-[10px] uppercase tracking-wider`}>CARRITO</p>
+                  <p className={`font-black ${isChristmas ? 'text-white' : 'text-black'} text-xs mt-0.5`}>{formatPrice(cartTotalUSD, currency)}</p>
                 </div>
               </div>
             </button>
@@ -347,6 +371,25 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Lock className="w-3.5 h-3.5 text-white/50" />
             Acceso Administrativo
           </button>
+        </div>
+      )}
+
+      {/* Garland lights hanging from the bottom of header */}
+      {isChristmas && (
+        <div className="absolute -bottom-2.5 left-0 right-0 h-4 flex justify-between items-start px-3 overflow-visible z-30 pointer-events-none">
+          {Array.from({ length: 32 }).map((_, i) => (
+            <div key={i} className="flex flex-col items-center">
+              <div className="w-1 h-1.5 bg-amber-400 rounded-sm" />
+              <div 
+                className="w-2.5 h-3.5 rounded-full animate-light-glow shadow-[0_0_10px_currentColor]"
+                style={{
+                  backgroundColor: i % 3 === 0 ? '#ef4444' : i % 3 === 1 ? '#22c55e' : '#fbbf24',
+                  color: i % 3 === 0 ? '#ef4444' : i % 3 === 1 ? '#22c55e' : '#fbbf24',
+                  animationDelay: `${(i % 5) * 0.3}s`
+                }}
+              />
+            </div>
+          ))}
         </div>
       )}
     </header>

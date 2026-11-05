@@ -120,3 +120,193 @@
   background-color: rgba(255, 107, 0, 0.15) !important;
 }
 
+/* ========================================================
+   Comprehensive Christmas Holiday Theme Dynamic Overrides
+   Unified Crimson & Gold Palette with Forest Pine Accents
+   ======================================================== */
+.theme-christmas {
+  --christmas-crimson: #c41528;
+  --christmas-ruby: #dc2626;
+  --christmas-dark: #880d1e;
+  --christmas-gold: #fbbf24;
+  --christmas-amber: #f59e0b;
+  --christmas-pine: #065f46;
+}
+
+.theme-christmas .text-stroke-neon {
+  -webkit-text-stroke: 1px #dc2626;
+}
+
+.theme-christmas .bg-\[\#00e652\] {
+  background: linear-gradient(135deg, #991b1b 0%, #dc2626 50%, #991b1b 100%) !important;
+  color: #ffffff !important;
+}
+
+.theme-christmas .text-\[\#00e652\] {
+  color: #ef4444 !important;
+}
+
+.theme-christmas .border-\[\#00e652\] {
+  border-color: #dc2626 !important;
+}
+
+.theme-christmas .border-\[\#00e652\]\/40,
+.theme-christmas .border-\[\#00e652\]\/30,
+.theme-christmas .border-\[\#00e652\]\/50,
+.theme-christmas .border-\[\#00e652\]\/60 {
+  border-color: rgba(220, 38, 38, 0.4) !important;
+}
+
+.theme-christmas .bg-\[\#00e652\]\/10,
+.theme-christmas .bg-\[\#00e652\]\/15,
+.theme-christmas .bg-\[\#00e652\]\/20 {
+  background-color: rgba(220, 38, 38, 0.15) !important;
+}
+
+.theme-christmas .hover\:bg-\[\#00e652\]:hover {
+  background: linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #b91c1c 100%) !important;
+  color: #ffffff !important;
+}
+
+.theme-christmas .hover\:text-\[\#00e652\]:hover {
+  color: #fbbf24 !important;
+}
+
+.theme-christmas .hover\:border-\[\#00e652\]:hover,
+.theme-christmas .hover\:border-\[\#00e652\]\/50:hover,
+.theme-christmas .hover\:border-\[\#00e652\]\/40:hover,
+.theme-christmas .hover\:border-\[\#00e652\]\/60:hover {
+  border-color: #fbbf24 !important;
+}
+
+.theme-christmas .focus\:border-\[\#00e652\]:focus {
+  border-color: #dc2626 !important;
+}
+
+.theme-christmas .shadow-\[\#00e652\]\/20,
+.theme-christmas .shadow-\[\#00e652\]\/10 {
+  --tw-shadow-color: rgba(220, 38, 38, 0.4) !important;
+}
+
+.theme-christmas .accent-\[\#00e652\] {
+  accent-color: #dc2626 !important;
+}
+
+/* Emerald overrides in Christmas mode - smoothly mapped to unified Christmas Crimson */
+.theme-christmas .bg-emerald-500 {
+  background: linear-gradient(135deg, #991b1b 0%, #dc2626 50%, #991b1b 100%) !important;
+  color: #ffffff !important;
+}
+
+.theme-christmas .hover\:bg-emerald-400:hover {
+  background: linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #b91c1c 100%) !important;
+  color: #ffffff !important;
+}
+
+.theme-christmas .text-emerald-400 {
+  color: #fbbf24 !important;
+}
+
+.theme-christmas .text-emerald-500 {
+  color: #ef4444 !important;
+}
+
+.theme-christmas .border-emerald-500\/40,
+.theme-christmas .border-emerald-500\/30 {
+  border-color: rgba(220, 38, 38, 0.4) !important;
+}
+
+.theme-christmas .bg-emerald-950\/40,
+.theme-christmas .bg-emerald-950\/80,
+.theme-christmas .bg-emerald-500\/10 {
+  background-color: rgba(220, 38, 38, 0.15) !important;
+}
+
+/* Keyframe animations for Christmas snowfall, garland lights, and ornaments */
+@keyframes snowfall {
+  0% {
+    transform: translateY(-8vh) translateX(0) rotate(0deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(50vh) translateX(25px) rotate(180deg);
+  }
+  100% {
+    transform: translateY(105vh) translateX(-20px) rotate(360deg);
+    opacity: 0.2;
+  }
+}
+
+@keyframes lightGlow {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 8px currentColor) brightness(1.2);
+  }
+  50% {
+    opacity: 0.4;
+    filter: drop-shadow(0 0 2px currentColor) brightness(0.9);
+  }
+}
+
+@keyframes baubleSway {
+  0%, 100% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(-5deg);
+  }
+}
+
+@keyframes sleighGlide {
+  0% {
+    transform: translateX(110vw) translateY(20px) scale(0.85);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.85;
+  }
+  95% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(-30vw) translateY(-20px) scale(0.95);
+    opacity: 0;
+  }
+}
+
+@keyframes sparkleFade {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -90%) scale(1.4) rotate(90deg);
+    opacity: 0;
+  }
+}
+
+.animate-snow {
+  animation: snowfall linear infinite;
+}
+
+.animate-light-glow {
+  animation: lightGlow 1.8s ease-in-out infinite;
+}
+
+.animate-bauble-sway {
+  transform-origin: top center;
+  animation: baubleSway 4s ease-in-out infinite;
+}
+
+.animate-sleigh {
+  animation: sleighGlide 38s linear infinite;
+}
+
+.sparkle-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  animation: sparkleFade 0.75s ease-out forwards;
+}
+
+

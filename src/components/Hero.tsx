@@ -1,7 +1,7 @@
 import React from 'react';
 import { Trophy, ArrowRight, CheckCircle2, Sparkles, Edit3 } from 'lucide-react';
 import { StoreSettings } from '../types';
-import { handleImageError, normalizeImageSrc } from '../utils/imageUtils';
+import { handleImageError, normalizeImageSrc, DEFAULT_JERSEY_FALLBACK_IMAGE } from '../utils/imageUtils';
 
 interface HeroProps {
   onSelectLeague: (league: string) => void;
@@ -37,37 +37,60 @@ export const Hero: React.FC<HeroProps> = ({
   ];
 
   const isHalloween = settings?.themeMode === 'halloween';
-  const featuredBadge = isHalloween ? '🎃 EDICIÓN DE MIEDO' : (settings?.featuredBadge || 'EDICIÓN DESTACADA');
+  const isChristmas = settings?.themeMode === 'christmas';
+  const featuredBadge = isChristmas
+    ? '🎄 EDICIÓN NAVIDEÑA'
+    : isHalloween
+    ? '🎃 EDICIÓN DE MIEDO'
+    : (settings?.featuredBadge || 'EDICIÓN DESTACADA');
   const featuredImage = normalizeImageSrc(settings?.featuredImage) || 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&q=80&w=800';
   const featuredLeague = settings?.featuredLeague || 'Selecciones';
   const featuredTitle = settings?.featuredTitle || 'España Local 26/27';
   const featuredRatingText = settings?.featuredRatingText || '(42 opiniones verificadas)';
-  const featuredPromoText = isHalloween ? '🎃 Estampado Nombre & Dorsal Embrujado' : (settings?.featuredPromoText || 'Estampado Nombre & Dorsal');
-  const featuredPromoBadge = isHalloween ? '¡GRATIS! 👻' : (settings?.featuredPromoBadge || '¡GRATIS! 🎁');
+  const featuredPromoText = isChristmas
+    ? '🎄 Estampado Navideño Nombre & Dorsal'
+    : isHalloween
+    ? '🎃 Estampado Nombre & Dorsal Embrujado'
+    : (settings?.featuredPromoText || 'Estampado Nombre & Dorsal');
+  const featuredPromoBadge = isChristmas
+    ? '¡REGALO GRATIS! 🎁'
+    : isHalloween
+    ? '¡GRATIS! 👻'
+    : (settings?.featuredPromoBadge || '¡GRATIS! 🎁');
 
-  const heroTagline = isHalloween ? '🎃 TEMPORADA HALLOWEEN / SPOOKY SEASON 👻' : (settings?.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25');
+  const heroTagline = isChristmas
+    ? '🎄 TEMPORADA NAVIDEÑA / COLECCIÓN OFICIAL ⚽'
+    : isHalloween
+    ? '🎃 TEMPORADA HALLOWEEN / SPOOKY SEASON 👻'
+    : (settings?.heroTagline || 'NEW ARRIVAL / TEMPORADA 24-25');
   const heroMainTitle = settings?.heroMainTitle || 'PASIÓN EN CADA PIEL';
-  const heroSubtitle = isHalloween
+  const heroSubtitle = isChristmas
+    ? '¡Celebra la temporada navideña con OFFSIDE! Camisetas oficiales de tus clubes y selecciones, réplicas retro de leyenda y balones profesionales con personalización y envíos directos a todo Costa Rica.'
+    : isHalloween
     ? '¡Celebra el mes del terror con OFFSIDE! Consigue las camisetas oficiales de tus equipos favoritos, selecciones y clásicos con personalización y estampados de miedo 100% gratuitos.'
     : (settings?.heroSubtitle || 'Consigue las camisetas oficiales de tus equipos favoritos, selecciones nacionales y ediciones históricas retro. Personaliza con tu nombre y dorsal oficial de cada liga.');
 
   return (
     <section className={`relative text-white overflow-hidden border-b border-white/10 py-12 md:py-20 transition-colors duration-500 ${
-      isHalloween ? 'bg-gradient-to-b from-[#0e0702] via-[#09060b] to-[#0a0a0a]' : 'bg-[#0a0a0a]'
+      isChristmas
+        ? 'bg-transparent border-red-500/20'
+        : isHalloween
+        ? 'bg-gradient-to-b from-[#0e0702] via-[#09060b] to-[#0a0a0a]'
+        : 'bg-[#0a0a0a]'
     }`}>
       
       {/* Massive Background Watermark Typography & Wave Contour Lines */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-[0.05] pointer-events-none select-none overflow-hidden">
-        <h1 className={`text-[18rem] sm:text-[28rem] lg:text-[38rem] font-black italic tracking-tighter uppercase whitespace-nowrap ${
-          isHalloween ? 'text-orange-500' : 'text-[#00e652]'
+      <div className="absolute inset-0 flex items-center justify-center opacity-[0.06] pointer-events-none select-none overflow-hidden">
+        <h1 className={`text-[16rem] sm:text-[24rem] lg:text-[32rem] font-black italic tracking-tighter uppercase whitespace-nowrap ${
+          isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-500' : 'text-[#00e652]'
         }`}>
-          {isHalloween ? 'HALLOWEEN' : 'OFFSIDE'}
+          {isChristmas ? 'FELIZ NAVIDAD' : isHalloween ? 'HALLOWEEN' : 'OFFSIDE'}
         </h1>
       </div>
 
       {/* Brand Flowing Energy Wavy Contour Lines Background */}
       <svg className="absolute inset-0 w-full h-full opacity-20 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-        <g stroke={isHalloween ? '#ff6b00' : '#00e652'} strokeWidth="1" fill="none" opacity={isHalloween ? 0.8 : 0.6}>
+        <g stroke={isChristmas ? '#dc2626' : isHalloween ? '#ff6b00' : '#00e652'} strokeWidth="1" fill="none" opacity={isChristmas || isHalloween ? 0.8 : 0.6}>
           <path d="M-100 100 C 300 400, 600 0, 1200 300 C 1800 600, 1500 100, 2000 400" />
           <path d="M-100 120 C 300 420, 600 20, 1200 320 C 1800 620, 1500 120, 2000 420" />
           <path d="M-100 140 C 300 440, 600 40, 1200 340 C 1800 640, 1500 140, 2000 440" />
@@ -84,10 +107,14 @@ export const Hero: React.FC<HeroProps> = ({
             
             {/* Top Tag */}
             <div className={`inline-flex items-center gap-2 border px-3 py-1.5 rounded-full text-xs font-black tracking-[0.2em] uppercase ${
-              isHalloween ? 'bg-orange-500/10 border-orange-500/30' : 'bg-white/5 border-white/10'
+              isChristmas
+                ? 'bg-red-950/40 border-amber-400/40 text-amber-300 shadow-[0_0_15px_rgba(220,38,38,0.25)]'
+                : isHalloween
+                ? 'bg-orange-500/10 border-orange-500/30 text-orange-400'
+                : 'bg-white/5 border-white/10 text-[#00e652]'
             }`}>
-              <span className={`w-2 h-2 rounded-full animate-ping ${isHalloween ? 'bg-orange-500' : 'bg-[#00e652]'}`} />
-              <span className={isHalloween ? 'text-orange-400' : 'text-[#00e652]'}>{heroTagline}</span>
+              <span className={`w-2 h-2 rounded-full animate-ping ${isChristmas ? 'bg-amber-400' : isHalloween ? 'bg-orange-500' : 'bg-[#00e652]'}`} />
+              <span>{heroTagline}</span>
             </div>
 
             {/* Main Bold Headline */}
@@ -96,7 +123,11 @@ export const Hero: React.FC<HeroProps> = ({
                 <>
                   {heroMainTitle.split('EN')[0]} EN <br />
                   <span className={`underline decoration-wavy ${
-                    isHalloween ? 'text-orange-500 decoration-orange-500/50' : 'text-[#00e652] decoration-[#00e652]/40'
+                    isChristmas
+                      ? 'text-amber-300 decoration-red-500/60'
+                      : isHalloween
+                      ? 'text-orange-500 decoration-orange-500/50'
+                      : 'text-[#00e652] decoration-[#00e652]/40'
                   }`}>
                     {heroMainTitle.split('EN').slice(1).join('EN').trim()}
                   </span>
@@ -106,28 +137,28 @@ export const Hero: React.FC<HeroProps> = ({
               )}
             </h1>
 
-            <p className="text-white/70 text-xs sm:text-base max-w-xl font-medium leading-relaxed">
+            <p className="text-white/80 text-xs sm:text-base max-w-xl font-medium leading-relaxed">
               {heroSubtitle}
             </p>
 
             {/* Value Props Checklist */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 pt-1 text-[10px] sm:text-xs font-black uppercase tracking-wider">
               <div className={`flex items-center gap-2 border p-2.5 sm:p-3 rounded-xl text-white ${
-                isHalloween ? 'bg-orange-950/20 border-orange-500/20' : 'bg-white/5 border-white/10'
+                isChristmas ? 'bg-[#1a0409]/70 border-red-500/30 shadow-md' : isHalloween ? 'bg-orange-950/20 border-orange-500/20' : 'bg-white/5 border-white/10'
               }`}>
-                <CheckCircle2 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
+                <CheckCircle2 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0 ${isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
                 <span>Calidad AAAA Premium</span>
               </div>
               <div className={`flex items-center gap-2 border p-2.5 sm:p-3 rounded-xl text-white ${
-                isHalloween ? 'bg-orange-950/20 border-orange-500/20' : 'bg-white/5 border-white/10'
+                isChristmas ? 'bg-[#1a0409]/70 border-red-500/30 shadow-md' : isHalloween ? 'bg-orange-950/20 border-orange-500/20' : 'bg-white/5 border-white/10'
               }`}>
-                <CheckCircle2 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
-                <span>{isHalloween ? 'Estampado Gratis 🎃' : 'Estampado Oficial'}</span>
+                <CheckCircle2 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0 ${isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
+                <span>{isChristmas ? 'Estampado Gratis 🎁' : isHalloween ? 'Estampado Gratis 🎃' : 'Estampado Oficial'}</span>
               </div>
               <div className={`col-span-2 sm:col-span-1 flex items-center gap-2 border p-2.5 sm:p-3 rounded-xl text-white ${
-                isHalloween ? 'bg-orange-950/20 border-orange-500/20' : 'bg-white/5 border-white/10'
+                isChristmas ? 'bg-[#1a0409]/70 border-red-500/30 shadow-md' : isHalloween ? 'bg-orange-950/20 border-orange-500/20' : 'bg-white/5 border-white/10'
               }`}>
-                <CheckCircle2 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
+                <CheckCircle2 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0 ${isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
                 <span>Garantía de Satisfacción</span>
               </div>
             </div>
@@ -137,13 +168,15 @@ export const Hero: React.FC<HeroProps> = ({
               <button
                 onClick={onExploreClick}
                 className={`flex-1 sm:flex-none font-black px-6 sm:px-8 py-3.5 sm:py-4 uppercase text-xs sm:text-sm tracking-widest skew-x-[-10deg] transition-all cursor-pointer shadow-xl flex items-center justify-center gap-2 sm:gap-3 group ${
-                  isHalloween
+                  isChristmas
+                    ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white shadow-[0_0_25px_rgba(220,38,38,0.5)] border border-amber-400/40'
+                    : isHalloween
                     ? 'bg-orange-500 hover:bg-white text-black shadow-orange-500/30'
                     : 'bg-[#00e652] hover:bg-white text-black'
                 }`}
               >
                 <div className="skew-x-[10deg] flex items-center gap-2">
-                  <span>{isHalloween ? 'Explorar Colección de Terror 🎃' : 'Explorar Catálogo'}</span>
+                  <span>{isChristmas ? 'Explorar Colección Navideña 🎄' : isHalloween ? 'Explorar Colección de Terror 🎃' : 'Explorar Catálogo'}</span>
                   <ArrowRight className="w-4 h-4 stroke-[3] group-hover:translate-x-1 transition-transform" />
                 </div>
               </button>
@@ -151,10 +184,14 @@ export const Hero: React.FC<HeroProps> = ({
               <button
                 onClick={() => onSelectLeague('Clásicos Retro')}
                 className={`flex-1 sm:flex-none text-white border font-black px-5 sm:px-6 py-3.5 sm:py-4 text-xs sm:text-sm uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                  isHalloween ? 'bg-white/5 hover:bg-orange-500/20 border-orange-500/30 hover:border-orange-500' : 'bg-white/5 hover:bg-white/10 border-white/20'
+                  isChristmas
+                    ? 'bg-white/5 hover:bg-red-500/20 border-red-500/40 hover:border-amber-400 text-rose-100'
+                    : isHalloween
+                    ? 'bg-white/5 hover:bg-orange-500/20 border-orange-500/30 hover:border-orange-500'
+                    : 'bg-white/5 hover:bg-white/10 border-white/20'
                 }`}
               >
-                <Trophy className={`w-4 h-4 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
+                <Trophy className={`w-4 h-4 ${isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
                 <span>Colección Retro</span>
               </button>
 
@@ -162,12 +199,14 @@ export const Hero: React.FC<HeroProps> = ({
                 <button
                   onClick={onExploreBalls}
                   className={`flex-1 sm:flex-none border font-black px-5 sm:px-6 py-3.5 sm:py-4 text-xs sm:text-sm uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                    isHalloween
+                    isChristmas
+                      ? 'bg-gradient-to-r from-[#064e3b] to-[#047857] hover:from-[#047857] hover:to-[#059669] text-amber-200 border-amber-400/40 shadow-emerald-900/40'
+                      : isHalloween
                       ? 'bg-orange-500/10 hover:bg-orange-500 text-orange-400 hover:text-black border-orange-500/40'
                       : 'bg-[#00e652]/10 hover:bg-[#00e652] text-[#00e652] hover:text-black border-[#00e652]/40'
                   }`}
                 >
-                  <span className="text-base">{isHalloween ? '🦇' : '⚽'}</span>
+                  <span className="text-base">{isChristmas ? '🎁' : isHalloween ? '🦇' : '⚽'}</span>
                   <span>Ver Balones</span>
                 </button>
               )}
@@ -176,7 +215,9 @@ export const Hero: React.FC<HeroProps> = ({
                 <button
                   onClick={onOpenAdminToHero}
                   className={`px-3.5 py-3.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 ${
-                    isHalloween
+                    isChristmas
+                      ? 'bg-white/5 hover:bg-gradient-to-r hover:from-red-600 hover:to-rose-600 text-white/80 hover:text-white border border-red-500/30'
+                      : isHalloween
                       ? 'bg-white/5 hover:bg-orange-500 text-white/70 hover:text-black border border-orange-500/30'
                       : 'bg-white/5 hover:bg-[#00e652] text-white/70 hover:text-black border border-white/10'
                   }`}
@@ -193,7 +234,9 @@ export const Hero: React.FC<HeroProps> = ({
           {/* Right Showcase Card */}
           <div className="lg:col-span-5 flex justify-center">
             <div className={`relative w-full max-w-md p-4 sm:p-6 rounded-3xl shadow-2xl overflow-hidden group transition-all duration-300 ${
-              isHalloween
+              isChristmas
+                ? 'bg-[#180307]/85 backdrop-blur-md border border-red-500/40 shadow-[0_8px_32px_rgba(185,28,28,0.35)]'
+                : isHalloween
                 ? 'bg-gradient-to-b from-[#18110b] via-[#120e14] to-black border border-orange-500/40 shadow-orange-950/60'
                 : 'bg-[#121212] border border-white/10'
             }`}>
@@ -206,7 +249,9 @@ export const Hero: React.FC<HeroProps> = ({
                     onOpenAdminToHero();
                   }}
                   className={`absolute top-4 left-4 z-20 text-[11px] font-black uppercase px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer shadow-xl backdrop-blur-md hover:scale-105 ${
-                    isHalloween
+                    isChristmas
+                      ? 'bg-black/90 hover:bg-red-600 text-amber-300 hover:text-white border border-red-500/50'
+                      : isHalloween
                       ? 'bg-black/90 hover:bg-orange-500 text-orange-400 hover:text-black border border-orange-500/50'
                       : 'bg-black/90 hover:bg-[#00e652] text-[#00e652] hover:text-black border border-[#00e652]/50'
                   }`}
@@ -217,8 +262,12 @@ export const Hero: React.FC<HeroProps> = ({
                 </button>
               )}
 
-              <div className={`absolute top-4 right-4 text-black font-black text-[10px] uppercase px-3 py-1 rounded-sm z-10 tracking-widest ${
-                isHalloween ? 'bg-orange-500 shadow-lg shadow-orange-500/30' : 'bg-[#00e652]'
+              <div className={`absolute top-4 right-4 font-black text-[10px] uppercase px-3 py-1 rounded-sm z-10 tracking-widest ${
+                isChristmas
+                  ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/40 shadow-lg shadow-red-600/30'
+                  : isHalloween
+                  ? 'bg-orange-500 text-black shadow-lg shadow-orange-500/30'
+                  : 'bg-[#00e652] text-black'
               }`}>
                 {featuredBadge}
               </div>
@@ -229,7 +278,7 @@ export const Hero: React.FC<HeroProps> = ({
                 className="relative h-64 sm:h-80 w-full overflow-hidden rounded-2xl bg-black flex items-center justify-center border border-white/10 cursor-pointer"
               >
                 <img
-                  src={featuredImage}
+                  src={featuredImage || DEFAULT_JERSEY_FALLBACK_IMAGE}
                   alt={featuredTitle}
                   referrerPolicy="no-referrer"
                   onError={handleImageError}
@@ -238,7 +287,7 @@ export const Hero: React.FC<HeroProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-90" />
                 
                 <div className="absolute bottom-4 left-4 right-4 text-left">
-                  <p className={`text-xs font-black uppercase tracking-widest ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>{featuredLeague}</p>
+                  <p className={`text-xs font-black uppercase tracking-widest ${isChristmas ? 'text-red-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>{featuredLeague}</p>
                   <h3 className="text-xl font-black italic uppercase text-white tracking-tight">{featuredTitle}</h3>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-amber-400 text-xs">★★★★★</span>
@@ -250,11 +299,13 @@ export const Hero: React.FC<HeroProps> = ({
               {/* Stamp feature teaser */}
               <div className="mt-4 p-3.5 bg-black rounded-xl border border-white/10 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
-                  <Sparkles className={`w-4 h-4 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
+                  <Sparkles className={`w-4 h-4 ${isChristmas ? 'text-red-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
                   <span className="text-white/80 font-bold text-[11px] sm:text-xs">{featuredPromoText}</span>
                 </div>
                 <span className={`font-black uppercase text-[10px] px-2.5 py-1 rounded whitespace-nowrap border ${
-                  isHalloween
+                  isChristmas
+                    ? 'text-amber-200 bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] border-amber-400/40 shadow-sm'
+                    : isHalloween
                     ? 'text-orange-400 bg-orange-500/10 border-orange-500/40'
                     : 'text-[#00e652] bg-[#00e652]/10 border-[#00e652]/40'
                 }`}>
@@ -280,7 +331,7 @@ export const Hero: React.FC<HeroProps> = ({
                   onClick={() => onSelectLeague(badge.id)}
                   className={`flex-shrink-0 flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 text-xs font-black uppercase tracking-wider transition-all cursor-pointer rounded-lg sm:rounded-none ${
                     isSelected
-                      ? isHalloween ? 'bg-orange-500 text-black shadow-lg shadow-orange-500/30' : 'bg-[#00e652] text-black shadow-lg shadow-[#00e652]/20'
+                      ? isChristmas ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/50 shadow-lg shadow-red-700/40' : isHalloween ? 'bg-orange-500 text-black shadow-lg shadow-orange-500/30' : 'bg-[#00e652] text-black shadow-lg shadow-[#00e652]/20'
                       : 'bg-white/5 hover:bg-white/10 text-white/80 border border-white/10'
                   }`}
                 >

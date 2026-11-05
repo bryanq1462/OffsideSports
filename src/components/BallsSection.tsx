@@ -32,6 +32,7 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
   onOpenDetail,
   onOpenAdminToBalls
 }) => {
+  const isChristmas = settings?.themeMode === 'christmas';
   const isHalloween = settings?.themeMode === 'halloween';
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('all');
@@ -313,6 +314,7 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
               onQuickAdd={onQuickAdd}
               onOpenDetail={onOpenDetail}
               isHalloween={isHalloween}
+              isChristmas={isChristmas}
             />
           ))}
         </div>
@@ -320,13 +322,17 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
 
       {/* Wholesale & Custom Orders CTA */}
       <div className={`p-6 sm:p-8 rounded-3xl border flex flex-col sm:flex-row items-center justify-between gap-4 transition-all ${
-        isHalloween
+        isChristmas
+          ? 'bg-gradient-to-r from-[#220207]/90 via-[#14050b]/90 to-[#220207]/90 border-red-500/40 shadow-[0_0_25px_rgba(220,38,38,0.25)]'
+          : isHalloween
           ? 'bg-gradient-to-r from-orange-950/40 via-black to-purple-950/40 border-orange-500/40 shadow-[0_0_25px_rgba(255,107,0,0.15)]'
           : 'bg-gradient-to-r from-emerald-950/40 via-black to-emerald-950/40 border-[#00e652]/30'
       }`}>
         <div className="space-y-1 text-center sm:text-left">
-          <span className={`text-[10px] font-black uppercase tracking-widest ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>
-            {isHalloween ? '🎃 PRECIOS DE TERROR POR MAYOR & EQUIPOS' : 'PRECIOS POR MAYOR & EQUIPOS'}
+          <span className={`text-[10px] font-black uppercase tracking-widest ${
+            isChristmas ? 'text-amber-300' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+          }`}>
+            {isChristmas ? '🎄 BALONES OFICIALES & PRECIOS POR MAYOR' : isHalloween ? '🎃 PRECIOS DE TERROR POR MAYOR & EQUIPOS' : 'PRECIOS POR MAYOR & EQUIPOS'}
           </span>
           <h3 className="text-lg sm:text-xl font-black uppercase text-white">
             ¿Ocupas balones para tu equipo, academia o torneo?
@@ -341,7 +347,9 @@ export const BallsSection: React.FC<BallsSectionProps> = ({
           target="_blank"
           rel="noreferrer"
           className={`flex-shrink-0 font-black text-xs uppercase tracking-wider px-5 py-3 rounded-2xl flex items-center gap-2 shadow-xl hover:scale-105 transition-all cursor-pointer ${
-            isHalloween
+            isChristmas
+              ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white border border-amber-400/40 shadow-red-700/40'
+              : isHalloween
               ? 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30'
               : 'bg-[#00e652] hover:bg-white text-black'
           }`}

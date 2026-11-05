@@ -61,7 +61,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ settings }) => {
   );
 
   return (
-    <section id="contact-zone" className="bg-[#0a0a0a] text-white py-12 md:py-20 border-t border-white/10">
+    <section id="contact-zone" className="bg-transparent text-white py-12 md:py-20 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Section Header */}

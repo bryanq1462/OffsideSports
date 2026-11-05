@@ -32,7 +32,7 @@ import {
 } from 'lucide-react';
 import { Jersey, Order, OrderStatus, League, JerseyType, JerseyVersion, GenderCategory, Size, StoreSettings, SportCategory, DiscountCode, Ball } from '../types';
 import { formatPrice, getCleanCRC } from '../utils/storage';
-import { handleImageError, compressImageFile } from '../utils/imageUtils';
+import { handleImageError, compressImageFile, DEFAULT_JERSEY_FALLBACK_IMAGE } from '../utils/imageUtils';
 import { getJerseyVersionInfo } from '../utils/jerseyUtils';
 import { INITIAL_LEAGUES, LEAGUE_FLAGS, SPORTS_LIST } from '../data/mockData';
 import { AdminBallsTab } from './AdminBallsTab';
@@ -53,6 +53,7 @@ interface AdminPanelProps {
   onUpdateOrders: (updated: Order[]) => void;
   onUpdateSettings: (updated: StoreSettings) => void;
   onUpdateDiscountCodes: (updated: DiscountCode[]) => void;
+  onDeleteDiscountCode?: (couponId: string) => Promise<void>;
   onClose: () => void;
   initialTab?: 'inventory' | 'balls' | 'hero' | 'settings' | 'orders' | 'stats' | 'coupons';
 }
@@ -73,6 +74,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   onUpdateOrders,
   onUpdateSettings,
   onUpdateDiscountCodes,
+  onDeleteDiscountCode,
   onClose,
   initialTab = 'inventory'
 }) => {
@@ -120,7 +122,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [settingsSavedMessage, setSettingsSavedMessage] = useState(false);
   const [themeMessage, setThemeMessage] = useState<string>('');
 
-  const handleToggleTheme = (mode: 'default' | 'halloween') => {
+  const handleToggleTheme = (mode: 'default' | 'halloween' | 'christmas') => {
     const updated: StoreSettings = {
       ...localSettings,
       themeMode: mode
@@ -128,9 +130,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setLocalSettings(updated);
     onUpdateSettings(updated);
     setThemeMessage(
-      mode === 'halloween'
-        ? '🎃 ¡Interfaz de HALLOWEEN aplicada en vivo para todos los visitantes!'
-        : '⚽ ¡Interfaz NORMAL (Verde Neón) restaurada para todos los visitantes!'
+      mode === 'christmas'
+        ? '🎄 ¡Interfaz de NAVIDAD aplicada en vivo para todos los visitantes! 🎅❄️'
+        : mode === 'halloween'
+          ? '🎃 ¡Interfaz de HALLOWEEN aplicada en vivo para todos los visitantes!'
+          : '⚽ ¡Interfaz NORMAL (Verde Neón) restaurada para todos los visitantes!'
     );
     setTimeout(() => setThemeMessage(''), 4500);
   };
@@ -441,7 +445,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         onUpdateJerseys(jerseys.filter(j => j.id !== deleteTarget.id));
       }
     } else if (deleteTarget.type === 'coupon') {
-      onUpdateDiscountCodes(discountCodes.filter(d => d.id !== deleteTarget.id));
+      if (onDeleteDiscountCode) {
+        await onDeleteDiscountCode(deleteTarget.id);
+      } else {
+        onUpdateDiscountCodes(discountCodes.filter(d => d.id !== deleteTarget.id));
+      }
     }
     setDeleteTarget(null);
   };
@@ -601,19 +609,33 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* Quick theme toggle in header */}
+            {/* Quick theme toggles in header */}
             <button
               type="button"
-              onClick={() => handleToggleTheme(localSettings.themeMode === 'halloween' ? 'default' : 'halloween')}
-              className={`px-2 sm:px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider flex items-center gap-1.5 border transition cursor-pointer shadow-md ${
-                localSettings.themeMode === 'halloween'
-                  ? 'bg-orange-500/20 text-orange-400 border-orange-500/50 hover:bg-orange-500 hover:text-black shadow-orange-500/20'
+              onClick={() => handleToggleTheme('christmas')}
+              className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider flex items-center gap-1.5 border transition cursor-pointer shadow-md ${
+                localSettings.themeMode === 'christmas'
+                  ? 'bg-rose-600 text-white border-rose-400 shadow-rose-600/30 ring-2 ring-rose-400/50'
+                  : 'bg-white/5 text-white/80 border-white/15 hover:bg-rose-600 hover:text-white'
+              }`}
+              title="Activar o mantener Interfaz de Navidad"
+            >
+              <span>🎄</span>
+              <span className="hidden sm:inline">{localSettings.themeMode === 'christmas' ? 'Navidad Activa' : 'Navidad'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleToggleTheme(localSettings.themeMode === 'default' ? 'christmas' : 'default')}
+              className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider flex items-center gap-1.5 border transition cursor-pointer shadow-md ${
+                localSettings.themeMode === 'default'
+                  ? 'bg-[#00e652] text-black border-[#00e652]'
                   : 'bg-white/5 text-white/80 border-white/15 hover:bg-[#00e652] hover:text-black'
               }`}
-              title={localSettings.themeMode === 'halloween' ? 'Tema Halloween activo. Clic para cambiar a Normal' : 'Tema Normal activo. Clic para cambiar a Halloween'}
+              title="Restaurar Interfaz Normal Verde Neón"
             >
-              <span>{localSettings.themeMode === 'halloween' ? '🎃' : '⚽'}</span>
-              <span className="hidden sm:inline">{localSettings.themeMode === 'halloween' ? 'Halloween Activo' : 'Tema Normal'}</span>
+              <span>⚽</span>
+              <span className="hidden sm:inline">Normal</span>
             </button>
 
             <button
@@ -785,24 +807,33 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           
           {/* Global Store Theme Control (Compact Seasonal Banner) */}
           <div className={`p-3 sm:p-3.5 rounded-2xl border transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
-            localSettings.themeMode === 'halloween'
+            localSettings.themeMode === 'christmas'
+              ? 'bg-gradient-to-r from-[#220207]/90 via-[#14050b]/90 to-[#220207]/90 border-red-500/50 shadow-[0_0_25px_rgba(220,38,38,0.3)]'
+              : localSettings.themeMode === 'halloween'
               ? 'bg-gradient-to-r from-orange-950/80 via-black to-purple-950/80 border-orange-500/60 shadow-[0_0_20px_rgba(255,107,0,0.25)]'
               : 'bg-[#121212] border-white/10'
           }`}>
             <div className="flex items-center gap-2.5 min-w-0">
               <div className={`p-2 rounded-xl text-xl flex-shrink-0 ${
-                localSettings.themeMode === 'halloween'
+                localSettings.themeMode === 'christmas'
+                  ? 'bg-[#7f1d1d]/40 border border-amber-400/40 text-amber-300'
+                  : localSettings.themeMode === 'halloween'
                   ? 'bg-orange-500/20 border border-orange-500/40 text-orange-400'
                   : 'bg-white/5 border border-white/10 text-[#00e652]'
               }`}>
-                {localSettings.themeMode === 'halloween' ? '🎃' : '⚽'}
+                {localSettings.themeMode === 'christmas' ? '🎄' : localSettings.themeMode === 'halloween' ? '🎃' : '⚽'}
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h4 className="text-xs sm:text-sm font-black italic uppercase text-white tracking-wider">
                     TEMA TIENDA:
                   </h4>
-                  {localSettings.themeMode === 'halloween' ? (
+                  {localSettings.themeMode === 'christmas' ? (
+                    <span className="bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/50 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1.5 shadow-md shadow-red-700/40 animate-pulse">
+                      <span>🎄</span>
+                      <span>MODO NAVIDAD ACTIVO (EN VIVO)</span>
+                    </span>
+                  ) : localSettings.themeMode === 'halloween' ? (
                     <span className="bg-orange-500 text-black text-[10px] font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm shadow-orange-500/40 animate-pulse">
                       🎃 MODO HALLOWEEN ACTIVO
                     </span>
@@ -812,8 +843,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     </span>
                   )}
                 </div>
-                <p className="text-[10px] sm:text-[11px] text-white/60 truncate max-w-xl">
-                  {localSettings.themeMode === 'halloween'
+                <p className="text-[10px] sm:text-[11px] text-white/70 truncate max-w-xl">
+                  {localSettings.themeMode === 'christmas'
+                    ? 'Toda la tienda está en temática Navidad con guirnaldas, luces, nieve y degradado continuo en tiempo real.'
+                    : localSettings.themeMode === 'halloween'
                     ? 'Todo el sitio web está en temática Spooky Halloween en tiempo real para todos.'
                     : 'Diseño original en Verde Neón activo en tiempo real para todos los visitantes.'}
                 </p>
@@ -825,7 +858,37 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0">
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0 flex-wrap">
+              <button
+                type="button"
+                onClick={() => handleToggleTheme('christmas')}
+                disabled={localSettings.themeMode === 'christmas'}
+                className={`flex-1 sm:flex-none px-3.5 sm:px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  localSettings.themeMode === 'christmas'
+                    ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/50 shadow-md shadow-red-700/40 cursor-not-allowed opacity-90'
+                    : 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white border border-amber-400/40 shadow-md shadow-red-700/30 active:scale-95'
+                }`}
+                title="Activar Interfaz de Navidad en vivo para todos los visitantes"
+              >
+                <span>🎄</span>
+                <span>Navidad</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleToggleTheme('default')}
+                disabled={localSettings.themeMode === 'default'}
+                className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  localSettings.themeMode === 'default'
+                    ? 'bg-white/5 text-white/30 border border-white/10 cursor-not-allowed opacity-60'
+                    : 'bg-white hover:bg-[#00e652] text-black active:scale-95'
+                }`}
+                title="Volver a la Interfaz Normal"
+              >
+                <span>⚽</span>
+                <span>Normal</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => handleToggleTheme('halloween')}
@@ -839,21 +902,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               >
                 <span>🎃</span>
                 <span>Halloween</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleToggleTheme('default')}
-                disabled={localSettings.themeMode !== 'halloween'}
-                className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                  localSettings.themeMode !== 'halloween'
-                    ? 'bg-white/5 text-white/30 border border-white/10 cursor-not-allowed opacity-60'
-                    : 'bg-white hover:bg-[#00e652] text-black active:scale-95'
-                }`}
-                title="Volver a la Interfaz Normal"
-              >
-                <span>⚽</span>
-                <span>Normal</span>
               </button>
             </div>
           </div>
@@ -902,7 +950,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       <tr key={jersey.id} className="hover:bg-white/5 transition">
                         <td className="p-3 flex items-center gap-3">
                           <img
-                            src={jersey.image}
+                            src={jersey.image || DEFAULT_JERSEY_FALLBACK_IMAGE}
                             alt={jersey.name}
                             referrerPolicy="no-referrer"
                             onError={handleImageError}
@@ -1092,7 +1140,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                 className="flex items-center gap-2.5 p-2 bg-black hover:bg-[#00e652]/20 border border-white/10 hover:border-[#00e652] rounded-xl text-left transition group cursor-pointer"
                               >
                                 <img
-                                  src={j.image}
+                                  src={j.image || DEFAULT_JERSEY_FALLBACK_IMAGE}
                                   alt={j.name}
                                   className="w-10 h-10 object-cover rounded-lg bg-neutral-900 shrink-0"
                                   onError={handleImageError}
@@ -1712,11 +1760,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 {/* Banner & Hero Quick Link */}
                 <div className="space-y-4 bg-[#121212] p-5 border border-white/10 rounded-2xl flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-3">
-                    {localSettings.featuredImage && (
+                    {Boolean(localSettings.featuredImage && localSettings.featuredImage.trim()) && (
                       <img
                         src={localSettings.featuredImage}
                         alt="Portada"
                         className="w-14 h-14 object-cover rounded-xl border border-white/20 bg-neutral-900 shrink-0"
+                        onError={handleImageError}
                       />
                     )}
                     <div>
@@ -1739,18 +1788,27 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </button>
                 </div>
 
-                {/* Card: TEMA DE TEMPORADA (HALLOWEEN VS NORMAL) */}
-                <div className={`p-5 rounded-2xl border transition-all duration-300 space-y-4 ${
-                  localSettings.themeMode === 'halloween'
+                {/* Card: TEMA DE TEMPORADA (NAVIDAD / HALLOWEEN / NORMAL) */}
+                <div className={`p-5 sm:p-6 rounded-2xl border transition-all duration-300 space-y-4 ${
+                  localSettings.themeMode === 'christmas'
+                    ? 'bg-gradient-to-r from-[#220207]/90 via-[#14050b]/90 to-[#220207]/90 border-red-500/50 shadow-[0_0_30px_rgba(220,38,38,0.25)]'
+                    : localSettings.themeMode === 'halloween'
                     ? 'bg-gradient-to-br from-orange-950/70 via-black to-purple-950/70 border-orange-500/60 shadow-[0_0_20px_rgba(255,107,0,0.25)]'
                     : 'bg-[#121212] border-white/10'
                 }`}>
                   <div className="flex items-center justify-between flex-wrap gap-2">
                     <h4 className="text-sm font-black italic uppercase text-white flex items-center gap-2">
-                      <span className="text-xl">🎃</span>
-                      <span>TEMA & PERSONALIZACIÓN DE TEMPORADA (HALLOWEEN)</span>
+                      <span className="text-xl">
+                        {localSettings.themeMode === 'christmas' ? '🎄' : localSettings.themeMode === 'halloween' ? '🎃' : '🎨'}
+                      </span>
+                      <span>PERSONALIZAR TEMA DE LA TIENDA (GLOBAL)</span>
                     </h4>
-                    {localSettings.themeMode === 'halloween' ? (
+                    {localSettings.themeMode === 'christmas' ? (
+                      <span className="bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/50 font-black text-[10px] uppercase px-3 py-1 rounded-full shadow-lg flex items-center gap-1.5 animate-pulse">
+                        <span>🎄</span>
+                        <span>MODO NAVIDAD ACTIVO</span>
+                      </span>
+                    ) : localSettings.themeMode === 'halloween' ? (
                       <span className="bg-orange-500 text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full animate-pulse">
                         🎃 MODO HALLOWEEN ACTIVO
                       </span>
@@ -1761,9 +1819,40 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     )}
                   </div>
                   <p className="text-xs text-white/70 leading-relaxed">
-                    Personaliza toda la interfaz pública de la tienda con temática de Halloween en un solo clic. El cambio se aplica en tiempo real para todos los visitantes del sitio web de forma inmediata.
+                    Personaliza toda la interfaz pública de la tienda para tus clientes. Al activar el <strong className="text-white">Modo Navidad</strong>, todos los visitantes verán nieve animada, luces navideñas, efectos reactivos de estrellas y copos al mover el mouse, paleta navideña roja/dorada/esmeralda y detalles temáticos en tiempo real.
                   </p>
                   <div className="flex flex-wrap items-center gap-3 pt-1">
+                    {/* Botón Navidad */}
+                    <button
+                      type="button"
+                      onClick={() => handleToggleTheme('christmas')}
+                      disabled={localSettings.themeMode === 'christmas'}
+                      className={`px-5 py-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transition cursor-pointer shadow-lg ${
+                        localSettings.themeMode === 'christmas'
+                          ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/50 cursor-not-allowed opacity-90 shadow-red-700/40'
+                          : 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white border border-amber-400/40 shadow-red-700/40 hover:scale-105 active:scale-95'
+                      }`}
+                    >
+                      <span className="text-base">🎄</span>
+                      <span>Activar Interfaz de Navidad</span>
+                    </button>
+
+                    {/* Botón Normal */}
+                    <button
+                      type="button"
+                      onClick={() => handleToggleTheme('default')}
+                      disabled={localSettings.themeMode === 'default'}
+                      className={`px-5 py-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transition cursor-pointer shadow-lg ${
+                        localSettings.themeMode === 'default'
+                          ? 'bg-white/5 text-white/40 border border-white/10 cursor-not-allowed opacity-75'
+                          : 'bg-white hover:bg-[#00e652] text-black hover:scale-105 active:scale-95'
+                      }`}
+                    >
+                      <span className="text-base">⚽</span>
+                      <span>Volver a la Interfaz Normal</span>
+                    </button>
+
+                    {/* Botón Halloween */}
                     <button
                       type="button"
                       onClick={() => handleToggleTheme('halloween')}
@@ -1774,21 +1863,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           : 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30 hover:scale-105 active:scale-95'
                       }`}
                     >
-                      <span>🎃</span>
-                      <span>Activar Interfaz de Halloween</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleToggleTheme('default')}
-                      disabled={localSettings.themeMode !== 'halloween'}
-                      className={`px-5 py-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transition cursor-pointer shadow-lg ${
-                        localSettings.themeMode !== 'halloween'
-                          ? 'bg-white/5 text-white/40 border border-white/10 cursor-not-allowed opacity-75'
-                          : 'bg-white hover:bg-[#00e652] text-black hover:scale-105 active:scale-95'
-                      }`}
-                    >
-                      <span>⚽</span>
-                      <span>Volver a la Interfaz Actual</span>
+                      <span className="text-base">🎃</span>
+                      <span>Activar Halloween</span>
                     </button>
                   </div>
                 </div>
@@ -2539,10 +2615,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     
                     {/* Preview Box */}
                     <div className="h-36 bg-[#1a1a1a] border border-dashed border-white/20 rounded-lg flex items-center justify-center overflow-hidden relative group">
-                      {editingJersey.image ? (
+                      {Boolean(editingJersey.image && editingJersey.image.trim()) ? (
                         <>
                           <img 
-                            src={editingJersey.image} 
+                            src={editingJersey.image || DEFAULT_JERSEY_FALLBACK_IMAGE} 
                             alt="Vista Previa Frente" 
                             referrerPolicy="no-referrer"
                             onError={handleImageError}
@@ -2593,10 +2669,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     
                     {/* Preview Box */}
                     <div className="h-36 bg-[#1a1a1a] border border-dashed border-white/20 rounded-lg flex items-center justify-center overflow-hidden relative group">
-                      {editingJersey.backImage ? (
+                      {Boolean(editingJersey.backImage && editingJersey.backImage.trim()) ? (
                         <>
                           <img 
-                            src={editingJersey.backImage} 
+                            src={editingJersey.backImage || DEFAULT_JERSEY_FALLBACK_IMAGE} 
                             alt="Vista Previa Espalda" 
                             referrerPolicy="no-referrer"
                             onError={handleImageError}
@@ -2666,9 +2742,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                   {editingJersey.images && editingJersey.images.length > 0 ? (
                     <div className="flex flex-wrap gap-2 pt-1">
-                      {editingJersey.images.map((imgUrl, idx) => (
+                      {editingJersey.images.filter((img) => Boolean(img && img.trim())).map((imgUrl, idx) => (
                         <div key={idx} className="relative w-16 h-20 bg-black border border-white/20 rounded-lg overflow-hidden group">
-                          <img src={imgUrl} alt={`Detalle ${idx + 1}`} referrerPolicy="no-referrer" onError={handleImageError} className="w-full h-full object-cover" />
+                          <img src={imgUrl || DEFAULT_JERSEY_FALLBACK_IMAGE} alt={`Detalle ${idx + 1}`} referrerPolicy="no-referrer" onError={handleImageError} className="w-full h-full object-cover" />
                           <button
                             type="button"
                             onClick={() => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   Trash2, 
@@ -42,6 +42,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [couponCode, setCouponCode] = useState('');
   const [couponApplied, setCouponApplied] = useState<{ code: string; percent: number } | null>(null);
   const [couponError, setCouponError] = useState('');
+  const isChristmas = settings?.themeMode === 'christmas';
   const isHalloween = settings?.themeMode === 'halloween';
 
   if (!isOpen) return null;
@@ -62,29 +63,39 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const shipping = subtotal > 0 ? shippingFee : 0;
   const total = subtotal - discount + shipping;
 
+  // Automatically revoke applied coupon if deleted or deactivated by admin
+  useEffect(() => {
+    if (couponApplied) {
+      const match = discountCodes.find(
+        d => d.code.toUpperCase() === couponApplied.code.toUpperCase() && d.active
+      );
+      if (!match) {
+        setCouponApplied(null);
+        setCouponError('El cupón aplicado fue eliminado o ya no está disponible.');
+      } else if (match.percentage !== couponApplied.percent) {
+        setCouponApplied({ code: match.code, percent: match.percentage });
+      }
+    }
+  }, [discountCodes, couponApplied]);
+
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
     setCouponError('');
     const code = couponCode.trim().toUpperCase();
     if (!code) return;
 
-    // Search in dynamic discount codes first
+    // Search ONLY in registered and active discount codes
     const match = discountCodes.find(d => d.code.toUpperCase() === code && d.active);
     if (match) {
       setCouponApplied({ code: match.code, percent: match.percentage });
       setCouponError('');
-    } else if (code === 'OFFSIDE10') {
-      setCouponApplied({ code, percent: 10 });
-    } else if (code === 'GOLAZO' || code === 'CR7') {
-      setCouponApplied({ code, percent: 15 });
-    } else if (code === 'BIENVENIDO') {
-      setCouponApplied({ code, percent: 20 });
     } else {
+      setCouponApplied(null);
       const activeCodesList = discountCodes.filter(d => d.active).map(d => d.code).join(', ');
       setCouponError(
         activeCodesList
-          ? `Cupón no válido. Cupones activos: ${activeCodesList}`
-          : 'Cupón no válido. Por favor verifica el código ingresado.'
+          ? `Cupón no válido o inactivo. Cupones activos: ${activeCodesList}`
+          : 'Cupón no válido o inactivo. Por favor verifica el código ingresado.'
       );
     }
   };
@@ -97,23 +108,35 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         <div className="w-screen max-w-md bg-[#0a0a0a] border-l border-white/10 text-white flex flex-col shadow-2xl">
           
           {/* Header */}
-          <div className="p-5 border-b border-white/10 bg-black flex items-center justify-between">
+          <div className={`p-5 border-b flex items-center justify-between ${
+            isChristmas 
+              ? 'bg-gradient-to-r from-[#220207] via-[#14050b] to-[#220207] border-red-500/40' 
+              : 'bg-black border-white/10'
+          }`}>
             <div className="flex items-center gap-3">
-              <div className={`p-2 ${isHalloween ? 'bg-orange-500 shadow-orange-500/30' : 'bg-[#00e652]'} text-black font-black skew-x-[-10deg]`}>
+              <div className={`p-2 ${
+                isChristmas 
+                  ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/50 shadow-md' 
+                  : isHalloween ? 'bg-orange-500 shadow-orange-500/30 text-black' : 'bg-[#00e652] text-black'
+              } font-black skew-x-[-10deg]`}>
                 <ShoppingBag className="w-5 h-5 stroke-[3] skew-x-[10deg]" />
               </div>
               <div>
                 <h2 className="text-lg font-black italic uppercase tracking-wider text-white">
-                  {isHalloween ? 'TU CARRITO EMBRUJADO 🎃' : 'TU CARRITO DE COMPRAS'}
+                  {isChristmas ? 'TU CARRITO NAVIDEÑO 🎄' : isHalloween ? 'TU CARRITO EMBRUJADO 🎃' : 'TU CARRITO DE COMPRAS'}
                 </h2>
-                <p className={`text-[11px] ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'} font-black uppercase tracking-widest`}>
+                <p className={`text-[11px] ${
+                  isChristmas ? 'text-amber-300' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+                } font-black uppercase tracking-widest`}>
                   {cart.length} {cart.length === 1 ? 'PRODUCTO' : 'PRODUCTOS'}
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className={`p-2 bg-white/10 ${isHalloween ? 'hover:bg-orange-500' : 'hover:bg-[#00e652]'} text-white hover:text-black transition cursor-pointer`}
+              className={`p-2 bg-white/10 ${
+                isChristmas ? 'hover:bg-red-600 hover:text-white' : isHalloween ? 'hover:bg-orange-500 hover:text-black' : 'hover:bg-[#00e652] hover:text-black'
+              } text-white transition cursor-pointer`}
             >
               <X className="w-5 h-5 stroke-[2.5]" />
             </button>
@@ -237,7 +260,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
           {/* Footer & Checkout */}
           {cart.length > 0 && (
-            <div className="p-5 border-t border-white/10 bg-black space-y-4">
+            <div className={`p-5 border-t space-y-4 ${
+              isChristmas ? 'border-red-500/30 bg-[#160307]' : 'border-white/10 bg-black'
+            }`}>
               
               {/* Coupon input */}
               <form onSubmit={handleApplyCoupon} className="space-y-1">
@@ -248,19 +273,29 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       placeholder="Código cupón (ej: OFFSIDE10)"
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value)}
-                      className={`w-full bg-[#121212] border border-white/20 rounded-xl py-2 pl-8 pr-3 text-xs text-white uppercase font-bold placeholder-white/40 ${isHalloween ? 'focus:border-orange-500' : 'focus:border-[#00e652]'}`}
+                      className={`w-full bg-[#121212] border rounded-xl py-2 pl-8 pr-3 text-xs text-white uppercase font-bold placeholder-white/40 ${
+                        isChristmas 
+                          ? 'border-red-500/40 focus:border-amber-400' 
+                          : isHalloween 
+                          ? 'border-white/20 focus:border-orange-500' 
+                          : 'border-white/20 focus:border-[#00e652]'
+                      }`}
                     />
-                    <Tag className={`w-3.5 h-3.5 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'} absolute left-2.5 top-2.5 stroke-[2.5]`} />
+                    <Tag className={`w-3.5 h-3.5 ${isChristmas ? 'text-amber-300' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'} absolute left-2.5 top-2.5 stroke-[2.5]`} />
                   </div>
                   <button
                     type="submit"
-                    className={`${isHalloween ? 'bg-orange-500 hover:bg-white' : 'bg-[#00e652] hover:bg-white'} text-black font-black px-4 py-2 text-xs uppercase tracking-wider cursor-pointer skew-x-[-10deg]`}
+                    className={`${
+                      isChristmas
+                        ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/40 hover:brightness-110'
+                        : isHalloween ? 'bg-orange-500 hover:bg-white text-black' : 'bg-[#00e652] hover:bg-white text-black'
+                    } font-black px-4 py-2 text-xs uppercase tracking-wider cursor-pointer skew-x-[-10deg]`}
                   >
                     <span className="skew-x-[10deg] inline-block">APLICAR</span>
                   </button>
                 </div>
                 {couponApplied && (
-                  <p className={`text-[11px] ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'} font-black uppercase tracking-wider flex items-center gap-1`}>
+                  <p className={`text-[11px] ${isChristmas ? 'text-amber-300' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'} font-black uppercase tracking-wider flex items-center gap-1`}>
                     <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                     Cupón {couponApplied.code} aplicado ({couponApplied.percent}% de descuento)
                   </p>
@@ -278,7 +313,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
                 
                 {couponApplied && (
-                  <div className={`flex justify-between ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>
+                  <div className={`flex justify-between ${isChristmas ? 'text-amber-300' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>
                     <span>Descuento ({couponApplied.percent}%):</span>
                     <span className="font-bold">-{formatPrice(discount, currency)}</span>
                   </div>
@@ -293,7 +328,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                 <div className="flex justify-between text-base font-black text-white pt-2 border-t border-white/10 uppercase italic">
                   <span>TOTAL A PAGAR:</span>
-                  <span className={isHalloween ? 'text-orange-400' : 'text-[#00e652]'}>{formatPrice(total, currency)}</span>
+                  <span className={isChristmas ? 'text-amber-300' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}>{formatPrice(total, currency)}</span>
                 </div>
               </div>
 
@@ -301,7 +336,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <div className="space-y-2 pt-1">
                 <button
                   onClick={() => onProceedToCheckout(discount)}
-                  className={`w-full py-4 ${isHalloween ? 'bg-orange-500 hover:bg-white shadow-orange-500/30' : 'bg-[#00e652] hover:bg-white'} text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-2xl cursor-pointer skew-x-[-10deg]`}
+                  className={`w-full py-4 ${
+                    isChristmas
+                      ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white border border-amber-400/40 shadow-xl shadow-red-700/40'
+                      : isHalloween ? 'bg-orange-500 hover:bg-white shadow-orange-500/30 text-black' : 'bg-[#00e652] hover:bg-white text-black'
+                  } font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-2xl cursor-pointer skew-x-[-10deg]`}
                 >
                   <div className="skew-x-[10deg] flex items-center gap-2">
                     <span>IR A PASARELA DE PAGOS</span>

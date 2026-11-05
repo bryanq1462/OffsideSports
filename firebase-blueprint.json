@@ -120,11 +120,10 @@
       "properties": {
         "id": { "type": "string" },
         "code": { "type": "string" },
-        "discountPercent": { "type": "number" },
-        "description": { "type": "string" },
+        "percentage": { "type": "number" },
         "active": { "type": "boolean" }
       },
-      "required": ["id", "code", "discountPercent", "active"]
+      "required": ["id", "code", "percentage", "active"]
     }
   },
   "firestore": {

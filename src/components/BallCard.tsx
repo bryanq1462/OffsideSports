@@ -10,6 +10,7 @@ interface BallCardProps {
   onQuickAdd: (ball: Ball, size: string) => void;
   onOpenDetail: (ball: Ball) => void;
   isHalloween?: boolean;
+  isChristmas?: boolean;
 }
 
 export const BallCard: React.FC<BallCardProps> = ({
@@ -17,7 +18,8 @@ export const BallCard: React.FC<BallCardProps> = ({
   currency,
   onQuickAdd,
   onOpenDetail,
-  isHalloween
+  isHalloween,
+  isChristmas
 }) => {
   const [selectedSize, setSelectedSize] = useState<string>(
     ball.sizesAvailable?.[0] || 'Talla 5 (Oficial)'
@@ -38,19 +40,38 @@ export const BallCard: React.FC<BallCardProps> = ({
   return (
     <div 
       onClick={() => onOpenDetail(ball)}
-      className={`group relative bg-[#111111] rounded-2xl sm:rounded-3xl border transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-lg cursor-pointer ${
-        isHalloween
-          ? 'border-orange-500/20 hover:border-orange-500/80 hover:shadow-[0_0_25px_rgba(255,107,0,0.25)]'
-          : 'border-white/10 hover:border-[#00e652]/60 hover:shadow-[0_0_25px_rgba(0,230,82,0.15)]'
+      className={`group relative rounded-2xl sm:rounded-3xl border transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-lg cursor-pointer ${
+        isChristmas
+          ? 'bg-[#180307]/85 border-red-500/35 hover:border-amber-400/70 hover:shadow-[0_0_25px_rgba(220,38,38,0.35)] backdrop-blur-sm'
+          : isHalloween
+          ? 'bg-[#111111] border-orange-500/20 hover:border-orange-500/80 hover:shadow-[0_0_25px_rgba(255,107,0,0.25)]'
+          : 'bg-[#111111] border-white/10 hover:border-[#00e652]/60 hover:shadow-[0_0_25px_rgba(0,230,82,0.15)]'
       }`}
     >
+      {/* Christmas corner Santa hat accent */}
+      {isChristmas && (
+        <span 
+          aria-hidden="true" 
+          className="absolute -top-1 -right-1 z-20 text-lg sm:text-xl drop-shadow-md select-none transform rotate-12 transition-transform group-hover:scale-125"
+          title="Edición Navideña"
+        >
+          🎅
+        </span>
+      )}
+
       {/* Top Badges Overlay */}
       <div className="absolute top-2 left-2 sm:top-3 sm:left-3 right-2 sm:right-3 z-10 flex items-start justify-between gap-1 pointer-events-none">
         <div className="flex flex-col gap-1 items-start min-w-0">
           {ball.isNew && (
-            <span className={`${isHalloween ? 'bg-orange-500 text-black shadow-orange-500/30' : 'bg-[#00e652] text-black'} text-[8.5px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-sm shadow-md flex items-center gap-1 shrink-0`}>
+            <span className={`${
+              isChristmas 
+                ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/50 shadow-md shadow-red-700/40' 
+                : isHalloween 
+                ? 'bg-orange-500 text-black shadow-orange-500/30' 
+                : 'bg-[#00e652] text-black'
+            } text-[8.5px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-sm shadow-md flex items-center gap-1 shrink-0`}>
               <Sparkles className="w-2.5 h-2.5" />
-              <span>{isHalloween ? '🎃 NUEVO' : 'NUEVO'}</span>
+              <span>{isChristmas ? '🎄 OFICIAL' : isHalloween ? '🎃 NUEVO' : 'NUEVO'}</span>
             </span>
           )}
           {ball.isPopular && (
@@ -159,7 +180,9 @@ export const BallCard: React.FC<BallCardProps> = ({
                   onClick={() => setSelectedSize(sz)}
                   className={`px-2 py-0.5 rounded text-[10px] font-black uppercase transition-all cursor-pointer ${
                     isSelected
-                      ? isHalloween
+                      ? isChristmas
+                        ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/50 shadow-sm'
+                        : isHalloween
                         ? 'bg-orange-500 text-black shadow-sm'
                         : 'bg-[#00e652] text-black shadow-sm'
                       : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/10'
@@ -175,7 +198,9 @@ export const BallCard: React.FC<BallCardProps> = ({
           <div className="flex items-center justify-between gap-2 pt-1">
             <div>
               <div className="flex items-baseline gap-1.5">
-                <span className={`text-sm sm:text-base font-black ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`}>
+                <span className={`text-sm sm:text-base font-black ${
+                  isChristmas ? 'text-amber-300' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+                }`}>
                   {formatPrice(priceCRC, currency)}
                 </span>
                 {hasDiscount && (
@@ -198,6 +223,8 @@ export const BallCard: React.FC<BallCardProps> = ({
                   ? 'bg-white text-black scale-95'
                   : ball.stock <= 0
                   ? 'bg-zinc-800 text-white/40 cursor-not-allowed'
+                  : isChristmas
+                  ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white border border-amber-400/40 shadow-lg shadow-red-700/40 hover:scale-105'
                   : isHalloween
                   ? 'bg-orange-500 hover:bg-orange-400 text-black shadow-md hover:scale-105 shadow-orange-500/30'
                   : 'bg-[#00e652] hover:bg-white text-black shadow-md hover:scale-105'

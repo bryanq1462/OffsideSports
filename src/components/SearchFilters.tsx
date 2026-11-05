@@ -23,6 +23,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
   settings
 }) => {
   const isHalloween = settings?.themeMode === 'halloween';
+  const isChristmas = settings?.themeMode === 'christmas';
   const types: JerseyType[] = ['Local', 'Visitante', 'Tercera', 'Edición Especial', 'Retro'];
   const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
 
@@ -32,21 +33,29 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
     : availableTeams;
 
   return (
-    <div className={`bg-[#121212] border rounded-3xl p-5 sm:p-6 shadow-2xl space-y-6 transition-all ${
-      isHalloween ? 'border-orange-500/30 shadow-[0_0_30px_rgba(255,107,0,0.15)]' : 'border-white/10'
+    <div className={`border rounded-3xl p-5 sm:p-6 shadow-2xl space-y-6 transition-all ${
+      isChristmas
+        ? 'bg-[#180307]/80 backdrop-blur-md border-red-500/35 shadow-[0_8px_30px_rgba(185,28,28,0.25)]'
+        : isHalloween
+        ? 'bg-[#121212] border-orange-500/30 shadow-[0_0_30px_rgba(255,107,0,0.15)]'
+        : 'bg-[#121212] border-white/10'
     }`}>
       
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10">
         <div className="flex items-center gap-3">
           <div className={`p-2.5 rounded-xl border ${
-            isHalloween ? 'bg-orange-500/10 text-orange-400 border-orange-500/30' : 'bg-[#00e652]/10 text-[#00e652] border-[#00e652]/30'
+            isChristmas
+              ? 'bg-red-950/40 text-amber-400 border-red-500/40 shadow-md'
+              : isHalloween
+              ? 'bg-orange-500/10 text-orange-400 border-orange-500/30'
+              : 'bg-[#00e652]/10 text-[#00e652] border-[#00e652]/30'
           }`}>
             <SlidersHorizontal className="w-5 h-5 stroke-[2.5]" />
           </div>
           <div>
             <h2 className="text-xl font-black italic uppercase text-white tracking-wider flex items-center gap-2">
-              {isHalloween && <span>🎃</span>}
+              {isChristmas ? <span>🎄</span> : isHalloween ? <span>🎃</span> : null}
               <span>BUSCADOR & FILTROS</span>
             </h2>
             <p className="text-xs text-white/60 font-semibold">Encuentra la camiseta exacta por Liga, Equipo, Talla o Edición</p>
@@ -54,15 +63,19 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         </div>
 
         <div className="flex items-center gap-3">
-          <span className={`bg-black text-xs font-black uppercase px-3 py-1.5 border tracking-wider ${
-            isHalloween ? 'text-orange-400 border-orange-500/30' : 'text-[#00e652] border-white/20'
+          <span className={`text-xs font-black uppercase px-3 py-1.5 border tracking-wider ${
+            isChristmas
+              ? 'bg-black/80 text-amber-300 border-amber-400/40'
+              : isHalloween
+              ? 'bg-black text-orange-400 border-orange-500/30'
+              : 'bg-black text-[#00e652] border-white/20'
           }`}>
             {totalResults} {totalResults === 1 ? 'CAMISETA ENCONTRADA' : 'CAMISETAS ENCONTRADAS'}
           </span>
           <button
             onClick={onReset}
             className={`flex items-center gap-1.5 text-white/80 ${
-              isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'
+              isChristmas ? 'hover:text-amber-300' : isHalloween ? 'hover:text-orange-400' : 'hover:text-[#00e652]'
             } text-xs font-black uppercase tracking-wider bg-white/5 hover:bg-white/10 px-3.5 py-1.5 border border-white/20 transition cursor-pointer`}
           >
             <RotateCcw className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -74,9 +87,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
       {/* Sports Categories Bar */}
       <div className="space-y-2 pb-2 border-b border-white/10">
         <label className={`block text-[10px] font-black uppercase tracking-[0.15em] flex items-center gap-1.5 ${
-          isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+          isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'
         }`}>
-          <Activity className={`w-3.5 h-3.5 ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
+          <Activity className={`w-3.5 h-3.5 ${isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'}`} />
           <span>CATEGORÍAS DEPORTIVAS:</span>
         </label>
         <div className="flex overflow-x-auto pb-1 gap-2 scrollbar-none -mx-2 px-2 sm:mx-0 sm:px-0">
@@ -93,10 +106,12 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                 }))}
                 className={`flex-shrink-0 flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-black uppercase tracking-wider transition cursor-pointer rounded-lg sm:rounded-none ${
                   isSelected
-                    ? isHalloween
+                    ? isChristmas
+                      ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/50 shadow-md shadow-red-700/40 font-black'
+                      : isHalloween
                       ? 'bg-orange-500 text-black shadow-lg shadow-orange-500/20 font-black'
                       : 'bg-[#00e652] text-black shadow-lg shadow-[#00e652]/20 font-black'
-                    : `bg-black text-white/80 border border-white/20 ${isHalloween ? 'hover:border-orange-500/50' : 'hover:border-[#00e652]/50'}`
+                    : `bg-black/70 text-white/80 border ${isChristmas ? 'border-red-500/25 hover:border-amber-400/50' : isHalloween ? 'border-white/20 hover:border-orange-500/50' : 'border-white/20 hover:border-[#00e652]/50'}`
                 }`}
               >
                 <span className="text-sm">{sport.icon}</span>
@@ -259,7 +274,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         {/* Size Filter */}
         <div>
           <label className={`block text-[10px] font-black uppercase tracking-[0.15em] mb-1.5 ${
-            isHalloween ? 'text-orange-400' : 'text-[#00e652]'
+            isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'
           }`}>
             TALLA DISPONIBLE:
           </label>
@@ -268,10 +283,12 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
               onClick={() => setFilters(prev => ({ ...prev, selectedSize: 'all' }))}
               className={`px-2.5 py-2 text-[11px] font-black uppercase transition cursor-pointer ${
                 filters.selectedSize === 'all'
-                  ? isHalloween
+                  ? isChristmas
+                    ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 font-black border border-amber-400/50 shadow-md shadow-red-700/40'
+                    : isHalloween
                     ? 'bg-orange-500 text-black font-black shadow-md shadow-orange-500/20'
                     : 'bg-[#00e652] text-black font-black'
-                  : 'bg-black text-white/60 border border-white/20'
+                  : 'bg-black/70 text-white/60 border border-white/20'
               }`}
             >
               TODAS
@@ -282,10 +299,12 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                 onClick={() => setFilters(prev => ({ ...prev, selectedSize: sz }))}
                 className={`flex-1 py-2 text-[11px] font-black transition cursor-pointer ${
                   filters.selectedSize === sz
-                    ? isHalloween
+                    ? isChristmas
+                      ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 font-black border border-amber-400/50 shadow-md shadow-red-700/40'
+                      : isHalloween
                       ? 'bg-orange-500 text-black font-black shadow-md shadow-orange-500/20'
                       : 'bg-[#00e652] text-black font-black'
-                    : 'bg-black text-white/60 border border-white/20 hover:bg-white/10'
+                    : 'bg-black/70 text-white/60 border border-white/20 hover:bg-white/10'
                 }`}
               >
                 {sz}
@@ -303,7 +322,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
           
           {filters.selectedSport && filters.selectedSport !== 'all' && (
             <span className={`${
-              isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
+              isChristmas ? 'bg-red-950/50 text-amber-300 border border-amber-400/40' : isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
             } px-2.5 py-1 rounded-sm flex items-center gap-1.5`}>
               Deporte: {filters.selectedSport}
               <button onClick={() => setFilters(p => ({ ...p, selectedSport: 'all' }))} className="hover:text-white font-black">✕</button>
@@ -312,7 +331,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
           
           {filters.selectedLeague !== 'all' && (
             <span className={`${
-              isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
+              isChristmas ? 'bg-red-950/50 text-amber-300 border border-amber-400/40' : isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
             } px-2.5 py-1 rounded-sm flex items-center gap-1.5`}>
               Liga: {filters.selectedLeague}
               <button onClick={() => setFilters(p => ({ ...p, selectedLeague: 'all' }))} className="hover:text-white font-black">✕</button>
@@ -321,7 +340,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
           {filters.selectedTeam !== 'all' && (
             <span className={`${
-              isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
+              isChristmas ? 'bg-red-950/50 text-amber-300 border border-amber-400/40' : isHalloween ? 'bg-orange-500/10 text-orange-400 border border-orange-500/40' : 'bg-[#00e652]/10 text-[#00e652] border border-[#00e652]/40'
             } px-2.5 py-1 rounded-sm flex items-center gap-1.5`}>
               Equipo: {filters.selectedTeam}
               <button onClick={() => setFilters(p => ({ ...p, selectedTeam: 'all' }))} className="hover:text-white font-black">✕</button>

@@ -47,6 +47,7 @@ import {
   updateOrderStatusInCloud,
   subscribeToDiscountCodes,
   saveDiscountCodesToCloud,
+  deleteDiscountCodeFromCloud,
   subscribeToReviews,
   saveReviewToCloud
 } from './services/firebase';
@@ -67,6 +68,7 @@ import { Footer } from './components/Footer';
 import { WhatsAppFloatingButton } from './components/WhatsAppFloatingButton';
 import { CustomerOrderHistoryModal } from './components/CustomerOrderHistoryModal';
 import { HalloweenDecorations } from './components/HalloweenDecorations';
+import { ChristmasDecorations } from './components/ChristmasDecorations';
 import { INITIAL_LEAGUES } from './data/mockData';
 import { getJerseyVersionInfo } from './utils/jerseyUtils';
 
@@ -137,7 +139,7 @@ export default function App() {
     });
 
     const unsubDiscounts = subscribeToDiscountCodes((cloudCodes) => {
-      if (cloudCodes && cloudCodes.length > 0) {
+      if (Array.isArray(cloudCodes)) {
         setDiscountCodesState(cloudCodes);
         saveDiscountCodes(cloudCodes);
       }
@@ -183,6 +185,19 @@ export default function App() {
       await saveDiscountCodesToCloud(newCodes);
     } catch (e) {
       console.warn('Could not sync discount codes to cloud:', e);
+    }
+  };
+
+  const handleDeleteSingleDiscountCode = async (codeId: string) => {
+    setDiscountCodesState(prev => {
+      const updated = prev.filter(c => c.id !== codeId);
+      saveDiscountCodes(updated);
+      return updated;
+    });
+    try {
+      await deleteDiscountCodeFromCloud(codeId);
+    } catch (e) {
+      console.warn('Could not delete discount code from cloud:', e);
     }
   };
 
@@ -475,6 +490,7 @@ export default function App() {
   }, 0);
 
   const isHalloween = settings?.themeMode === 'halloween';
+  const isChristmas = settings?.themeMode === 'christmas';
 
   const handleOrderCompleted = async (newOrder: Order) => {
     handleUpdateOrders([newOrder, ...orders]);
@@ -488,10 +504,13 @@ export default function App() {
 
   return (
     <div className={`min-h-screen ${
-      isHalloween 
+      isChristmas
+        ? 'bg-gradient-to-b from-[#220207] via-[#14050b] via-[#091610] to-[#040e0a] text-rose-50 font-sans selection:bg-red-600 selection:text-white theme-christmas'
+        : isHalloween 
         ? 'bg-[#0a050d] text-orange-50 font-sans selection:bg-orange-500 selection:text-black theme-halloween' 
         : 'bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950'
     } flex flex-col justify-between relative`}>
+      {isChristmas && <ChristmasDecorations />}
       {isHalloween && <HalloweenDecorations />}
       
       {/* Navbar Header */}
@@ -619,6 +638,7 @@ export default function App() {
                       onQuickAdd={handleQuickAdd}
                       onOpenDetail={(j) => setSelectedJerseyDetail(j)}
                       isHalloween={isHalloween}
+                      isChristmas={isChristmas}
                     />
                   ))}
                 </div>
@@ -755,6 +775,7 @@ export default function App() {
           onUpdateOrders={handleUpdateOrders}
           onUpdateSettings={handleUpdateSettings}
           onUpdateDiscountCodes={handleUpdateDiscountCodes}
+          onDeleteDiscountCode={handleDeleteSingleDiscountCode}
           onClose={() => setIsAdminOpen(false)}
           initialTab={adminInitialTab}
         />

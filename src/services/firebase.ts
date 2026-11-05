@@ -7,6 +7,7 @@ import {
   deleteDoc, 
   onSnapshot, 
   getDocFromServer,
+  getDocs,
   writeBatch
 } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
@@ -341,23 +342,33 @@ export function subscribeToDiscountCodes(callback: (codes: DiscountCode[]) => vo
   const unsubscribe = onSnapshot(
     discountsRef,
     async (snapshot) => {
+      const initialized = localStorage.getItem('offside_discounts_initialized') === 'true';
+
       if (snapshot.empty) {
-        try {
-          const batch = writeBatch(db);
-          DEFAULT_DISCOUNT_CODES.forEach((code) => {
-            const cleaned = cleanForFirestore(code);
-            const dDoc = doc(db, 'discounts', code.id);
-            batch.set(dDoc, cleaned);
-          });
-          await batch.commit();
-          callback(DEFAULT_DISCOUNT_CODES);
-          return;
-        } catch (e) {
-          callback(DEFAULT_DISCOUNT_CODES);
+        if (!initialized) {
+          try {
+            const batch = writeBatch(db);
+            DEFAULT_DISCOUNT_CODES.forEach((code) => {
+              const cleaned = cleanForFirestore(code);
+              const dDoc = doc(db, 'discounts', code.id);
+              batch.set(dDoc, cleaned);
+            });
+            await batch.commit();
+            localStorage.setItem('offside_discounts_initialized', 'true');
+            callback(DEFAULT_DISCOUNT_CODES);
+            return;
+          } catch (e) {
+            callback(DEFAULT_DISCOUNT_CODES);
+            return;
+          }
+        } else {
+          // If already initialized and snapshot is empty, admin deleted all coupons
+          callback([]);
           return;
         }
       }
 
+      localStorage.setItem('offside_discounts_initialized', 'true');
       const codesList: DiscountCode[] = [];
       snapshot.forEach((docSnap) => {
         codesList.push(docSnap.data() as DiscountCode);
@@ -372,15 +383,41 @@ export function subscribeToDiscountCodes(callback: (codes: DiscountCode[]) => vo
   return unsubscribe;
 }
 
+export async function deleteDiscountCodeFromCloud(codeId: string): Promise<void> {
+  const path = `discounts/${codeId}`;
+  try {
+    const dDoc = doc(db, 'discounts', codeId);
+    await deleteDoc(dDoc);
+    console.log(`[Firestore] Successfully deleted discount code: ${codeId}`);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, path);
+  }
+}
+
 export async function saveDiscountCodesToCloud(codes: DiscountCode[]): Promise<void> {
   try {
+    const discountsRef = collection(db, 'discounts');
+    const existingSnap = await getDocs(discountsRef);
     const batch = writeBatch(db);
+
+    const activeIds = new Set(codes.map((c) => c.id));
+
+    // Delete any documents in Firestore that are no longer in the updated codes list
+    existingSnap.forEach((docSnap) => {
+      if (!activeIds.has(docSnap.id)) {
+        batch.delete(docSnap.ref);
+      }
+    });
+
+    // Save/update remaining codes
     codes.forEach((code) => {
       const cleaned = cleanForFirestore(code);
       const dDoc = doc(db, 'discounts', code.id);
       batch.set(dDoc, cleaned, { merge: true });
     });
+
     await batch.commit();
+    localStorage.setItem('offside_discounts_initialized', 'true');
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, 'discounts');
   }

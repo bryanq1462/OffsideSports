@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { Jersey, Size, CustomStamping, StoreSettings } from '../types';
 import { formatPrice } from '../utils/storage';
-import { handleImageError } from '../utils/imageUtils';
+import { handleImageError, DEFAULT_JERSEY_FALLBACK_IMAGE } from '../utils/imageUtils';
 import { getJerseyVersionInfo } from '../utils/jerseyUtils';
 
 interface JerseyDetailModalProps {
@@ -53,6 +53,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
 
   const versionInfo = getJerseyVersionInfo(jersey.version);
   const availableSizes = (jersey.sizesAvailable || []).filter(() => jersey.stock > 0);
+  const isChristmas = settings?.themeMode === 'christmas';
   const isHalloween = settings?.themeMode === 'halloween';
 
   const unitCRC = jersey.priceCRC || jersey.price;
@@ -73,7 +74,9 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+    <div className={`fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 ${
+      isChristmas ? 'theme-christmas' : isHalloween ? 'theme-halloween' : ''
+    }`}>
       <div 
         className="relative w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col text-white animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
@@ -133,7 +136,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
             <div className="relative h-80 sm:h-96 w-full rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center p-4 overflow-hidden">
               {activeTab === 'front' ? (
                 <img
-                  src={jersey.image}
+                  src={jersey.image || DEFAULT_JERSEY_FALLBACK_IMAGE}
                   alt={jersey.name}
                   referrerPolicy="no-referrer"
                   onError={handleImageError}
@@ -141,7 +144,7 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                 />
               ) : (
                 <img
-                  src={jersey.backImage || jersey.image}
+                  src={jersey.backImage || jersey.image || DEFAULT_JERSEY_FALLBACK_IMAGE}
                   alt={`${jersey.name} Espalda`}
                   referrerPolicy="no-referrer"
                   onError={handleImageError}
@@ -366,7 +369,9 @@ export const JerseyDetailModal: React.FC<JerseyDetailModalProps> = ({
                 disabled={jersey.stock <= 0}
                 className={`w-full py-3.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg ${
                   added
-                    ? isHalloween ? 'bg-orange-600 text-white' : 'bg-emerald-600 text-white'
+                    ? isChristmas ? 'bg-white text-black' : isHalloween ? 'bg-orange-600 text-white' : 'bg-emerald-600 text-white'
+                    : isChristmas
+                    ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white border border-amber-400/40 shadow-xl shadow-red-700/40'
                     : isHalloween
                     ? 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30'
                     : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950'

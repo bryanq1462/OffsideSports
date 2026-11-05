@@ -43,6 +43,7 @@ export const BallDetailModal: React.FC<BallDetailModalProps> = ({
   const priceCRC = ball.priceCRC ?? ball.price;
   const originalPriceCRC = ball.originalPriceCRC ?? ball.originalPrice;
   const hasDiscount = originalPriceCRC && originalPriceCRC > priceCRC;
+  const isChristmas = settings?.themeMode === 'christmas';
   const isHalloween = settings?.themeMode === 'halloween';
 
   const phoneDisplay = settings?.contactPhone || '+506 8559 5192';
@@ -66,7 +67,9 @@ export const BallDetailModal: React.FC<BallDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
+    <div className={`fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200 ${
+      isChristmas ? 'theme-christmas' : isHalloween ? 'theme-halloween' : ''
+    }`}>
       <div className="fixed inset-0" onClick={onClose} />
 
       <div className="relative w-full max-w-4xl bg-[#0d0d0f] border border-white/15 rounded-3xl text-white overflow-hidden shadow-2xl z-10 max-h-[92vh] flex flex-col">
@@ -264,6 +267,8 @@ export const BallDetailModal: React.FC<BallDetailModalProps> = ({
                 className={`w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl transition-all cursor-pointer ${
                   addedSuccess
                     ? 'bg-white text-black'
+                    : isChristmas
+                    ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white border border-amber-400/40 shadow-xl shadow-red-700/40 hover:scale-[1.01]'
                     : isHalloween
                     ? 'bg-orange-500 hover:bg-orange-400 text-black shadow-orange-500/30 hover:scale-[1.01]'
                     : 'bg-[#00e652] hover:bg-white text-black hover:scale-[1.01]'

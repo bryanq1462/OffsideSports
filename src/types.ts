@@ -25,7 +25,7 @@ export interface StoreSettings {
   whatsappPhone?: string;
   adminEmail?: string;
   adminPassword?: string;
-  themeMode?: 'default' | 'halloween';
+  themeMode?: 'default' | 'halloween' | 'christmas';
 }
 
 export interface DiscountCode {

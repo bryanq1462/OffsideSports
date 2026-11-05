@@ -57,6 +57,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const bankAccountHolder = settings?.bankAccountHolder || 'OFFSIDE Sports Costa Rica S.A.';
   const bankAccountIBAN = settings?.bankAccountIBAN || 'CR05015202001026384920';
   const bankName = settings?.bankName || 'BAC Credomatic Costa Rica';
+  const isChristmas = settings?.themeMode === 'christmas';
   const isHalloween = settings?.themeMode === 'halloween';
 
   const stampFee = settings?.customizationPriceCRC ?? 0;
@@ -153,7 +154,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   return (
-    <div className={`fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 ${isHalloween ? 'theme-halloween' : ''}`}>
+    <div className={`fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 ${
+      isChristmas ? 'theme-christmas' : isHalloween ? 'theme-halloween' : ''
+    }`}>
       <div 
         className="relative w-full max-w-3xl bg-[#0a0a0a] border border-white/10 rounded-3xl shadow-2xl overflow-hidden text-white my-auto animate-in zoom-in-95 max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
@@ -293,7 +296,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <div className="pt-2 flex justify-end">
               <button
                 type="submit"
-                className="bg-[#00e652] hover:bg-white text-black font-black px-8 py-3.5 text-xs uppercase tracking-widest flex items-center gap-2 cursor-pointer shadow-2xl skew-x-[-10deg]"
+                className={`${
+                  isChristmas
+                    ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white border border-amber-400/40 shadow-xl shadow-red-700/40'
+                    : 'bg-[#00e652] hover:bg-white text-black'
+                } font-black px-8 py-3.5 text-xs uppercase tracking-widest flex items-center gap-2 cursor-pointer shadow-2xl skew-x-[-10deg]`}
               >
                 <div className="skew-x-[10deg] flex items-center gap-2">
                   <span>CONTINUAR A PAGO</span>
@@ -464,7 +471,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             <button
               type="submit"
-              className="w-full py-4 bg-[#00e652] hover:bg-white text-black font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer shadow-2xl skew-x-[-10deg]"
+              className={`w-full py-4 ${
+                isChristmas
+                  ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white border border-amber-400/40 shadow-xl shadow-red-700/40'
+                  : 'bg-[#00e652] hover:bg-white text-black'
+              } font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer shadow-2xl skew-x-[-10deg]`}
             >
               <div className="skew-x-[10deg] flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 stroke-[2.5]" />

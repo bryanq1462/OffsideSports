@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ShoppingBag, Star, Check, Eye } from 'lucide-react';
 import { Jersey, Size } from '../types';
 import { formatPrice } from '../utils/storage';
-import { handleImageError } from '../utils/imageUtils';
+import { handleImageError, DEFAULT_JERSEY_FALLBACK_IMAGE } from '../utils/imageUtils';
 import { getJerseyVersionInfo } from '../utils/jerseyUtils';
 
 interface JerseyCardProps {
@@ -11,6 +11,7 @@ interface JerseyCardProps {
   onQuickAdd: (jersey: Jersey, size: Size) => void;
   onOpenDetail: (jersey: Jersey) => void;
   isHalloween?: boolean;
+  isChristmas?: boolean;
 }
 
 const ALL_SIZES: Size[] = ['S', 'M', 'L', 'XL', 'XXL'];
@@ -20,7 +21,8 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
   currency,
   onQuickAdd,
   onOpenDetail,
-  isHalloween
+  isHalloween,
+  isChristmas
 }) => {
   const sizes = jersey.sizesAvailable || [];
   const availableSizes = sizes.filter(() => jersey.stock > 0);
@@ -42,12 +44,21 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
   return (
     <div 
       onClick={() => onOpenDetail(jersey)}
-      className={`group bg-[#121212] border rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between cursor-pointer relative ${
-        isHalloween
-          ? 'border-orange-500/20 hover:border-orange-500/80 hover:shadow-2xl hover:shadow-orange-500/20'
-          : 'border-white/10 hover:border-[#00e652]/60 hover:shadow-2xl hover:shadow-[#00e652]/10'
+      className={`group border rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between cursor-pointer relative ${
+        isChristmas
+          ? 'bg-[#180307]/85 backdrop-blur-sm border-red-500/35 hover:border-amber-400/80 hover:shadow-[0_8px_30px_rgba(220,38,38,0.35)] hover:-translate-y-1'
+          : isHalloween
+          ? 'bg-[#121212] border-orange-500/20 hover:border-orange-500/80 hover:shadow-2xl hover:shadow-orange-500/20'
+          : 'bg-[#121212] border-white/10 hover:border-[#00e652]/60 hover:shadow-2xl hover:shadow-[#00e652]/10'
       }`}
     >
+      {/* Christmas Santa Hat Corner Pin */}
+      {isChristmas && (
+        <span className="absolute -top-1.5 -left-1 text-sm select-none pointer-events-none z-20 drop-shadow-md -rotate-12">
+          🎅
+        </span>
+      )}
+
       {/* Badges Overlay */}
       <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 flex flex-col gap-1 items-start pointer-events-none">
         {/* Version Badge on Card */}
@@ -67,12 +78,18 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
           </span>
         )}
         {jersey.isPopular && jersey.type !== 'Retro' && (
-          <span className={`${isHalloween ? 'bg-orange-500 text-black' : 'bg-[#00e652] text-black'} font-black text-[8px] sm:text-[10px] uppercase px-1.5 sm:px-2.5 py-0.5 rounded-sm shadow`}>
-            {isHalloween ? '🎃 SPOOKY TOP' : 'MÁS VENDIDA'}
+          <span className={`${
+            isChristmas 
+              ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/50 shadow-sm' 
+              : isHalloween 
+              ? 'bg-orange-500 text-black' 
+              : 'bg-[#00e652] text-black'
+          } font-black text-[8px] sm:text-[10px] uppercase px-1.5 sm:px-2.5 py-0.5 rounded-sm shadow`}>
+            {isChristmas ? '🎄 DESTACADA' : isHalloween ? '🎃 SPOOKY TOP' : 'MÁS VENDIDA'}
           </span>
         )}
         {jersey.badgeTags && jersey.badgeTags.map((tag, idx) => (
-          <span key={idx} className={`bg-black/90 ${isHalloween ? 'text-orange-400 border-orange-500/30' : 'text-[#00e652] border-white/20'} border font-black text-[8px] sm:text-[9px] uppercase px-1.5 py-0.5 rounded-sm`}>
+          <span key={idx} className={`bg-black/90 ${isChristmas ? 'text-amber-300 border-amber-400/40' : isHalloween ? 'text-orange-400 border-orange-500/30' : 'text-[#00e652] border-white/20'} border font-black text-[8px] sm:text-[9px] uppercase px-1.5 py-0.5 rounded-sm`}>
             {tag}
           </span>
         ))}
@@ -81,8 +98,8 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
       {/* Stock indicator */}
       <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 pointer-events-none">
         {jersey.stock > 0 ? (
-          <span className={`bg-black/80 backdrop-blur ${isHalloween ? 'text-orange-400 border-orange-500/30' : 'text-[#00e652] border-white/20'} text-[8px] sm:text-[10px] font-extrabold px-1.5 sm:px-2 py-0.5 rounded-sm border flex items-center gap-1`}>
-            <span className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full ${isHalloween ? 'bg-orange-500' : 'bg-[#00e652]'} animate-ping`} />
+          <span className={`bg-black/85 backdrop-blur ${isChristmas ? 'text-amber-300 border-amber-400/40' : isHalloween ? 'text-orange-400 border-orange-500/30' : 'text-[#00e652] border-white/20'} text-[8px] sm:text-[10px] font-extrabold px-1.5 sm:px-2 py-0.5 rounded-sm border flex items-center gap-1`}>
+            <span className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full ${isChristmas ? 'bg-amber-400' : isHalloween ? 'bg-orange-500' : 'bg-[#00e652]'} animate-ping`} />
             {jersey.stock <= 10 ? `¡Solo ${jersey.stock}!` : 'En Stock'}
           </span>
         ) : (
@@ -94,22 +111,28 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
 
       <div>
         {/* Image Container */}
-        <div className="relative h-44 sm:h-64 lg:h-72 w-full bg-black overflow-hidden flex items-center justify-center p-1.5 sm:p-2 border-b border-white/10">
+        <div className="relative h-44 sm:h-64 lg:h-72 w-full bg-black/60 overflow-hidden flex items-center justify-center p-1.5 sm:p-2 border-b border-white/10">
           <img
-            src={jersey.image}
+            src={jersey.image || DEFAULT_JERSEY_FALLBACK_IMAGE}
             alt={jersey.name}
             referrerPolicy="no-referrer"
             onError={handleImageError}
             className="h-full w-full object-cover group-hover:scale-108 transition-transform duration-500 rounded-xl"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80" />
 
           {/* Hover Overlay CTA */}
-          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4">
             <button 
               onClick={(e) => { e.stopPropagation(); onOpenDetail(jersey); }}
-              className={`${isHalloween ? 'bg-orange-500 hover:bg-white text-black' : 'bg-[#00e652] hover:bg-white text-black'} font-black px-4 py-2.5 text-xs uppercase tracking-widest flex items-center gap-2 shadow-xl skew-x-[-10deg] cursor-pointer`}
+              className={`${
+                isChristmas 
+                  ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white border border-amber-400/40 shadow-lg shadow-red-700/40' 
+                  : isHalloween 
+                  ? 'bg-orange-500 hover:bg-white text-black' 
+                  : 'bg-[#00e652] hover:bg-white text-black'
+              } font-black px-4 py-2.5 text-xs uppercase tracking-widest flex items-center gap-2 shadow-xl skew-x-[-10deg] cursor-pointer`}
             >
               <div className="skew-x-[10deg] flex items-center gap-2">
                 <Eye className="w-4 h-4 stroke-[3]" />
@@ -123,12 +146,12 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
         <div className="p-2.5 sm:p-4 space-y-1.5 sm:space-y-2">
           {/* League & Season */}
           <div className="flex items-center justify-between text-[9px] sm:text-[11px] font-black uppercase tracking-wider">
-            <span className={`${isHalloween ? 'text-orange-400' : 'text-[#00e652]'} truncate max-w-[110px] sm:max-w-none`}>{jersey.league}</span>
+            <span className={`${isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'} truncate max-w-[110px] sm:max-w-none`}>{jersey.league}</span>
             <span className="bg-white/10 px-1.5 py-0.5 rounded text-white/80 font-mono text-[9px] sm:text-[10px]">{jersey.yearSeason}</span>
           </div>
 
           {/* Name */}
-          <h3 className={`text-xs sm:text-base font-black italic uppercase text-white line-clamp-2 ${isHalloween ? 'group-hover:text-orange-400' : 'group-hover:text-[#00e652]'} transition-colors leading-tight tracking-tight`}>
+          <h3 className={`text-xs sm:text-base font-black italic uppercase text-white line-clamp-2 ${isChristmas ? 'group-hover:text-amber-300' : isHalloween ? 'group-hover:text-orange-400' : 'group-hover:text-[#00e652]'} transition-colors leading-tight tracking-tight`}>
             {jersey.name}
           </h3>
 
@@ -152,7 +175,7 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
 
           {/* Price */}
           <div className="flex items-baseline gap-1.5 pt-0.5">
-            <span className={`text-base sm:text-2xl font-black ${isHalloween ? 'text-orange-400' : 'text-[#00e652]'} tracking-tight`}>
+            <span className={`text-base sm:text-2xl font-black ${isChristmas ? 'text-amber-400' : isHalloween ? 'text-orange-400' : 'text-[#00e652]'} tracking-tight`}>
               {formatPrice(jersey.price, currency, jersey.priceCRC)}
             </span>
             {jersey.originalPrice && jersey.originalPrice > jersey.price && (
@@ -189,7 +212,9 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
                     !isAvailable
                       ? 'bg-white/5 text-white/20 border border-white/5 cursor-not-allowed opacity-50'
                       : isSelected
-                      ? isHalloween
+                      ? isChristmas
+                        ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] text-amber-200 border border-amber-400/50 shadow-md shadow-red-700/40'
+                        : isHalloween
                         ? 'bg-orange-500 text-black font-black cursor-pointer shadow-md shadow-orange-500/40'
                         : 'bg-[#00e652] text-black font-black cursor-pointer'
                       : 'bg-white/5 text-white/80 hover:bg-white/20 border border-white/10 cursor-pointer'
@@ -214,7 +239,9 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
             added
               ? 'bg-emerald-500 text-black'
               : jersey.stock > 0 && sizes.length > 0
-              ? isHalloween
+              ? isChristmas
+                ? 'bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] hover:from-[#b91c1c] hover:via-[#ef4444] hover:to-[#b91c1c] text-white skew-x-[-10deg] shadow-lg shadow-red-700/40 border border-amber-400/40'
+                : isHalloween
                 ? 'bg-orange-500 hover:bg-orange-400 text-black skew-x-[-10deg] shadow-lg shadow-orange-500/20'
                 : 'bg-[#00e652] hover:bg-white text-black skew-x-[-10deg]'
               : 'bg-white/5 text-white/40 border border-white/10 cursor-not-allowed'
@@ -229,7 +256,7 @@ export const JerseyCard: React.FC<JerseyCardProps> = ({
             ) : (
               <>
                 <ShoppingBag className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span className="truncate">{jersey.stock > 0 && sizes.length > 0 ? (isHalloween ? '🎃 AGREGAR' : 'AGREGAR') : 'AGOTADA'}</span>
+                <span className="truncate">{jersey.stock > 0 && sizes.length > 0 ? (isChristmas ? '🎁 REGALAR' : isHalloween ? '🎃 AGREGAR' : 'AGREGAR') : 'AGOTADA'}</span>
               </>
             )}
           </div>

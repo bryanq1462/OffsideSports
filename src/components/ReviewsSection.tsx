@@ -63,7 +63,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
   };
 
   return (
-    <section id="reviews-section" className="bg-[#0a0a0a] text-white py-12 md:py-20 border-t border-white/10">
+    <section id="reviews-section" className="bg-transparent text-white py-12 md:py-20 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Header */}

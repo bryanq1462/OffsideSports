@@ -10,14 +10,14 @@ export const handleBallImageError = (e: React.SyntheticEvent<HTMLImageElement, E
   handleImageError(e, DEFAULT_BALL_FALLBACK_IMAGE);
 };
 
-export function normalizeImageSrc(src?: string): string {
-  if (!src) return '';
+export function normalizeImageSrc(src?: string, fallback = DEFAULT_JERSEY_FALLBACK_IMAGE): string {
+  if (!src || !src.trim()) return fallback;
   const trimmed = src.trim();
-  if (trimmed.startsWith('data:') || trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('blob:')) {
+  if (trimmed.startsWith('data:') || trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('blob:') || trimmed.startsWith('/')) {
     return trimmed;
   }
-  if (trimmed.startsWith('/9j/')) {
-    return `data:image/jpeg;base64,${trimmed}`;
+  if (trimmed.startsWith('9j/') || trimmed.startsWith('/9j/')) {
+    return `data:image/jpeg;base64,${trimmed.startsWith('/') ? trimmed.slice(1) : trimmed}`;
   }
   if (trimmed.startsWith('iVBOR')) {
     return `data:image/png;base64,${trimmed}`;
